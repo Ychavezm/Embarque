@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#0b3d6b">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>Control de Pasajeros – Embarque</title>
+<style>
+:root{--azul:#0b3d6b;--verde:#1b8a3a;--rojo:#c62828;--ambar:#e69500;--gris:#f1f3f6;--txt:#1d2430}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;font-family:Segoe UI,Roboto,Arial,sans-serif;background:var(--gris);color:var(--txt)}
+header{background:var(--azul);color:#fff;padding:10px 14px;display:flex;align-items:center;justify-content:space-between}
+header h1{font-size:17px;margin:0}
+header small{opacity:.8;font-size:12px;display:block}
+nav{display:flex;background:#fff;border-bottom:1px solid #d5dae1;position:sticky;top:0;z-index:5}
+nav button{flex:1;border:0;background:none;padding:12px 4px;font-size:14px;font-weight:600;color:#56606e;border-bottom:3px solid transparent}
+nav button.act{color:var(--azul);border-bottom-color:var(--azul)}
+main{padding:12px;max-width:820px;margin:0 auto}
+.card{background:#fff;border-radius:12px;padding:14px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
+.kpi{background:#fff;border-radius:10px;padding:8px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.kpi b{display:block;font-size:24px}
+.kpi span{font-size:11px;color:#56606e;text-transform:uppercase}
+.k-ok b{color:var(--verde)}.k-pen b{color:var(--azul)}.k-no b{color:var(--rojo)}
+.btn{border:0;border-radius:10px;padding:13px 16px;font-size:16px;font-weight:700;color:#fff;background:var(--azul);width:100%}
+.btn.sec{background:#5b6675}.btn.ok{background:var(--verde)}.btn.red{background:var(--rojo)}
+.row{display:flex;gap:8px}.row>*{flex:1}
+input[type=text],input[type=search],select{width:100%;padding:12px;font-size:17px;border:1px solid #c3cad4;border-radius:10px}
+label{font-size:13px;color:#56606e;display:block;margin:8px 0 4px}
+#videoBox{position:relative;background:#000;border-radius:12px;overflow:hidden;aspect-ratio:4/3;display:none}
+#video{width:100%;height:100%;object-fit:cover}
+#videoBox .guia{position:absolute;inset:18% 8%;border:3px dashed rgba(255,255,255,.8);border-radius:10px}
+#resultado{border-radius:14px;padding:18px;text-align:center;color:#fff;display:none;margin-top:12px}
+#resultado .estado{font-size:24px;font-weight:800;letter-spacing:.5px}
+#resultado .asiento{font-size:72px;font-weight:900;line-height:1;margin:8px 0}
+#resultado .nombre{font-size:20px;font-weight:700}
+#resultado .det{font-size:14px;opacity:.95;margin-top:4px}
+.r-ok{background:var(--verde)}.r-dup{background:var(--ambar)}.r-no{background:var(--rojo);animation:blink .5s steps(1) infinite}
+@keyframes blink{50%{background:#7a0000}}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{padding:8px 6px;border-bottom:1px solid #e3e7ec;text-align:left}
+th{background:#eef1f5;font-size:12px;text-transform:uppercase;color:#56606e;position:sticky;top:46px}
+.tag{display:inline-block;padding:3px 8px;border-radius:20px;font-size:12px;font-weight:700;color:#fff}
+.t-ok{background:var(--verde)}.t-pen{background:#8b96a5}.t-no{background:var(--rojo)}.t-dup{background:var(--ambar)}
+.mini{font-size:12px;color:#56606e}
+.aviso{background:#fff4e0;border-left:4px solid var(--ambar);padding:10px;border-radius:8px;font-size:13px;margin-top:8px}
+.error{background:#fde7e7;border-left:4px solid var(--rojo)}
+.oculto{display:none}
+.chk{display:flex;align-items:center;gap:8px;font-size:14px;margin-top:8px}
+.chk input{width:20px;height:20px}
+td button{border:0;border-radius:8px;padding:6px 10px;font-weight:700;color:#fff;background:var(--verde)}
+td button.des{background:#8b96a5}
+</style>
+</head>
+<body>
+<header>
+  <div><h1>🚌 Control de Pasajeros</h1><small id="hdrViaje">Sin manifiesto cargado</small></div>
+  <div id="hdrHora" style="font-weight:700"></div>
+</header>
+<nav>
+  <button data-tab="escanear" class="act">Escanear</button>
+  <button data-tab="lista">Lista</button>
+  <button data-tab="registro">Registro</button>
+  <button data-tab="cargar">Cargar</button>
+</nav>
+<main>
+  <div class="kpis">
+    <div class="kpi"><b id="kTot">0</b><span>Total</span></div>
+    <div class="kpi k-ok"><b id="kOk">0</b><span>Embarcados</span></div>
+    <div class="kpi k-pen"><b id="kPen">0</b><span>Pendientes</span></div>
+    <div class="kpi k-no"><b id="kNo">0</b><span>No registr.</span></div>
+  </div>
+
+  <!-- ESCANEAR -->
+  <section id="tab-escanear">
+    <div class="card">
+      <div class="row">
+        <button class="btn" id="btnCam">📷 Iniciar cámara</button>
+        <button class="btn sec oculto" id="btnStop">Detener</button>
+      </div>
+      <div id="camAviso" class="aviso oculto"></div>
+      <div id="videoBox" style="margin-top:10px"><video id="video" playsinline muted></video><div class="guia"></div></div>
+      <label for="inpCodigo">DNI / código de fotocheck (manual o lector USB/Bluetooth)</label>
+      <div class="row">
+        <input type="text" id="inpCodigo" inputmode="numeric" autocomplete="off" placeholder="Escriba o escanee y presione Enter">
+        <button class="btn ok" id="btnValidar" style="flex:0 0 110px">Validar</button>
+      </div>
+      <label class="chk"><input type="checkbox" id="chkAuto" checked> Embarcar automáticamente al validar</label>
+      <div id="resultado"></div>
+    </div>
+  </section>
+
+  <!-- LISTA -->
+  <section id="tab-lista" class="oculto">
+    <div class="card">
+      <div class="row">
+        <input type="search" id="buscar" placeholder="Buscar nombre, DNI, asiento, empresa">
+        <select id="filtro" style="flex:0 0 140px">
+          <option value="todos">Todos</option><option value="pen">Pendientes</option><option value="ok">Embarcados</option>
+        </select>
+      </div>
+    </div>
+    <div class="card" style="padding:0;overflow:auto">
+      <table><thead><tr><th>Asiento</th><th>Pasajero</th><th>Estado</th><th></th></tr></thead><tbody id="tbLista"></tbody></table>
+    </div>
+  </section>
+
+  <!-- REGISTRO -->
+  <section id="tab-registro" class="oculto">
+    <div class="card">
+      <div class="row">
+        <button class="btn ok" id="btnExport">⬇ Exportar Excel</button>
+        <button class="btn sec" id="btnLimpiarLog">Reiniciar embarque</button>
+      </div>
+      <p class="mini">El Excel exportado contiene el manifiesto con la columna ABORDO = "P" y la hora de embarque, más una hoja con todos los eventos (incluidos los intentos de personas no registradas).</p>
+    </div>
+    <div class="card" style="padding:0;overflow:auto">
+      <table><thead><tr><th>Hora</th><th>Código leído</th><th>Resultado</th></tr></thead><tbody id="tbLog"></tbody></table>
+    </div>
+  </section>
+
+  <!-- CARGAR -->
+  <section id="tab-cargar" class="oculto">
+    <div class="card">
+      <label>1. Datos del viaje</label>
+      <div class="row">
+        <input type="text" id="inpBus" placeholder="Bus / Placa">
+        <input type="text" id="inpRuta" placeholder="Ruta / Turno">
+      </div>
+      <label>2. Archivo de relación de pasajeros (.xlsx o .csv)</label>
+      <input type="file" id="inpFile" accept=".xlsx,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv">
+      <div id="cargaMsg"></div>
+      <p class="mini">Se detecta automáticamente la fila de encabezados. Columnas reconocidas: <b>DNI</b> (obligatoria), <b>NOMBRES Y APELLIDOS</b>, <b>N° ASIENTO</b>, <b>FOTOCHECK / CÓDIGO</b>, CARGO, EMPRESA, ORIGEN, DESTINO, CELULAR. Compatible con el formato “MANIFIESTO DE PASAJEROS”.</p>
+    </div>
+    <div class="card">
+      <label class="chk"><input type="checkbox" id="chkSonido" checked> Sonido de alarma</label>
+      <label class="chk"><input type="checkbox" id="chkVibrar" checked> Vibración</label>
+      <button class="btn sec" id="btnProbar" style="margin-top:10px">🔊 Probar alarma</button>
+    </div>
+  </section>
+</main>
+
+<script>
+"use strict";
+/* ===================== ESTADO ===================== */
+const KEY = "ctrlPasajeros_v1";
+let S = { viaje:{bus:"",ruta:"",archivo:"",cargado:""}, pax:[], log:[] };
+try { const g = localStorage.getItem(KEY); if (g) S = JSON.parse(g); } catch(e){}
+const guardar = () => localStorage.setItem(KEY, JSON.stringify(S));
+const $ = id => document.getElementById(id);
+const ahora = () => new Date().toLocaleTimeString("es-PE",{hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false});
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+/* ===================== LECTOR XLSX (sin librerías) ===================== */
+async function inflateRaw(u8){
+  const ds = new DecompressionStream("deflate-raw");
+  const buf = await new Response(new Blob([u8]).stream().pipeThrough(ds)).arrayBuffer();
+  return new Uint8Array(buf);
+}
+async function unzip(ab){
+  const dv = new DataView(ab), u8 = new Uint8Array(ab), files = {};
+  let eocd = -1;
+  for (let i = ab.byteLength - 22; i >= Math.max(0, ab.byteLength - 66000); i--) if (dv.getUint32(i,true) === 0x06054b50){ eocd = i; break; }
+  if (eocd < 0) throw new Error("El archivo no es un .xlsx válido");
+  const n = dv.getUint16(eocd+10,true); let p = dv.getUint32(eocd+16,true);
+  const td = new TextDecoder();
+  for (let k = 0; k < n; k++){
+    const method = dv.getUint16(p+10,true), csize = dv.getUint32(p+20,true);
+    const nl = dv.getUint16(p+28,true), el = dv.getUint16(p+30,true), cl = dv.getUint16(p+32,true);
+    const off = dv.getUint32(p+42,true), name = td.decode(u8.subarray(p+46,p+46+nl));
+    files[name] = {method, csize, off};
+    p += 46 + nl + el + cl;
+  }
+  return async name => {
+    const f = files[name]; if (!f) return null;
+    const lnl = dv.getUint16(f.off+26,true), lel = dv.getUint16(f.off+28,true);
+    const data = u8.subarray(f.off+30+lnl+lel, f.off+30+lnl+lel+f.csize);
+    const out = f.method === 0 ? data : await inflateRaw(data);
+    return new TextDecoder("utf-8").decode(out);
+  };
+}
+const xmlDec = s => s.replace(/&lt;/g,"<").replace(/&gt;/g,">").replace(/&quot;/g,'"').replace(/&apos;/g,"'")
+  .replace(/&#(\d+);/g,(m,d)=>String.fromCharCode(+d)).replace(/&#x([0-9a-f]+);/gi,(m,h)=>String.fromCharCode(parseInt(h,16))).replace(/&amp;/g,"&");
+const colIdx = ref => { let c = 0; for (const ch of ref.replace(/\d+/g,"")) c = c*26 + ch.charCodeAt(0) - 64; return c-1; };
+function textoDe(xml){ const out=[]; xml.replace(/<t(?:\s[^>]*)?>([\s\S]*?)<\/t>/g,(m,t)=>out.push(t)); return xmlDec(out.join("")); }
+
+async function leerXlsx(ab){
+  const get = await unzip(ab);
+  const sst = []; const ss = await get("xl/sharedStrings.xml");
+  if (ss) ss.replace(/<si>([\s\S]*?)<\/si>/g,(m,si)=>{ sst.push(textoDe(si)); });
+  const wb = await get("xl/workbook.xml"), rels = await get("xl/_rels/workbook.xml.rels") || "";
+  const relMap = {}; rels.replace(/<Relationship\b[^>]*>/g, tag => {
+    const id = (tag.match(/Id="([^"]+)"/)||[])[1], tg = (tag.match(/Target="([^"]+)"/)||[])[1];
+    if (id && tg) relMap[id] = tg.startsWith("/") ? tg.slice(1) : "xl/" + tg.replace(/^\.\//,"");
+  });
+  const hojas = []; (wb||"").replace(/<sheet\b[^>]*>/g, tag => {
+    const nm = xmlDec((tag.match(/name="([^"]*)"/)||[])[1]||""), rid = (tag.match(/r:id="([^"]+)"/)||[])[1];
+    hojas.push({nombre:nm, path: relMap[rid]});
+  });
+  const res = [];
+  for (const h of hojas){
+    const xml = h.path && await get(h.path); if (!xml) continue;
+    const filas = [];
+    xml.replace(/<row\b([^>]*)>([\s\S]*?)<\/row>/g,(m,ra,row)=>{
+      const fila = [], rn = +((ra.match(/\br="(\d+)"/)||[])[1]||0);
+      row.replace(/<c\b([^>]*?)(?:\/>|>([\s\S]*?)<\/c>)/g,(mm,attrs,inner)=>{
+        const r = (attrs.match(/r="([A-Z]+\d+)"/)||[])[1]; const t = (attrs.match(/t="([^"]+)"/)||[])[1];
+        let v = ""; inner = inner || "";
+        if (t === "s"){ const x = inner.match(/<v>([\s\S]*?)<\/v>/); v = x ? sst[+x[1]] ?? "" : ""; }
+        else if (t === "inlineStr"){ v = textoDe(inner); }
+        else { const x = inner.match(/<v>([\s\S]*?)<\/v>/); v = x ? xmlDec(x[1]) : ""; }
+        fila[r ? colIdx(r) : fila.length] = v;
+      });
+      if (rn > 0) filas[rn-1] = fila; else filas.push(fila);
+    });
+    res.push({nombre:h.nombre, filas});
+  }
+  return res;
+}
+function leerCsv(txt){
+  const sep = (txt.split("\n")[0].match(/;/g)||[]).length > (txt.split("\n")[0].match(/,/g)||[]).length ? ";" : ",";
+  const filas = []; let f = [], c = "", q = false;
+  for (let i = 0; i < txt.length; i++){
+    const ch = txt[i];
+    if (q){ if (ch === '"' && txt[i+1] === '"'){ c += '"'; i++; } else if (ch === '"') q = false; else c += ch; }
+    else if (ch === '"') q = true; else if (ch === sep){ f.push(c); c = ""; }
+    else if (ch === "\n"){ f.push(c.replace(/\r$/,"")); filas.push(f); f = []; c = ""; } else c += ch;
+  }
+  if (c || f.length){ f.push(c); filas.push(f); }
+  return [{nombre:"CSV", filas}];
+}
+
+/* ===================== INTERPRETAR MANIFIESTO ===================== */
+const norm = s => String(s ?? "").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toUpperCase().replace(/[^A-Z0-9]/g,"");
+const CAMPOS = {
+  dni:["DNI","NDNI","DOCUMENTO","NDOCUMENTO","NRODOCUMENTO","NUMERODOCUMENTO","DOC"],
+  nombre:["NOMBRESYAPELLIDOS","APELLIDOSYNOMBRES","NOMBRE","NOMBRES","NOMBRECOMPLETO","PASAJERO","TRABAJADOR"],
+  asiento:["NASIENTO","ASIENTO","NROASIENTO","NUMEROASIENTO","SEAT"],
+  fotocheck:["FOTOCHECK","CODIGO","CODIGOFOTOCHECK","CODTRABAJADOR","CODIGOTRABAJADOR","CARNET","FICHA","NFOTOCHECK"],
+  cargo:["CARGO","PUESTO","POSICION"], empresa:["EMPRESA","CONTRATISTA","RAZONSOCIAL"],
+  origen:["ORIGEN"], destino:["DESTINO"], celular:["CELULAR","TELEFONO"], abordo:["ABORDO","A BORDO"]
+};
+function mapearEncabezado(fila){
+  const m = {};
+  (fila||[]).forEach((v,i)=>{ const n = norm(v); for (const [k,al] of Object.entries(CAMPOS)) if (m[k]===undefined && al.map(norm).includes(n)) m[k]=i; });
+  return m;
+}
+const normDni = v => { let s = String(v ?? "").trim(); if (/^\d+(\.0+)?$/.test(s)) s = s.replace(/\.0+$/,""); return /^\d{1,8}$/.test(s) ? s.padStart(8,"0") : s.toUpperCase().replace(/\s/g,""); };
+const normAsiento = v => { let s = String(v ?? "").trim(); return s.replace(/\.0+$/,""); };
+
+function interpretar(hojas){
+  let mejor = null;
+  for (const h of hojas){
+    for (let r = 0; r < Math.min(40, h.filas.length); r++){
+      const m = mapearEncabezado(h.filas[r]);
+      if (m.dni === undefined) continue;
+      const pax = [];
+      for (let i = r+1; i < h.filas.length; i++){
+        const f = h.filas[i] || [], dni = normDni(f[m.dni]);
+        if (!dni) continue;
+        const g = k => m[k] !== undefined ? String(f[m[k]] ?? "").trim() : "";
+        pax.push({ id: pax.length+1, dni, nombre:g("nombre"), asiento: normAsiento(g("asiento")),
+          fotocheck: g("fotocheck").toUpperCase().replace(/\s/g,""), cargo:g("cargo"), empresa:g("empresa"),
+          origen:g("origen"), destino:g("destino"), celular:g("celular"), embarcado:false, hora:"" });
+      }
+      if (!mejor || pax.length > mejor.pax.length) mejor = {hoja:h.nombre, fila:r+1, mapa:m, pax};
+      break;
+    }
+  }
+  return mejor;
+}
+
+$("inpFile").addEventListener("change", async e => {
+  const f = e.target.files[0]; if (!f) return;
+  const msg = $("cargaMsg"); msg.innerHTML = "<p class='mini'>Leyendo archivo…</p>";
+  try {
+    const hojas = f.name.toLowerCase().endsWith(".csv") ? leerCsv(await f.text()) : await leerXlsx(await f.arrayBuffer());
+    const r = interpretar(hojas);
+    if (!r || !r.pax.length) throw new Error("No se encontró una columna DNI con pasajeros. Verifique el encabezado.");
+    if (S.pax.some(p=>p.embarcado) && !confirm("Hay embarques registrados. ¿Reemplazar con el nuevo manifiesto?")) return;
+    S.pax = r.pax; S.log = [];
+    S.viaje = { bus:$("inpBus").value.trim(), ruta:$("inpRuta").value.trim(), archivo:f.name, cargado:new Date().toLocaleString("es-PE") };
+    guardar();
+    // Validaciones de calidad del manifiesto
+    const avisos = [], cnt = (arr,key) => arr.reduce((o,p)=>{ if(p[key]) o[p[key]]=(o[p[key]]||0)+1; return o; },{});
+    const dupD = Object.entries(cnt(S.pax,"dni")).filter(([k,v])=>v>1).map(([k])=>k);
+    const dupA = Object.entries(cnt(S.pax,"asiento")).filter(([k,v])=>v>1).map(([k])=>k);
+    const sinA = S.pax.filter(p=>!p.asiento).length;
+    const raros = S.pax.filter(p=>!/^\d{8}$/.test(p.dni)).length;
+    if (r.mapa.asiento === undefined) avisos.push("No existe columna de ASIENTO: se embarcará sin validar asiento.");
+    if (sinA && r.mapa.asiento !== undefined) avisos.push(`${sinA} pasajero(s) sin asiento asignado.`);
+    if (dupA.length) avisos.push(`Asiento(s) duplicado(s): ${dupA.join(", ")}.`);
+    if (dupD.length) avisos.push(`DNI duplicado(s): ${dupD.join(", ")}.`);
+    if (raros) avisos.push(`${raros} documento(s) no tienen 8 dígitos (CE/pasaporte u error de digitación).`);
+    msg.innerHTML = `<div class="aviso" style="border-color:var(--verde);background:#e8f5ec">✅ <b>${S.pax.length}</b> pasajeros cargados desde hoja <b>${esc(r.hoja)}</b> (encabezado en fila ${r.fila}).</div>` +
+      avisos.map(a=>`<div class="aviso">⚠️ ${esc(a)}</div>`).join("");
+    refrescar();
+  } catch(err){ msg.innerHTML = `<div class="aviso error">❌ ${esc(err.message)}</div>`; }
+  e.target.value = "";
+});
+
+/* ===================== VALIDACIÓN ===================== */
+function buscarPasajero(raw){
+  const limpio = String(raw).trim().toUpperCase().replace(/\s/g,"");
+  if (!limpio) return null;
+  // 1) coincidencia exacta con fotocheck o DNI
+  let p = S.pax.find(x => (x.fotocheck && x.fotocheck === limpio) || x.dni === limpio || x.dni === normDni(limpio));
+  if (p) return p;
+  // 2) extraer números de 8 dígitos dentro del código leído (DNI electrónico / fotocheck con datos)
+  const runs = limpio.match(/\d+/g) || [];
+  for (const r of runs) if (r.length === 8){ p = S.pax.find(x=>x.dni===r); if (p) return p; }
+  for (const r of runs) if (r.length > 8) for (let i=0;i+8<=r.length;i++){ p = S.pax.find(x=>x.dni===r.substr(i,8)); if (p) return p; }
+  // 3) el código de fotocheck contenido dentro del texto leído
+  p = S.pax.find(x => x.fotocheck && x.fotocheck.length >= 4 && limpio.includes(x.fotocheck));
+  return p || null;
+}
+let ultimo = {code:"", t:0};
+function procesar(raw, origen){
+  raw = String(raw||"").trim(); if (!raw) return;
+  const t = Date.now(); if (raw === ultimo.code && t - ultimo.t < 3000) return; ultimo = {code:raw, t};
+  if (!S.pax.length){ mostrar("no", null, raw, "Primero cargue el manifiesto (pestaña Cargar)"); return; }
+  const p = buscarPasajero(raw);
+  if (!p){
+    S.log.unshift({hora:ahora(), codigo:raw, res:"NO REGISTRADO", origen}); guardar();
+    mostrar("no", null, raw); alarma(); refrescar(); return;
+  }
+  if (p.embarcado){
+    S.log.unshift({hora:ahora(), codigo:raw, res:`YA EMBARCADO – ${p.nombre} (asiento ${p.asiento||"-"})`, origen}); guardar();
+    mostrar("dup", p, raw); beep("dup"); refrescar(); return;
+  }
+  if ($("chkAuto").checked) embarcar(p, raw, origen); else mostrar("val", p, raw);
+}
+function embarcar(p, raw, origen){
+  p.embarcado = true; p.hora = ahora();
+  S.log.unshift({hora:p.hora, codigo:raw||p.dni, res:`EMBARCADO – ${p.nombre} (asiento ${p.asiento||"-"})`, origen:origen||"manual"});
+  guardar(); mostrar("ok", p, raw); beep("ok"); refrescar();
+}
+function mostrar(tipo, p, raw, extra){
+  const r = $("resultado"); r.style.display = "block";
+  r.className = tipo==="ok"||tipo==="val" ? "r-ok" : tipo==="dup" ? "r-dup" : "r-no";
+  if (tipo === "no"){
+    r.innerHTML = `<div class="estado">⛔ NO REGISTRADO</div><div class="asiento">✖</div>
+      <div class="nombre">No figura en la relación de pasajeros</div><div class="det">Código leído: ${esc(raw)}</div>
+      ${extra?`<div class="det">${esc(extra)}</div>`:""}<div class="det" style="margin-top:8px">NO PERMITIR EL EMBARQUE – comunicar al supervisor</div>
+      <button class="btn sec" style="margin-top:12px" onclick="cerrarRes()">Aceptar</button>`;
+    return;
+  }
+  const est = tipo==="ok" ? "✅ EMBARCADO" : tipo==="dup" ? `⚠️ YA EMBARCADO (${esc(p.hora)})` : "✔ REGISTRADO – confirmar";
+  r.innerHTML = `<div class="estado">${est}</div><div class="mini" style="color:#fff">ASIENTO</div>
+    <div class="asiento">${esc(p.asiento||"S/A")}</div><div class="nombre">${esc(p.nombre||"(sin nombre)")}</div>
+    <div class="det">DNI ${esc(p.dni)}${p.fotocheck?" · Fotocheck "+esc(p.fotocheck):""}</div>
+    <div class="det">${esc([p.empresa,p.cargo].filter(Boolean).join(" · "))}</div>
+    ${tipo==="val"?`<button class="btn" style="margin-top:12px;background:#fff;color:var(--verde)" onclick="confirmar(${p.id})">CONFIRMAR EMBARQUE</button>`:""}`;
+  if (tipo !== "val") setTimeout(()=>{ if (r.className!=="r-no") r.style.display="none"; }, 6000);
+}
+window.cerrarRes = () => { $("resultado").style.display = "none"; detenerAlarma(); };
+window.confirmar = id => { const p = S.pax.find(x=>x.id===id); if (p && !p.embarcado) embarcar(p, p.dni, "confirmado"); };
+
+/* ===================== SONIDO / ALARMA ===================== */
+let actx = null, sirena = null;
+const ctx = () => actx || (actx = new (window.AudioContext||window.webkitAudioContext)());
+function tono(f, dur, tipo="sine", vol=.3, delay=0){
+  if (!$("chkSonido").checked) return; const c = ctx(), o = c.createOscillator(), g = c.createGain();
+  o.type = tipo; o.frequency.value = f; g.gain.value = vol; o.connect(g).connect(c.destination);
+  o.start(c.currentTime+delay); o.stop(c.currentTime+delay+dur);
+}
+function beep(t){ if (t==="ok"){ tono(1200,.12); } else { tono(700,.15,"square",.25); tono(700,.15,"square",.25,.25); }
+  if ($("chkVibrar").checked && navigator.vibrate) navigator.vibrate(t==="ok"?80:[150,100,150]); }
+function alarma(){
+  detenerAlarma();
+  if ($("chkVibrar").checked && navigator.vibrate) navigator.vibrate([400,150,400,150,400,150,400]);
+  if (!$("chkSonido").checked) return;
+  const c = ctx(), o = c.createOscillator(), g = c.createGain(), lfo = c.createOscillator(), lg = c.createGain();
+  o.type = "sawtooth"; o.frequency.value = 900; lfo.frequency.value = 3; lg.gain.value = 350;
+  lfo.connect(lg).connect(o.frequency); g.gain.value = .35; o.connect(g).connect(c.destination);
+  o.start(); lfo.start(); sirena = {o, lfo};
+  setTimeout(detenerAlarma, 3500);
+}
+function detenerAlarma(){ if (sirena){ try{ sirena.o.stop(); sirena.lfo.stop(); }catch(e){} sirena = null; } }
+$("btnProbar").onclick = () => alarma();
+
+/* ===================== CÁMARA / ESCÁNER ===================== */
+let stream = null, detector = null, timer = null;
+async function iniciarCam(){
+  ctx(); // habilita audio tras gesto del usuario
+  const av = $("camAviso"); av.classList.add("oculto");
+  if (!("BarcodeDetector" in window)){
+    av.innerHTML = "Este navegador no tiene lector de códigos integrado. Use <b>Google Chrome en Android</b>, o un lector USB/Bluetooth, o digite el DNI.";
+    av.classList.remove("oculto"); return;
+  }
+  try {
+    const sop = await BarcodeDetector.getSupportedFormats();
+    const quiero = ["pdf417","code_39","code_128","qr_code","data_matrix","ean_13","itf","codabar","code_93","aztec"].filter(f=>sop.includes(f));
+    detector = new BarcodeDetector({formats: quiero});
+    stream = await navigator.mediaDevices.getUserMedia({video:{facingMode:"environment", width:{ideal:1920}, height:{ideal:1080}}, audio:false});
+    const v = $("video"); v.srcObject = stream; await v.play();
+    $("videoBox").style.display = "block"; $("btnCam").classList.add("oculto"); $("btnStop").classList.remove("oculto");
+    let ocupado = false;
+    timer = setInterval(async ()=>{
+      if (ocupado || v.readyState < 2) return; ocupado = true;
+      try { const cods = await detector.detect(v); if (cods.length) procesar(cods[0].rawValue, "cámara"); } catch(e){}
+      ocupado = false;
+    }, 250);
+  } catch(err){
+    av.innerHTML = "No se pudo abrir la cámara: " + esc(err.message) + ". Verifique el permiso de cámara y que la app se abra por HTTPS.";
+    av.classList.remove("oculto");
+  }
+}
+function detenerCam(){
+  clearInterval(timer); timer = null; if (stream) stream.getTracks().forEach(t=>t.stop()); stream = null;
+  $("videoBox").style.display = "none"; $("btnCam").classList.remove("oculto"); $("btnStop").classList.add("oculto");
+}
+$("btnCam").onclick = iniciarCam; $("btnStop").onclick = detenerCam;
+$("btnValidar").onclick = () => { ultimo.code=""; procesar($("inpCodigo").value, "manual"); $("inpCodigo").value=""; $("inpCodigo").focus(); };
+$("inpCodigo").addEventListener("keydown", e => { if (e.key === "Enter"){ e.preventDefault(); $("btnValidar").click(); } });
+
+/* ===================== LISTA / REGISTRO ===================== */
+function refrescar(){
+  const tot = S.pax.length, ok = S.pax.filter(p=>p.embarcado).length, no = S.log.filter(l=>l.res==="NO REGISTRADO").length;
+  $("kTot").textContent = tot; $("kOk").textContent = ok; $("kPen").textContent = tot-ok; $("kNo").textContent = no;
+  $("hdrViaje").textContent = tot ? `${S.viaje.bus||"Bus"} · ${S.viaje.ruta||S.viaje.archivo}` : "Sin manifiesto cargado";
+  const q = norm($("buscar").value), fl = $("filtro").value;
+  const ordenA = a => { const n = parseFloat(a); return isNaN(n) ? 9999 : n; };
+  $("tbLista").innerHTML = S.pax
+    .filter(p => fl==="todos" || (fl==="ok") === p.embarcado)
+    .filter(p => !q || norm([p.nombre,p.dni,p.asiento,p.empresa,p.fotocheck].join(" ")).includes(q))
+    .sort((a,b)=>ordenA(a.asiento)-ordenA(b.asiento))
+    .map(p => `<tr><td style="font-size:20px;font-weight:800">${esc(p.asiento||"–")}</td>
+      <td><b>${esc(p.nombre)}</b><div class="mini">DNI ${esc(p.dni)} · ${esc(p.empresa)}</div></td>
+      <td>${p.embarcado?`<span class="tag t-ok">A BORDO ${esc(p.hora.slice(0,5))}</span>`:`<span class="tag t-pen">PENDIENTE</span>`}</td>
+      <td>${p.embarcado?`<button class="des" onclick="desembarcar(${p.id})">Anular</button>`:`<button onclick="confirmar(${p.id})">Embarcar</button>`}</td></tr>`).join("")
+    || `<tr><td colspan="4" class="mini" style="text-align:center;padding:20px">Sin registros</td></tr>`;
+  $("tbLog").innerHTML = S.log.map(l => `<tr><td>${esc(l.hora)}</td><td>${esc(l.codigo).slice(0,40)}</td>
+      <td><span class="tag ${l.res==="NO REGISTRADO"?"t-no":l.res.startsWith("YA")?"t-dup":l.res.startsWith("ANULADO")?"t-pen":"t-ok"}">${esc(l.res.split(" –")[0])}</span>
+      <div class="mini">${esc(l.res.split(" – ")[1]||"")}</div></td></tr>`).join("")
+    || `<tr><td colspan="3" class="mini" style="text-align:center;padding:20px">Sin eventos</td></tr>`;
+}
+window.desembarcar = id => { const p = S.pax.find(x=>x.id===id); if (!p || !confirm(`¿Anular embarque de ${p.nombre}?`)) return;
+  p.embarcado=false; S.log.unshift({hora:ahora(), codigo:p.dni, res:`ANULADO – ${p.nombre}`, origen:"manual"}); p.hora=""; guardar(); refrescar(); };
+$("buscar").oninput = refrescar; $("filtro").onchange = refrescar;
+$("btnLimpiarLog").onclick = () => { if (!confirm("¿Reiniciar todos los embarques y el registro de eventos?")) return;
+  S.pax.forEach(p=>{p.embarcado=false;p.hora="";}); S.log=[]; guardar(); refrescar(); };
+
+/* ===================== EXPORTAR XLSX (sin librerías) ===================== */
+const CRC = (()=>{ const t = new Uint32Array(256); for (let n=0;n<256;n++){ let c=n; for(let k=0;k<8;k++) c = c&1 ? 0xEDB88320^(c>>>1) : c>>>1; t[n]=c>>>0; } return t; })();
+const crc32 = u8 => { let c = 0xFFFFFFFF; for (const b of u8) c = CRC[(c^b)&255]^(c>>>8); return (c^0xFFFFFFFF)>>>0; };
+function zipStore(files){
+  const enc = new TextEncoder(), parts = [], cen = []; let off = 0;
+  for (const [name, txt] of files){
+    const nm = enc.encode(name), data = enc.encode(txt), crc = crc32(data);
+    const lh = new DataView(new ArrayBuffer(30));
+    lh.setUint32(0,0x04034b50,true); lh.setUint16(4,20,true); lh.setUint16(6,0x0800,true); lh.setUint32(14,crc,true);
+    lh.setUint32(18,data.length,true); lh.setUint32(22,data.length,true); lh.setUint16(26,nm.length,true);
+    parts.push(new Uint8Array(lh.buffer), nm, data);
+    const ch = new DataView(new ArrayBuffer(46));
+    ch.setUint32(0,0x02014b50,true); ch.setUint16(4,20,true); ch.setUint16(6,20,true); ch.setUint16(8,0x0800,true); ch.setUint32(16,crc,true);
+    ch.setUint32(20,data.length,true); ch.setUint32(24,data.length,true); ch.setUint16(28,nm.length,true); ch.setUint32(42,off,true);
+    cen.push(new Uint8Array(ch.buffer), nm); off += 30 + nm.length + data.length;
+  }
+  const csize = cen.reduce((s,a)=>s+a.length,0), e = new DataView(new ArrayBuffer(22));
+  e.setUint32(0,0x06054b50,true); e.setUint16(8,files.length,true); e.setUint16(10,files.length,true); e.setUint32(12,csize,true); e.setUint32(16,off,true);
+  return new Blob([...parts, ...cen, new Uint8Array(e.buffer)], {type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
+}
+const xe = s => String(s ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+const letra = i => { let s=""; i++; while(i){ const m=(i-1)%26; s=String.fromCharCode(65+m)+s; i=Math.floor((i-1)/26);} return s; };
+function hojaXml(filas){
+  return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetData>` +
+    filas.map((f,r)=>`<row r="${r+1}">`+f.map((v,c)=>`<c r="${letra(c)}${r+1}" t="inlineStr"${r===0?' s="1"':''}><is><t xml:space="preserve">${xe(v)}</t></is></c>`).join("")+`</row>`).join("") +
+    `</sheetData></worksheet>`;
+}
+function exportar(){
+  if (!S.pax.length){ alert("No hay manifiesto cargado."); return; }
+  const h1 = [["N°","NOMBRES Y APELLIDOS","DNI","FOTOCHECK","N° ASIENTO","CARGO","EMPRESA","ORIGEN","DESTINO","ABORDO","HORA EMBARQUE"],
+    ...S.pax.map((p,i)=>[i+1,p.nombre,p.dni,p.fotocheck,p.asiento,p.cargo,p.empresa,p.origen,p.destino,p.embarcado?"P":"",p.hora])];
+  const h2 = [["HORA","CÓDIGO LEÍDO","RESULTADO","ORIGEN"], ...S.log.slice().reverse().map(l=>[l.hora,l.codigo,l.res,l.origen])];
+  const ok = S.pax.filter(p=>p.embarcado).length;
+  const h3 = [["DATO","VALOR"],["Bus / Placa",S.viaje.bus],["Ruta / Turno",S.viaje.ruta],["Archivo origen",S.viaje.archivo],["Cargado",S.viaje.cargado],
+    ["Exportado",new Date().toLocaleString("es-PE")],["Total manifiesto",S.pax.length],["Embarcados",ok],["No se presentaron",S.pax.length-ok],
+    ["Intentos no registrados",S.log.filter(l=>l.res==="NO REGISTRADO").length]];
+  const ns = 'xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"';
+  const files = [
+    ["[Content_Types].xml",`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>${[1,2,3].map(i=>`<Override PartName="/xl/worksheets/sheet${i}.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>`).join("")}</Types>`],
+    ["_rels/.rels",`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>`],
+    ["xl/workbook.xml",`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook ${ns}><sheets><sheet name="Manifiesto" sheetId="1" r:id="rId1"/><sheet name="Eventos" sheetId="2" r:id="rId2"/><sheet name="Resumen" sheetId="3" r:id="rId3"/></sheets></workbook>`],
+    ["xl/_rels/workbook.xml.rels",`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">${[1,2,3].map(i=>`<Relationship Id="rId${i}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet${i}.xml"/>`).join("")}<Relationship Id="rId9" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>`],
+    ["xl/styles.xml",`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><fonts count="2"><font><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><name val="Calibri"/></font></fonts><fills count="2"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill></fills><borders count="1"><border/></borders><cellStyleXfs count="1"><xf/></cellStyleXfs><cellXfs count="2"><xf/><xf fontId="1" applyFont="1"/></cellXfs></styleSheet>`],
+    ["xl/worksheets/sheet1.xml", hojaXml(h1)], ["xl/worksheets/sheet2.xml", hojaXml(h2)], ["xl/worksheets/sheet3.xml", hojaXml(h3)]
+  ];
+  const a = document.createElement("a"); a.href = URL.createObjectURL(zipStore(files));
+  const d = new Date(), f = `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,"0")}${String(d.getDate()).padStart(2,"0")}_${String(d.getHours()).padStart(2,"0")}${String(d.getMinutes()).padStart(2,"0")}`;
+  a.download = `Embarque_${(S.viaje.bus||"bus").replace(/[^\w-]/g,"")}_${f}.xlsx`; a.click();
+}
+$("btnExport").onclick = exportar;
+
+/* ===================== NAVEGACIÓN ===================== */
+document.querySelectorAll("nav button").forEach(b => b.onclick = () => {
+  document.querySelectorAll("nav button").forEach(x=>x.classList.toggle("act", x===b));
+  ["escanear","lista","registro","cargar"].forEach(t => $("tab-"+t).classList.toggle("oculto", t!==b.dataset.tab));
+  if (b.dataset.tab !== "escanear") detenerCam();
+});
+setInterval(()=>{$("hdrHora").textContent = new Date().toLocaleTimeString("es-PE",{hour:"2-digit",minute:"2-digit",hour12:false});},1000);
+$("inpBus").value = S.viaje.bus||""; $("inpRuta").value = S.viaje.ruta||"";
+if (!S.pax.length) document.querySelector('nav button[data-tab="cargar"]').click();
+refrescar();
+if ("serviceWorker" in navigator && location.protocol==="https:") navigator.serviceWorker.register("sw.js");
+// exportar funciones para pruebas
+window.__test = {leerXlsx, interpretar, buscarPasajero, zipStore};
+</script>
+</body>
+</html>
