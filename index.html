@@ -15,179 +15,375 @@
 body{margin:0;font-family:Segoe UI,Roboto,Arial,sans-serif;background:var(--gris);color:var(--txt)}
 header{background:var(--azul);color:#fff;padding:10px 14px;display:flex;align-items:center;justify-content:space-between}
 header h1{font-size:17px;margin:0}
-header small{opacity:.8;font-size:12px;display:block}
+header small{opacity:.85;font-size:12px;display:block}
+.ver{font-size:11px;background:#e69500;padding:1px 6px;border-radius:8px;vertical-align:middle}
 nav{display:flex;background:#fff;border-bottom:1px solid #d5dae1;position:sticky;top:0;z-index:5}
-nav button{flex:1;border:0;background:none;padding:12px 4px;font-size:14px;font-weight:600;color:#56606e;border-bottom:3px solid transparent}
+nav button{flex:1;border:0;background:none;padding:12px 2px;font-size:13px;font-weight:600;color:#56606e;border-bottom:3px solid transparent}
 nav button.act{color:var(--azul);border-bottom-color:var(--azul)}
-main{padding:12px;max-width:820px;margin:0 auto}
+main{padding:12px;max-width:860px;margin:0 auto}
 .card{background:#fff;border-radius:12px;padding:14px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.card h3{margin:0 0 8px;font-size:16px}
 .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
-.kpi{background:#fff;border-radius:10px;padding:8px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.08)}
-.kpi b{display:block;font-size:24px}
-.kpi span{font-size:11px;color:#56606e;text-transform:uppercase}
-.k-ok b{color:var(--verde)}.k-pen b{color:var(--azul)}.k-no b{color:var(--rojo)}
-.btn{border:0;border-radius:10px;padding:13px 16px;font-size:16px;font-weight:700;color:#fff;background:var(--azul);width:100%}
-.btn.sec{background:#5b6675}.btn.ok{background:var(--verde)}.btn.red{background:var(--rojo)}
+.kpi{background:#fff;border-radius:10px;padding:8px 4px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.kpi b{display:block;font-size:22px}
+.kpi span{font-size:10px;color:#56606e;text-transform:uppercase}
+.c-ok{color:var(--verde)}.c-no{color:var(--rojo)}.c-az{color:var(--azul)}.c-am{color:var(--ambar)}
+.btn{border:0;border-radius:10px;padding:13px 14px;font-size:16px;font-weight:700;color:#fff;background:var(--azul);width:100%}
+.btn.sec{background:#5b6675}.btn.ok{background:var(--verde)}.btn.red{background:var(--rojo)}.btn.amb{background:var(--ambar)}
+.btn:disabled{opacity:.45}
 .row{display:flex;gap:8px}.row>*{flex:1}
-input[type=text],input[type=search],select{width:100%;padding:12px;font-size:17px;border:1px solid #c3cad4;border-radius:10px}
+input[type=text],input[type=search],input[type=number],input[type=date],select{width:100%;padding:11px;font-size:16px;border:1px solid #c3cad4;border-radius:10px;background:#fff}
 label{font-size:13px;color:#56606e;display:block;margin:8px 0 4px}
+.combo{display:flex;gap:6px}.combo input{flex:1}
+.combo select{flex:0 0 52px;width:52px;padding:0;border:0;border-radius:10px;color:transparent;-webkit-appearance:none;appearance:none;background:var(--azul) url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2720%27 height=%2720%27%3E%3Cpath d=%27M4 7l6 6 6-6%27 stroke=%27white%27 stroke-width=%273%27 fill=%27none%27/%3E%3C/svg%3E") center/22px no-repeat}
+.combo select option{color:#1d2430}
 #videoBox{position:relative;background:#000;border-radius:12px;overflow:hidden;aspect-ratio:4/3;display:none}
 #video{width:100%;height:100%;object-fit:cover}
-#videoBox .guia{position:absolute;inset:18% 8%;border:3px dashed rgba(255,255,255,.8);border-radius:10px}
-#resultado{border-radius:14px;padding:18px;text-align:center;color:#fff;display:none;margin-top:12px}
-#resultado .estado{font-size:24px;font-weight:800;letter-spacing:.5px}
-#resultado .asiento{font-size:72px;font-weight:900;line-height:1;margin:8px 0}
+#videoBox .guia{position:absolute;inset:25% 5%;border:3px dashed rgba(255,255,255,.85);border-radius:10px}
+#videoBox .tip{position:absolute;left:0;right:0;bottom:6px;text-align:center;color:#fff;font-size:12px;text-shadow:0 0 4px #000}
+#resultado{border-radius:14px;padding:16px;text-align:center;color:#fff;display:none;margin-top:12px}
+#resultado .estado{font-size:23px;font-weight:800}
+#resultado .grande{font-size:44px;font-weight:900;line-height:1.1;margin:6px 0}
 #resultado .nombre{font-size:20px;font-weight:700}
 #resultado .det{font-size:14px;opacity:.95;margin-top:4px}
-.r-ok{background:var(--verde)}.r-dup{background:var(--ambar)}.r-no{background:var(--rojo);animation:blink .5s steps(1) infinite}
+.r-ok{background:var(--verde)}.r-dup{background:var(--ambar)}.r-no{background:var(--rojo);animation:blink .5s steps(1) infinite}.r-info{background:#5b6675}
 @keyframes blink{50%{background:#7a0000}}
 table{width:100%;border-collapse:collapse;font-size:14px}
-th,td{padding:8px 6px;border-bottom:1px solid #e3e7ec;text-align:left}
-th{background:#eef1f5;font-size:12px;text-transform:uppercase;color:#56606e;position:sticky;top:46px}
+th,td{padding:8px 6px;border-bottom:1px solid #e3e7ec;text-align:left;vertical-align:middle}
+th{background:#eef1f5;font-size:11px;text-transform:uppercase;color:#56606e}
 .tag{display:inline-block;padding:3px 8px;border-radius:20px;font-size:12px;font-weight:700;color:#fff}
-.t-ok{background:var(--verde)}.t-pen{background:#8b96a5}.t-no{background:var(--rojo)}.t-dup{background:var(--ambar)}
+.t-ok{background:var(--verde)}.t-no{background:var(--rojo)}.t-am{background:var(--ambar)}.t-gr{background:#8b96a5}.t-az{background:var(--azul)}
 .mini{font-size:12px;color:#56606e}
 .aviso{background:#fff4e0;border-left:4px solid var(--ambar);padding:10px;border-radius:8px;font-size:13px;margin-top:8px}
-.error{background:#fde7e7;border-left:4px solid var(--rojo)}
-.oculto{display:none}
+.aviso.okk{background:#e8f5ec;border-color:var(--verde)}
+.aviso.error{background:#fde7e7;border-color:var(--rojo)}
+.oculto{display:none!important}
 .chk{display:flex;align-items:center;gap:8px;font-size:14px;margin-top:8px}
 .chk input{width:20px;height:20px}
-td button{border:0;border-radius:8px;padding:6px 10px;font-weight:700;color:#fff;background:var(--verde)}
-td button.des{background:#8b96a5}
+.sw{border:0;border-radius:20px;padding:8px 0;width:64px;font-weight:800;color:#fff;font-size:14px}
+.sw.si{background:var(--verde)}.sw.no{background:var(--rojo)}
+.xbtn{border:0;border-radius:8px;padding:7px 10px;font-weight:700;color:#fff;background:#8b96a5}
+.xbtn.red{background:var(--rojo)}.xbtn.ok{background:var(--verde)}
+.item{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px;border:1px solid #e3e7ec;border-radius:10px;margin-bottom:6px}
+.item b{font-size:15px}
+.viaje{background:var(--azul);color:#fff;border-radius:12px;padding:12px;margin-bottom:12px}
+.viaje .t1{font-size:18px;font-weight:800}
+.viaje .t2{font-size:13px;opacity:.9;margin-top:2px}
+.barra{height:14px;background:#e3e7ec;border-radius:7px;overflow:hidden;margin-top:4px}
+.barra i{display:block;height:100%}
+.ocupGrande{font-size:30px;font-weight:900}
+#toast{position:fixed;left:12px;right:12px;bottom:16px;z-index:50;padding:14px;border-radius:12px;color:#fff;font-weight:700;font-size:15px;text-align:center;box-shadow:0 4px 14px rgba(0,0,0,.25);display:none}
+#toast.ok{background:var(--verde)}#toast.err{background:var(--rojo)}#toast.inf{background:#5b6675}
+textarea{width:100%;padding:10px;font-size:13px;border:1px solid #c3cad4;border-radius:10px;font-family:monospace}
+#ultimoLeido{font-family:monospace;font-size:12px;word-break:break-all;color:#56606e;margin-top:6px}
+.seg{display:flex;border:1px solid #c3cad4;border-radius:10px;overflow:hidden}
+.seg button{flex:1;border:0;background:#fff;padding:10px;font-weight:700;color:#56606e}
+.seg button.act{background:var(--azul);color:#fff}
 </style>
 </head>
 <body>
 <header>
-  <div><h1>🚌 Control de Pasajeros</h1><small id="hdrViaje">Sin manifiesto cargado</small></div>
-  <div id="hdrHora" style="font-weight:700"></div>
+  <div><h1>🚌 Control de Pasajeros <span class="ver">v6</span></h1><small id="hdrViaje">Sin viaje en curso</small></div>
+  <div style="text-align:right"><div id="hdrHora" style="font-weight:700"></div><div id="hdrSync" style="font-size:11px;opacity:.9"></div></div>
 </header>
 <nav>
-  <button data-tab="escanear" class="act">Escanear</button>
-  <button data-tab="lista">Lista</button>
-  <button data-tab="registro">Registro</button>
-  <button data-tab="cargar">Cargar</button>
+  <button data-tab="embarque" class="act">Embarque</button>
+  <button data-tab="personal">Personal</button>
+  <button data-tab="rutas">Rutas</button>
+  <button data-tab="dashboard">Dashboard</button>
+  <button data-tab="datos">Datos</button>
 </nav>
 <main>
-  <div class="kpis">
-    <div class="kpi"><b id="kTot">0</b><span>Total</span></div>
-    <div class="kpi k-ok"><b id="kOk">0</b><span>Embarcados</span></div>
-    <div class="kpi k-pen"><b id="kPen">0</b><span>Pendientes</span></div>
-    <div class="kpi k-no"><b id="kNo">0</b><span>No registr.</span></div>
+
+<!-- ===================== EMBARQUE ===================== -->
+<section id="tab-embarque">
+  <div id="sinPadron" class="aviso error oculto">⚠️ <b>No hay personal registrado.</b> Vaya a la pestaña <b>Personal</b> y cargue el Excel.</div>
+
+  <!-- Sin viaje activo: formulario -->
+  <div id="boxNuevo">
+    <div class="card">
+      <h3>🟢 Iniciar viaje</h3>
+      <label for="vFecha">Fecha</label>
+      <input type="date" id="vFecha">
+      <label for="vRuta">Ruta</label>
+      <div class="combo"><input type="text" id="vRuta" list="dlRuta" placeholder="Escriba o elija ▾" autocomplete="off"><select id="sRuta" aria-label="Elegir ruta"></select></div>
+      <label for="vPlaca">Placa del bus</label>
+      <div class="combo"><input type="text" id="vPlaca" list="dlPlaca" placeholder="Escriba o elija ▾" autocomplete="off" style="text-transform:uppercase"><select id="sPlaca" aria-label="Elegir placa"></select></div>
+      <label for="vCap">Capacidad del bus (asientos)</label>
+      <input type="number" id="vCap" min="1" max="120" inputmode="numeric" placeholder="Se llena sola al elegir la placa">
+      <label for="vCond">Conductor</label>
+      <div class="combo"><input type="text" id="vCond" list="dlCond" placeholder="Escriba o elija ▾" autocomplete="off"><select id="sCond" aria-label="Elegir conductor"></select></div>
+      <button class="btn ok" id="btnIniciar" style="margin-top:14px">▶ INICIAR EMBARQUE</button>
+      <p class="mini">Si escribe una ruta, placa o conductor nuevo, se guarda solo en la pestaña Rutas.</p>
+    </div>
+    <div class="card" id="boxAbiertos">
+      <h3>⏸ Viajes sin finalizar</h3>
+      <div id="lstAbiertos"></div>
+    </div>
   </div>
 
-  <!-- ESCANEAR -->
-  <section id="tab-escanear">
+  <!-- Con viaje activo -->
+  <div id="boxActivo" class="oculto">
+    <div class="viaje">
+      <div class="t1" id="vaTitulo"></div>
+      <div class="t2" id="vaDetalle"></div>
+      <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-top:8px">
+        <div><div class="ocupGrande" id="vaCont">0 / 0</div><div class="t2">pasajeros a bordo</div></div>
+        <div style="text-align:right"><div class="ocupGrande" id="vaPct">0%</div><div class="t2">ocupación</div></div>
+      </div>
+      <div class="barra" style="background:rgba(255,255,255,.25)"><i id="vaBarra" style="background:#fff;width:0"></i></div>
+    </div>
     <div class="card">
       <div class="row">
-        <button class="btn" id="btnCam">📷 Iniciar cámara</button>
-        <button class="btn sec oculto" id="btnStop">Detener</button>
+        <button class="btn" id="btnCam">📷 Cámara en vivo</button>
+        <button class="btn amb" id="btnFoto">📸 Tomar foto</button>
+      </div>
+      <input type="file" id="inpFoto" accept="image/*" capture="environment" class="oculto">
+      <div class="row oculto" id="camCtrl" style="margin-top:8px">
+        <button class="btn sec" id="btnLinterna">🔦 Linterna</button>
+        <button class="btn sec" id="btnStop">⏹ Detener</button>
       </div>
       <div id="camAviso" class="aviso oculto"></div>
-      <div id="videoBox" style="margin-top:10px"><video id="video" playsinline muted></video><div class="guia"></div></div>
-      <label for="inpCodigo">DNI / código de fotocheck (manual o lector USB/Bluetooth)</label>
+      <div id="videoBox" style="margin-top:10px"><video id="video" playsinline muted></video><div class="guia"></div><div class="tip">Código dentro del recuadro · 15–25 cm · buena luz</div></div>
+      <label for="inpCodigo">DNI (manual o lector USB/Bluetooth)</label>
       <div class="row">
-        <input type="text" id="inpCodigo" inputmode="numeric" autocomplete="off" placeholder="Escriba o escanee y presione Enter">
+        <input type="text" id="inpCodigo" inputmode="numeric" autocomplete="off" placeholder="Escriba el DNI">
         <button class="btn ok" id="btnValidar" style="flex:0 0 110px">Validar</button>
       </div>
-      <label class="chk"><input type="checkbox" id="chkAuto" checked> Embarcar automáticamente al validar</label>
+      <div id="ultimoLeido"></div>
       <div id="resultado"></div>
     </div>
-  </section>
-
-  <!-- LISTA -->
-  <section id="tab-lista" class="oculto">
-    <div class="card">
-      <div class="row">
-        <input type="search" id="buscar" placeholder="Buscar nombre, DNI, asiento, empresa">
-        <select id="filtro" style="flex:0 0 140px">
-          <option value="todos">Todos</option><option value="pen">Pendientes</option><option value="ok">Embarcados</option>
-        </select>
-      </div>
-    </div>
     <div class="card" style="padding:0;overflow:auto">
-      <table><thead><tr><th>Asiento</th><th>Pasajero</th><th>Estado</th><th></th></tr></thead><tbody id="tbLista"></tbody></table>
+      <table><thead><tr><th>#</th><th>Pasajero a bordo</th><th>Hora</th><th></th></tr></thead><tbody id="tbAbordo"></tbody></table>
     </div>
-  </section>
+    <div class="row">
+      <button class="btn sec" id="btnPausar">⏸ Salir sin finalizar</button>
+      <button class="btn red" id="btnFinalizar">🏁 FINALIZAR VIAJE</button>
+    </div>
+    <p class="mini">«Salir sin finalizar» deja el viaje abierto para continuarlo después. Solo los viajes FINALIZADOS cuentan en el Dashboard.</p>
+  </div>
+</section>
 
-  <!-- REGISTRO -->
-  <section id="tab-registro" class="oculto">
-    <div class="card">
-      <div class="row">
-        <button class="btn ok" id="btnExport">⬇ Exportar Excel</button>
-        <button class="btn sec" id="btnLimpiarLog">Reiniciar embarque</button>
-      </div>
-      <p class="mini">El Excel exportado contiene el manifiesto con la columna ABORDO = "P" y la hora de embarque, más una hoja con todos los eventos (incluidos los intentos de personas no registradas).</p>
+<!-- ===================== PERSONAL ===================== -->
+<section id="tab-personal" class="oculto">
+  <div class="kpis" style="grid-template-columns:repeat(3,1fr)">
+    <div class="kpi"><b id="pTot" class="c-az">0</b><span>Registrados</span></div>
+    <div class="kpi"><b id="pSi" class="c-ok">0</b><span>Habilitados</span></div>
+    <div class="kpi"><b id="pNo" class="c-no">0</b><span>No habilitados</span></div>
+  </div>
+  <div class="card">
+    <h3>📥 Cargar / actualizar desde Excel</h3>
+    <input type="file" id="inpPadron" accept=".xlsx,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv,application/octet-stream">
+    <label class="chk"><input type="checkbox" id="chkAusentes"><span>Marcar como <b>NO habilitados</b> a los que no estén en este Excel</span></label>
+    <div id="padronMsg"></div>
+    <p class="mini">El personal queda <b>guardado en el equipo</b>. Al cargar otro Excel se <b>agregan</b> los nuevos y se <b>actualizan</b> los existentes (por DNI); nadie se borra. Columnas: <b>DNI</b> (obligatoria), NOMBRES, EMPRESA, CARGO, FOTOCHECK, <b>HABILITADO</b> (SI/NO). Si el Excel no trae HABILITADO, se respeta lo que usted cambió a mano.</p>
+    <p class="mini" id="padronInfo"></p>
+  </div>
+  <div class="card">
+    <h3>➕ Agregar persona a mano</h3>
+    <div class="row"><input type="text" id="mDni" inputmode="numeric" placeholder="DNI" style="flex:0 0 38%"><input type="text" id="mNom" placeholder="Apellidos y nombres"></div>
+    <div class="row" style="margin-top:8px"><input type="text" id="mEmp" placeholder="Empresa"><button class="btn ok" id="btnAddPers" style="flex:0 0 110px">Agregar</button></div>
+  </div>
+  <div class="card">
+    <div class="row">
+      <input type="search" id="pBuscar" placeholder="Buscar nombre, DNI o empresa">
+      <select id="pFiltro" style="flex:0 0 135px"><option value="todos">Todos</option><option value="si">Habilitados</option><option value="no">No habilitados</option></select>
     </div>
-    <div class="card" style="padding:0;overflow:auto">
-      <table><thead><tr><th>Hora</th><th>Código leído</th><th>Resultado</th></tr></thead><tbody id="tbLog"></tbody></table>
-    </div>
-  </section>
+    <p class="mini" style="margin:6px 0 0">Toque <b>SI / NO</b> para cambiar la habilitación.</p>
+  </div>
+  <div class="card" style="padding:0;overflow:auto">
+    <table><thead><tr><th>Persona</th><th>Habilitado</th><th></th></tr></thead><tbody id="tbPers"></tbody></table>
+    <p class="mini" id="pMas" style="padding:8px 10px;margin:0"></p>
+  </div>
+</section>
 
-  <!-- CARGAR -->
-  <section id="tab-cargar" class="oculto">
-    <div class="card">
-      <label>1. Datos del viaje</label>
-      <div class="row">
-        <input type="text" id="inpBus" placeholder="Bus / Placa">
-        <input type="text" id="inpRuta" placeholder="Ruta / Turno">
-      </div>
-      <label>2. Archivo de relación de pasajeros (.xlsx o .csv)</label>
-      <input type="file" id="inpFile" accept=".xlsx,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv">
-      <div id="cargaMsg"></div>
-      <p class="mini">Se detecta automáticamente la fila de encabezados. Columnas reconocidas: <b>DNI</b> (obligatoria), <b>NOMBRES Y APELLIDOS</b>, <b>N° ASIENTO</b>, <b>FOTOCHECK / CÓDIGO</b>, CARGO, EMPRESA, ORIGEN, DESTINO, CELULAR. Compatible con el formato “MANIFIESTO DE PASAJEROS”.</p>
+<!-- ===================== RUTAS ===================== -->
+<section id="tab-rutas" class="oculto">
+  <div class="card">
+    <h3>🛣️ Rutas</h3>
+    <div class="row"><input type="text" id="nRuta" placeholder="Ej.: Lima – Paracas" autocomplete="off"><button class="btn ok" id="btnAddRuta" style="flex:0 0 60px;font-size:22px">+</button></div>
+    <div id="lstRutas" style="margin-top:10px"></div>
+  </div>
+  <div class="card">
+    <h3>🚌 Buses</h3>
+    <div class="row"><input type="text" id="nPlaca" placeholder="Placa" autocomplete="off" style="text-transform:uppercase"><input type="number" id="nCap" placeholder="Capacidad" inputmode="numeric" style="flex:0 0 32%"></div>
+    <div class="row" style="margin-top:8px"><input type="text" id="nCod" placeholder="Código / descripción (opcional)"><button class="btn ok" id="btnAddBus" style="flex:0 0 60px;font-size:22px">+</button></div>
+    <div id="lstBuses" style="margin-top:10px"></div>
+  </div>
+  <div class="card">
+    <h3>🧑‍✈️ Conductores</h3>
+    <div class="row"><input type="text" id="nCond" placeholder="Nombre del conductor"><input type="text" id="nCondDni" placeholder="DNI (opc.)" inputmode="numeric" style="flex:0 0 32%"></div>
+    <button class="btn ok" id="btnAddCond" style="margin-top:8px">+ Agregar conductor</button>
+    <div id="lstCond" style="margin-top:10px"></div>
+  </div>
+</section>
+
+<!-- ===================== DASHBOARD ===================== -->
+<section id="tab-dashboard" class="oculto">
+  <div class="card">
+    <div class="row">
+      <select id="dAnio"></select>
+      <select id="dMes"></select>
     </div>
-    <div class="card">
-      <label class="chk"><input type="checkbox" id="chkSonido" checked> Sonido de alarma</label>
-      <label class="chk"><input type="checkbox" id="chkVibrar" checked> Vibración</label>
-      <button class="btn sec" id="btnProbar" style="margin-top:10px">🔊 Probar alarma</button>
+    <div class="seg" id="segFuente" style="margin-top:8px"><button data-f="local" class="act">📱 Este celular</button><button data-f="todos">☁️ Todos (SharePoint)</button></div>
+    <div class="seg" id="segGrupo" style="margin-top:8px"><button data-g="ruta" class="act">Por ruta</button><button data-g="placa">Por bus</button></div>
+    <button class="btn sec oculto" id="btnLeerCentral" style="margin-top:8px">🔄 Actualizar desde SharePoint</button>
+    <p class="mini" id="dEstado" style="margin:6px 0 0"></p>
+  </div>
+  <div class="kpis">
+    <div class="kpi"><b id="dViajes" class="c-az">0</b><span>Viajes</span></div>
+    <div class="kpi"><b id="dPax" class="c-ok">0</b><span>Pasajeros</span></div>
+    <div class="kpi"><b id="dAsi">0</b><span>Asientos</span></div>
+    <div class="kpi"><b id="dOcup" class="c-am">0%</b><span>Ocupación</span></div>
+  </div>
+  <div class="card">
+    <h3 id="dTitGrupo">Ocupación por ruta</h3>
+    <div id="dGrupos"></div>
+  </div>
+  <div class="card" id="dCardMes">
+    <h3>Tendencia mensual de ocupación</h3>
+    <div id="dMeses"></div>
+  </div>
+  <div class="card" style="padding:0;overflow:auto">
+    <h3 style="padding:12px 12px 0">Detalle de viajes</h3>
+    <table><thead><tr><th>Fecha</th><th>Bus / Ruta</th><th>Horario</th><th>Ocup.</th></tr></thead><tbody id="dDetalle"></tbody></table>
+  </div>
+  <p class="mini" id="dNota"></p>
+</section>
+
+<!-- ===================== DATOS ===================== -->
+<section id="tab-datos" class="oculto">
+  <div class="card">
+    <h3>☁️ SharePoint central</h3>
+    <label for="cfgEquipo">Nombre de este celular</label>
+    <input type="text" id="cfgEquipo" placeholder="Ej.: Celular Garita 1">
+    <label for="cfgEnvio">URL de envío (flujo «Recibir viaje»)</label>
+    <textarea id="cfgEnvio" rows="3" placeholder="https://..."></textarea>
+    <label for="cfgLectura">URL de lectura (flujo «Leer viajes»)</label>
+    <textarea id="cfgLectura" rows="3" placeholder="https://..."></textarea>
+    <button class="btn" id="btnCfgGuardar" style="margin-top:10px">💾 Guardar conexión</button>
+    <div class="row" style="margin-top:8px">
+      <button class="btn ok" id="btnEnviarPend">⬆ Enviar pendientes</button>
+      <button class="btn sec" id="btnProbarCentral">🔌 Probar lectura</button>
     </div>
-  </section>
+    <button class="btn amb" id="btnCompartirCfg" style="margin-top:8px">📤 Compartir conexión a otro celular</button>
+    <p class="mini" id="syncEstado"></p>
+    <p class="mini">Al <b>FINALIZAR</b> cada viaje se envía solo al Excel central. Si no hay señal, queda pendiente y se reenvía cuando vuelva la conexión.</p>
+  </div>
+  <div class="card">
+    <h3>⬇ Exportar</h3>
+    <button class="btn ok" id="btnExport">Exportar todo a Excel</button>
+    <p class="mini">Hojas: Personal, Viajes, Embarques, Rechazos.</p>
+  </div>
+  <div class="card">
+    <h3>💾 Respaldo</h3>
+    <div class="row"><button class="btn" id="btnBackup">Guardar respaldo</button><button class="btn sec" id="btnRestore">Restaurar</button></div>
+    <input type="file" id="inpRestore" accept=".json,application/json" class="oculto">
+    <p class="mini">Los datos viven solo en este equipo. Guarde un respaldo cada semana (y antes de borrar datos del navegador o cambiar de celular).</p>
+  </div>
+  <div class="card">
+    <h3>🔊 Alarma</h3>
+    <label class="chk"><input type="checkbox" id="chkSonido" checked> Sonido</label>
+    <label class="chk"><input type="checkbox" id="chkVibrar" checked> Vibración</label>
+    <button class="btn sec" id="btnProbar" style="margin-top:10px">Probar alarma</button>
+  </div>
+  <div class="card">
+    <h3>🗑 Borrar</h3>
+    <button class="btn red" id="btnBorrarViajes">Borrar historial de viajes</button>
+    <p class="mini">No borra al personal ni las rutas. Exporte antes.</p>
+    <p class="mini" id="diag"></p>
+  </div>
+</section>
 </main>
+
+<div id="toast"></div>
+<datalist id="dlRuta"></datalist><datalist id="dlPlaca"></datalist><datalist id="dlCond"></datalist>
 
 <script>
 "use strict";
-/* ===================== ESTADO ===================== */
-const KEY = "ctrlPasajeros_v1";
-let S = { viaje:{bus:"",ruta:"",archivo:"",cargado:""}, pax:[], log:[] };
-try { const g = localStorage.getItem(KEY); if (g) S = JSON.parse(g); } catch(e){}
-const guardar = () => localStorage.setItem(KEY, JSON.stringify(S));
+/* ===================== UTILIDADES ===================== */
 const $ = id => document.getElementById(id);
-const ahora = () => new Date().toLocaleTimeString("es-PE",{hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false});
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const pad = n => String(n).padStart(2,"0");
+const hhmm = t => t ? new Date(t).toLocaleTimeString("es-PE",{hour:"2-digit",minute:"2-digit",hour12:false}) : "";
+const hhmmss = t => t ? new Date(t).toLocaleTimeString("es-PE",{hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false}) : "";
+const hoyISO = () => { const d = new Date(); return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`; };
+const fFecha = iso => iso ? iso.split("-").reverse().join("/") : "";
+const pct = x => Math.round((x||0)*100) + "%";
+const norm = s => String(s ?? "").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toUpperCase().replace(/[^A-Z0-9]/g,"");
+const colorOcup = x => x >= .8 ? "var(--verde)" : x >= .5 ? "var(--ambar)" : "var(--rojo)";
+const MESES = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
 
-/* ===================== LECTOR XLSX (sin librerías) ===================== */
+/* ===================== ESTADO + ALMACENAMIENTO (IndexedDB) ===================== */
+let D = { pers:[], rutas:[], buses:[], cond:[], viajes:[], activo:null, padron:{archivo:"", fecha:0}, cfg:{}, remoto:{viajes:[], fecha:0} };
+const IDB = {
+  db:null,
+  open(){ return new Promise((ok,ko)=>{ const r = indexedDB.open("embarqueDB",1);
+    r.onupgradeneeded = () => r.result.createObjectStore("kv");
+    r.onsuccess = () => { this.db = r.result; ok(); }; r.onerror = () => ko(r.error); }); },
+  get(k){ return new Promise((ok,ko)=>{ const q = this.db.transaction("kv").objectStore("kv").get(k); q.onsuccess=()=>ok(q.result); q.onerror=()=>ko(q.error); }); },
+  set(k,v){ return new Promise((ok,ko)=>{ const t = this.db.transaction("kv","readwrite"); t.objectStore("kv").put(v,k); t.oncomplete=()=>ok(); t.onerror=()=>ko(t.error); }); }
+};
+let tGuardar = null;
+function guardar(){ clearTimeout(tGuardar); tGuardar = setTimeout(persistir, 200); }
+async function persistir(){
+  clearTimeout(tGuardar);
+  try { if (IDB.db) { await IDB.set("estado", JSON.parse(JSON.stringify(D))); return; } } catch(e){}
+  try { localStorage.setItem("embarque_v5", JSON.stringify(D)); } catch(e){ alert("⚠️ No se pudo guardar: memoria llena. Exporte y borre viajes antiguos."); }
+}
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") persistir(); });
+async function cargarEstado(){
+  let g = null;
+  try { await IDB.open(); g = await IDB.get("estado"); } catch(e){}
+  if (!g) { try { g = JSON.parse(localStorage.getItem("embarque_v5") || "null"); } catch(e){} }
+  if (g) D = Object.assign(D, g);
+  D.cfg = Object.assign({urlEnvio:"", urlLectura:"", equipo:""}, D.cfg || {});
+  D.remoto = D.remoto && D.remoto.viajes ? D.remoto : {viajes:[], fecha:0};
+  // Migrar catálogo de versiones anteriores (v4)
+  try { const c = JSON.parse(localStorage.getItem("ctrlPasajeros_cat") || "null");
+    if (c && !D.rutas.length && !D.buses.length){
+      D.rutas = (c.rutas||[]).slice();
+      D.buses = (c.buses||[]).map(b=>({placa:b.placa, cod:b.desc||"", cap:0}));
+      guardar();
+    } } catch(e){}
+  try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch(e){}
+}
+
+/* ===================== ÍNDICE DE PERSONAL ===================== */
+let IDX = { dni:new Map(), fot:new Map() };
+function reindex(){
+  IDX = { dni:new Map(), fot:new Map() };
+  for (const p of D.pers){ IDX.dni.set(p.dni, p); if (p.fot) IDX.fot.set(p.fot, p); }
+}
+
+/* ===================== LECTOR EXCEL ===================== */
 async function inflateRaw(u8){
   const ds = new DecompressionStream("deflate-raw");
-  const buf = await new Response(new Blob([u8]).stream().pipeThrough(ds)).arrayBuffer();
-  return new Uint8Array(buf);
+  return new Uint8Array(await new Response(new Blob([u8]).stream().pipeThrough(ds)).arrayBuffer());
 }
 async function unzip(ab){
   const dv = new DataView(ab), u8 = new Uint8Array(ab), files = {};
   let eocd = -1;
   for (let i = ab.byteLength - 22; i >= Math.max(0, ab.byteLength - 66000); i--) if (dv.getUint32(i,true) === 0x06054b50){ eocd = i; break; }
-  if (eocd < 0) throw new Error("El archivo no es un .xlsx válido");
-  const n = dv.getUint16(eocd+10,true); let p = dv.getUint32(eocd+16,true);
-  const td = new TextDecoder();
+  if (eocd < 0) throw new Error("El archivo no es un .xlsx válido (¿se descargó completo?)");
+  const n = dv.getUint16(eocd+10,true); let p = dv.getUint32(eocd+16,true); const td = new TextDecoder();
   for (let k = 0; k < n; k++){
     const method = dv.getUint16(p+10,true), csize = dv.getUint32(p+20,true);
     const nl = dv.getUint16(p+28,true), el = dv.getUint16(p+30,true), cl = dv.getUint16(p+32,true);
     const off = dv.getUint32(p+42,true), name = td.decode(u8.subarray(p+46,p+46+nl));
-    files[name] = {method, csize, off};
-    p += 46 + nl + el + cl;
+    files[name] = {method, csize, off}; p += 46 + nl + el + cl;
   }
   return async name => {
     const f = files[name]; if (!f) return null;
     const lnl = dv.getUint16(f.off+26,true), lel = dv.getUint16(f.off+28,true);
     const data = u8.subarray(f.off+30+lnl+lel, f.off+30+lnl+lel+f.csize);
-    const out = f.method === 0 ? data : await inflateRaw(data);
-    return new TextDecoder("utf-8").decode(out);
+    return new TextDecoder("utf-8").decode(f.method === 0 ? data : await inflateRaw(data));
   };
 }
 const xmlDec = s => s.replace(/&lt;/g,"<").replace(/&gt;/g,">").replace(/&quot;/g,'"').replace(/&apos;/g,"'")
   .replace(/&#(\d+);/g,(m,d)=>String.fromCharCode(+d)).replace(/&#x([0-9a-f]+);/gi,(m,h)=>String.fromCharCode(parseInt(h,16))).replace(/&amp;/g,"&");
 const colIdx = ref => { let c = 0; for (const ch of ref.replace(/\d+/g,"")) c = c*26 + ch.charCodeAt(0) - 64; return c-1; };
 function textoDe(xml){ const out=[]; xml.replace(/<t(?:\s[^>]*)?>([\s\S]*?)<\/t>/g,(m,t)=>out.push(t)); return xmlDec(out.join("")); }
-
 async function leerXlsx(ab){
   const get = await unzip(ab);
   const sst = []; const ss = await get("xl/sharedStrings.xml");
@@ -198,8 +394,7 @@ async function leerXlsx(ab){
     if (id && tg) relMap[id] = tg.startsWith("/") ? tg.slice(1) : "xl/" + tg.replace(/^\.\//,"");
   });
   const hojas = []; (wb||"").replace(/<sheet\b[^>]*>/g, tag => {
-    const nm = xmlDec((tag.match(/name="([^"]*)"/)||[])[1]||""), rid = (tag.match(/r:id="([^"]+)"/)||[])[1];
-    hojas.push({nombre:nm, path: relMap[rid]});
+    hojas.push({nombre: xmlDec((tag.match(/name="([^"]*)"/)||[])[1]||""), path: relMap[(tag.match(/r:id="([^"]+)"/)||[])[1]]});
   });
   const res = [];
   for (const h of hojas){
@@ -208,10 +403,10 @@ async function leerXlsx(ab){
     xml.replace(/<row\b([^>]*)>([\s\S]*?)<\/row>/g,(m,ra,row)=>{
       const fila = [], rn = +((ra.match(/\br="(\d+)"/)||[])[1]||0);
       row.replace(/<c\b([^>]*?)(?:\/>|>([\s\S]*?)<\/c>)/g,(mm,attrs,inner)=>{
-        const r = (attrs.match(/r="([A-Z]+\d+)"/)||[])[1]; const t = (attrs.match(/t="([^"]+)"/)||[])[1];
+        const r = (attrs.match(/r="([A-Z]+\d+)"/)||[])[1], t = (attrs.match(/t="([^"]+)"/)||[])[1];
         let v = ""; inner = inner || "";
         if (t === "s"){ const x = inner.match(/<v>([\s\S]*?)<\/v>/); v = x ? sst[+x[1]] ?? "" : ""; }
-        else if (t === "inlineStr"){ v = textoDe(inner); }
+        else if (t === "inlineStr") v = textoDe(inner);
         else { const x = inner.match(/<v>([\s\S]*?)<\/v>/); v = x ? xmlDec(x[1]) : ""; }
         fila[r ? colIdx(r) : fila.length] = v;
       });
@@ -222,7 +417,7 @@ async function leerXlsx(ab){
   return res;
 }
 function leerCsv(txt){
-  const sep = (txt.split("\n")[0].match(/;/g)||[]).length > (txt.split("\n")[0].match(/,/g)||[]).length ? ";" : ",";
+  const l0 = txt.split("\n")[0], sep = (l0.match(/;/g)||[]).length > (l0.match(/,/g)||[]).length ? ";" : ",";
   const filas = []; let f = [], c = "", q = false;
   for (let i = 0; i < txt.length; i++){
     const ch = txt[i];
@@ -233,142 +428,255 @@ function leerCsv(txt){
   if (c || f.length){ f.push(c); filas.push(f); }
   return [{nombre:"CSV", filas}];
 }
+// Números que Excel guarda como 40635666, 40635666.0 o 4.0635666E7
+const numTxt = v => { let s = String(v ?? "").trim().replace(/[\s']/g,"");
+  if (/^[+-]?\d+(\.\d+)?[eE][+-]?\d+$/.test(s) || /^\d+\.\d+$/.test(s)){ const n = Number(s); if (isFinite(n) && Math.abs(n - Math.round(n)) < 1e-6) s = String(Math.round(n)); }
+  return s; };
+const normDni = v => { const s = numTxt(v).toUpperCase(); return /^\d{1,8}$/.test(s) ? s.padStart(8,"0") : s; };
 
-/* ===================== INTERPRETAR MANIFIESTO ===================== */
-const norm = s => String(s ?? "").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toUpperCase().replace(/[^A-Z0-9]/g,"");
 const CAMPOS = {
-  dni:["DNI","NDNI","DOCUMENTO","NDOCUMENTO","NRODOCUMENTO","NUMERODOCUMENTO","DOC"],
-  nombre:["NOMBRESYAPELLIDOS","APELLIDOSYNOMBRES","NOMBRE","NOMBRES","NOMBRECOMPLETO","PASAJERO","TRABAJADOR"],
-  asiento:["NASIENTO","ASIENTO","NROASIENTO","NUMEROASIENTO","SEAT"],
-  fotocheck:["FOTOCHECK","CODIGO","CODIGOFOTOCHECK","CODTRABAJADOR","CODIGOTRABAJADOR","CARNET","FICHA","NFOTOCHECK"],
+  dni:["DNI","NDNI","DOCUMENTO","NDOCUMENTO","NRODOCUMENTO","NUMERODOCUMENTO","DOC","NRODNI"],
+  nombre:["NOMBRESYAPELLIDOS","APELLIDOSYNOMBRES","NOMBRE","NOMBRES","NOMBRECOMPLETO","PASAJERO","TRABAJADOR","COLABORADOR"],
+  fot:["FOTOCHECK","CODIGOFOTOCHECK","NFOTOCHECK","CARNET","CODIGOTRABAJADOR","CODTRABAJADOR","FICHA"],
   cargo:["CARGO","PUESTO","POSICION"], empresa:["EMPRESA","CONTRATISTA","RAZONSOCIAL"],
-  origen:["ORIGEN"], destino:["DESTINO"], celular:["CELULAR","TELEFONO"], abordo:["ABORDO","A BORDO"]
+  hab:["HABILITADO","HABILITADA","AUTORIZADO","ACTIVO","ESTADO","HABILITACION"]
 };
-function mapearEncabezado(fila){
-  const m = {};
-  (fila||[]).forEach((v,i)=>{ const n = norm(v); for (const [k,al] of Object.entries(CAMPOS)) if (m[k]===undefined && al.map(norm).includes(n)) m[k]=i; });
-  return m;
-}
-const normDni = v => { let s = String(v ?? "").trim(); if (/^\d+(\.0+)?$/.test(s)) s = s.replace(/\.0+$/,""); return /^\d{1,8}$/.test(s) ? s.padStart(8,"0") : s.toUpperCase().replace(/\s/g,""); };
-const normAsiento = v => { let s = String(v ?? "").trim(); return s.replace(/\.0+$/,""); };
-
-function interpretar(hojas){
+const NO_HAB = ["NO","N","0","FALSE","FALSO","INHABILITADO","NOHABILITADO","BLOQUEADO","CESADO","INACTIVO","BAJA","SUSPENDIDO"];
+function interpretarPadron(hojas){
   let mejor = null;
   for (const h of hojas){
     for (let r = 0; r < Math.min(40, h.filas.length); r++){
-      const m = mapearEncabezado(h.filas[r]);
+      const m = {};
+      (h.filas[r]||[]).forEach((v,i)=>{ const n = norm(v); for (const [k,al] of Object.entries(CAMPOS)) if (m[k]===undefined && al.includes(n)) m[k]=i; });
       if (m.dni === undefined) continue;
-      const pax = [];
+      const filas = [];
       for (let i = r+1; i < h.filas.length; i++){
-        const f = h.filas[i] || [], dni = normDni(f[m.dni]);
-        if (!dni) continue;
+        const f = h.filas[i] || [], dni = normDni(f[m.dni]); if (!dni) continue;
         const g = k => m[k] !== undefined ? String(f[m[k]] ?? "").trim() : "";
-        pax.push({ id: pax.length+1, dni, nombre:g("nombre"), asiento: normAsiento(g("asiento")),
-          fotocheck: g("fotocheck").toUpperCase().replace(/\s/g,""), cargo:g("cargo"), empresa:g("empresa"),
-          origen:g("origen"), destino:g("destino"), celular:g("celular"), embarcado:false, hora:"" });
+        const hv = norm(g("hab"));
+        filas.push({ dni, nombre:g("nombre"), fot:numTxt(g("fot")).toUpperCase(), empresa:g("empresa"), cargo:g("cargo"),
+          traeHab: m.hab !== undefined && hv !== "", hab: !NO_HAB.includes(hv) });
       }
-      if (!mejor || pax.length > mejor.pax.length) mejor = {hoja:h.nombre, fila:r+1, mapa:m, pax};
+      if (!mejor || filas.length > mejor.filas.length) mejor = {hoja:h.nombre, fila:r+1, tieneHab: m.hab !== undefined, filas};
       break;
     }
   }
   return mejor;
 }
-
-$("inpFile").addEventListener("change", async e => {
-  const f = e.target.files[0]; if (!f) return;
-  const msg = $("cargaMsg"); msg.innerHTML = "<p class='mini'>Leyendo archivo…</p>";
+function importarPadron(r, marcarAusentes){
+  let nuevos = 0, act = 0, aSi = 0, aNo = 0, aus = 0; const vistos = new Set();
+  for (const x of r.filas){
+    vistos.add(x.dni);
+    let p = IDX.dni.get(x.dni);
+    if (p){
+      p.nombre = x.nombre || p.nombre; p.fot = x.fot || p.fot; p.empresa = x.empresa || p.empresa; p.cargo = x.cargo || p.cargo;
+      if (x.traeHab && p.hab !== x.hab){ p.hab = x.hab; x.hab ? aSi++ : aNo++; }
+      act++;
+    } else {
+      p = { dni:x.dni, nombre:x.nombre, fot:x.fot, empresa:x.empresa, cargo:x.cargo, hab: x.traeHab ? x.hab : true };
+      D.pers.push(p); IDX.dni.set(p.dni, p); nuevos++;
+    }
+  }
+  if (marcarAusentes) for (const p of D.pers) if (!vistos.has(p.dni) && p.hab){ p.hab = false; aus++; }
+  D.pers.sort((a,b)=>a.nombre.localeCompare(b.nombre,"es"));
+  reindex(); guardar();
+  return {nuevos, act, aSi, aNo, aus};
+}
+$("inpPadron").addEventListener("change", async e => {
+  const f = e.target.files[0]; e.target.value = ""; if (!f) return;
+  const msg = $("padronMsg"); msg.innerHTML = "<p class='mini'>Leyendo archivo…</p>";
   try {
     const hojas = f.name.toLowerCase().endsWith(".csv") ? leerCsv(await f.text()) : await leerXlsx(await f.arrayBuffer());
-    const r = interpretar(hojas);
-    if (!r || !r.pax.length) throw new Error("No se encontró una columna DNI con pasajeros. Verifique el encabezado.");
-    if (S.pax.some(p=>p.embarcado) && !confirm("Hay embarques registrados. ¿Reemplazar con el nuevo manifiesto?")) return;
-    S.pax = r.pax; S.log = [];
-    S.viaje = { bus:$("inpBus").value.trim(), ruta:$("inpRuta").value.trim(), archivo:f.name, cargado:new Date().toLocaleString("es-PE") };
-    guardar();
-    // Validaciones de calidad del manifiesto
-    const avisos = [], cnt = (arr,key) => arr.reduce((o,p)=>{ if(p[key]) o[p[key]]=(o[p[key]]||0)+1; return o; },{});
-    const dupD = Object.entries(cnt(S.pax,"dni")).filter(([k,v])=>v>1).map(([k])=>k);
-    const dupA = Object.entries(cnt(S.pax,"asiento")).filter(([k,v])=>v>1).map(([k])=>k);
-    const sinA = S.pax.filter(p=>!p.asiento).length;
-    const raros = S.pax.filter(p=>!/^\d{8}$/.test(p.dni)).length;
-    if (r.mapa.asiento === undefined) avisos.push("No existe columna de ASIENTO: se embarcará sin validar asiento.");
-    if (sinA && r.mapa.asiento !== undefined) avisos.push(`${sinA} pasajero(s) sin asiento asignado.`);
-    if (dupA.length) avisos.push(`Asiento(s) duplicado(s): ${dupA.join(", ")}.`);
-    if (dupD.length) avisos.push(`DNI duplicado(s): ${dupD.join(", ")}.`);
-    if (raros) avisos.push(`${raros} documento(s) no tienen 8 dígitos (CE/pasaporte u error de digitación).`);
-    msg.innerHTML = `<div class="aviso" style="border-color:var(--verde);background:#e8f5ec">✅ <b>${S.pax.length}</b> pasajeros cargados desde hoja <b>${esc(r.hoja)}</b> (encabezado en fila ${r.fila}).</div>` +
-      avisos.map(a=>`<div class="aviso">⚠️ ${esc(a)}</div>`).join("");
-    refrescar();
+    const r = interpretarPadron(hojas);
+    if (!r || !r.filas.length) throw new Error("No se encontró una columna DNI con personas. Revise el encabezado.");
+    const k = importarPadron(r, $("chkAusentes").checked);
+    D.padron = { archivo:f.name, fecha:Date.now() }; guardar();
+    const dupl = r.filas.length - new Set(r.filas.map(x=>x.dni)).size;
+    const raros = r.filas.filter(x=>!/^\d{8}$/.test(x.dni)).length;
+    msg.innerHTML = `<div class="aviso okk">✅ Hoja <b>${esc(r.hoja)}</b>: ${r.filas.length} filas leídas.<br>
+      <b>${k.nuevos}</b> nuevos · <b>${k.act}</b> actualizados${k.aSi?` · ${k.aSi} pasaron a SI`:""}${k.aNo?` · ${k.aNo} pasaron a NO`:""}${k.aus?` · ${k.aus} marcados NO por no estar en el Excel`:""}.</div>` +
+      (!r.tieneHab ? `<div class="aviso">ℹ️ El Excel no tiene columna HABILITADO: los nuevos quedan en SI y se respetan los cambios manuales.</div>` : "") +
+      (dupl ? `<div class="aviso">⚠️ ${dupl} DNI repetidos en el Excel (se usó la última fila).</div>` : "") +
+      (raros ? `<div class="aviso">⚠️ ${raros} documentos no tienen 8 dígitos (CE/pasaporte o error).</div>` : "");
+    renderTodo();
   } catch(err){ msg.innerHTML = `<div class="aviso error">❌ ${esc(err.message)}</div>`; }
-  e.target.value = "";
 });
 
+/* ===================== PERSONAL: LISTADO ===================== */
+const LIM = 200;
+function renderPersonal(){
+  const si = D.pers.filter(p=>p.hab).length;
+  $("pTot").textContent = D.pers.length; $("pSi").textContent = si; $("pNo").textContent = D.pers.length - si;
+  $("padronInfo").textContent = D.padron.archivo ? `Última carga: ${D.padron.archivo} · ${new Date(D.padron.fecha).toLocaleString("es-PE")}` : "";
+  const q = norm($("pBuscar").value), fl = $("pFiltro").value;
+  const lista = D.pers.filter(p => (fl==="todos" || (fl==="si") === p.hab) && (!q || norm(p.nombre+" "+p.dni+" "+p.empresa+" "+p.fot).includes(q)));
+  $("tbPers").innerHTML = lista.slice(0, LIM).map(p => `<tr>
+      <td><b>${esc(p.nombre||"(sin nombre)")}</b><div class="mini">DNI ${esc(p.dni)}${p.empresa?" · "+esc(p.empresa):""}${p.cargo?" · "+esc(p.cargo):""}</div></td>
+      <td><button class="sw ${p.hab?"si":"no"}" onclick="togHab('${esc(p.dni)}')">${p.hab?"SI":"NO"}</button></td>
+      <td><button class="xbtn" onclick="borrarPers('${esc(p.dni)}')" title="Eliminar">✖</button></td></tr>`).join("")
+    || `<tr><td colspan="3" class="mini" style="text-align:center;padding:20px">${D.pers.length ? "Sin resultados" : "Cargue el Excel de personal"}</td></tr>`;
+  $("pMas").textContent = lista.length > LIM ? `Mostrando ${LIM} de ${lista.length}. Use el buscador para encontrar a alguien.` : (lista.length ? `${lista.length} persona(s)` : "");
+}
+window.togHab = dni => { const p = IDX.dni.get(dni); if (!p) return; p.hab = !p.hab; guardar(); renderPersonal(); };
+window.borrarPers = dni => { const p = IDX.dni.get(dni); if (!p || !confirm(`¿Eliminar del registro a ${p.nombre} (${p.dni})?\nSi solo no debe viajar, mejor póngalo en NO.`)) return;
+  D.pers = D.pers.filter(x=>x.dni!==dni); reindex(); guardar(); renderPersonal(); };
+$("btnAddPers").onclick = () => {
+  const dni = normDni($("mDni").value), nom = $("mNom").value.trim();
+  if (!dni || !nom){ alert("Ingrese DNI y nombre."); return; }
+  let p = IDX.dni.get(dni);
+  if (p){ if (!confirm(`El DNI ${dni} ya existe (${p.nombre}). ¿Actualizar sus datos?`)) return; p.nombre = nom; p.empresa = $("mEmp").value.trim() || p.empresa; }
+  else { p = {dni, nombre:nom, fot:"", empresa:$("mEmp").value.trim(), cargo:"", hab:true}; D.pers.push(p); D.pers.sort((a,b)=>a.nombre.localeCompare(b.nombre,"es")); }
+  reindex(); guardar(); $("mDni").value = $("mNom").value = $("mEmp").value = ""; renderPersonal();
+};
+$("pBuscar").oninput = renderPersonal; $("pFiltro").onchange = renderPersonal;
+
+/* ===================== RUTAS / BUSES / CONDUCTORES ===================== */
+function addRuta(v){ v = String(v||"").trim().replace(/\s+/g," "); if (v && !D.rutas.some(r=>norm(r)===norm(v))) D.rutas.push(v); return v; }
+function addCond(v, dni){ v = String(v||"").trim().replace(/\s+/g," "); if (v && !D.cond.some(c=>norm(c.nombre)===norm(v))) D.cond.push({nombre:v, dni:dni||""}); return v; }
+function busDe(placa){ return D.buses.find(b=>b.placa===placa); }
+function renderCatalogos(){
+  D.rutas.sort((a,b)=>a.localeCompare(b,"es")); D.buses.sort((a,b)=>a.placa.localeCompare(b.placa)); D.cond.sort((a,b)=>a.nombre.localeCompare(b.nombre,"es"));
+  $("lstRutas").innerHTML = D.rutas.map((r,i)=>`<div class="item"><b>${esc(r)}</b><button class="xbtn red" onclick="borrarRuta(${i})">Eliminar</button></div>`).join("") || `<p class="mini">Sin rutas.</p>`;
+  $("lstBuses").innerHTML = D.buses.map((b,i)=>`<div class="item"><div style="flex:1"><b>${esc(b.placa)}</b><div class="mini">${esc(b.cod)}</div></div>
+      <div style="width:90px"><input type="number" value="${b.cap||""}" min="1" placeholder="Cap." onchange="capBus(${i},this.value)" style="padding:8px"></div>
+      <button class="xbtn red" onclick="borrarBus(${i})">✖</button></div>`).join("") || `<p class="mini">Sin buses.</p>`;
+  $("lstCond").innerHTML = D.cond.map((c,i)=>`<div class="item"><div><b>${esc(c.nombre)}</b><div class="mini">${c.dni?"DNI "+esc(c.dni):""}</div></div><button class="xbtn red" onclick="borrarCond(${i})">Eliminar</button></div>`).join("") || `<p class="mini">Sin conductores.</p>`;
+  const opts = arr => `<option value="">▾</option>` + arr.map(x=>`<option value="${esc(x)}">${esc(x)}</option>`).join("");
+  $("sRuta").innerHTML = opts(D.rutas); $("dlRuta").innerHTML = D.rutas.map(x=>`<option value="${esc(x)}">`).join("");
+  $("sPlaca").innerHTML = `<option value="">▾</option>` + D.buses.map(b=>`<option value="${esc(b.placa)}">${esc(b.placa)}${b.cap?" · "+b.cap+" asientos":""}${b.cod?" · "+esc(b.cod):""}</option>`).join("");
+  $("dlPlaca").innerHTML = D.buses.map(b=>`<option value="${esc(b.placa)}">`).join("");
+  $("sCond").innerHTML = opts(D.cond.map(c=>c.nombre)); $("dlCond").innerHTML = D.cond.map(c=>`<option value="${esc(c.nombre)}">`).join("");
+}
+$("btnAddRuta").onclick = () => { const v = $("nRuta").value.trim(); if (!v) return;
+  if (D.rutas.some(r=>norm(r)===norm(v))){ alert("Esa ruta ya existe."); return; } addRuta(v); guardar(); $("nRuta").value=""; renderCatalogos(); };
+$("btnAddBus").onclick = () => {
+  const placa = $("nPlaca").value.trim().toUpperCase().replace(/\s+/g,""), cap = parseInt($("nCap").value,10);
+  if (!placa || !(cap > 0)){ alert("Ingrese placa y capacidad."); return; }
+  if (busDe(placa)){ alert("Esa placa ya existe. Corrija la capacidad en la lista."); return; }
+  D.buses.push({placa, cod:$("nCod").value.trim(), cap}); guardar(); $("nPlaca").value=$("nCap").value=$("nCod").value=""; renderCatalogos(); };
+$("btnAddCond").onclick = () => { const v = $("nCond").value.trim(); if (!v) return;
+  if (D.cond.some(c=>norm(c.nombre)===norm(v))){ alert("Ese conductor ya existe."); return; }
+  addCond(v, $("nCondDni").value.trim()); guardar(); $("nCond").value=$("nCondDni").value=""; renderCatalogos(); };
+$("nRuta").addEventListener("keydown", e => { if (e.key==="Enter") $("btnAddRuta").click(); });
+window.borrarRuta = i => { if (confirm(`¿Eliminar la ruta "${D.rutas[i]}"?`)){ D.rutas.splice(i,1); guardar(); renderCatalogos(); } };
+window.borrarBus = i => { if (confirm(`¿Eliminar el bus ${D.buses[i].placa}?`)){ D.buses.splice(i,1); guardar(); renderCatalogos(); } };
+window.borrarCond = i => { if (confirm(`¿Eliminar a ${D.cond[i].nombre}?`)){ D.cond.splice(i,1); guardar(); renderCatalogos(); } };
+window.capBus = (i,v) => { const n = parseInt(v,10); if (n > 0){ D.buses[i].cap = n; guardar(); renderCatalogos(); } };
+
+/* ===================== VIAJES ===================== */
+const VA = () => D.viajes.find(v => v.id === D.activo) || null;
+$("sRuta").onchange = () => { if ($("sRuta").value) $("vRuta").value = $("sRuta").value; $("sRuta").value = ""; };
+$("sCond").onchange = () => { if ($("sCond").value) $("vCond").value = $("sCond").value; $("sCond").value = ""; };
+$("sPlaca").onchange = () => { if ($("sPlaca").value){ $("vPlaca").value = $("sPlaca").value; capDePlaca(); } $("sPlaca").value = ""; };
+function capDePlaca(){ const b = busDe($("vPlaca").value.trim().toUpperCase()); if (b && b.cap) $("vCap").value = b.cap; }
+$("vPlaca").addEventListener("change", capDePlaca); $("vPlaca").addEventListener("input", capDePlaca);
+
+$("btnIniciar").onclick = () => {
+  ctx();
+  const fecha = $("vFecha").value, ruta = $("vRuta").value.trim(), placa = $("vPlaca").value.trim().toUpperCase().replace(/\s+/g,""),
+        cap = parseInt($("vCap").value,10), cond = $("vCond").value.trim();
+  const falta = [!fecha&&"fecha", !ruta&&"ruta", !placa&&"placa", !(cap>0)&&"capacidad", !cond&&"conductor"].filter(Boolean);
+  if (falta.length){ alert("Complete: " + falta.join(", ")); return; }
+  if (!D.pers.length && !confirm("No hay personal registrado: todos saldrán como NO REGISTRADO. ¿Continuar?")) return;
+  const abierto = D.viajes.find(v => v.est === "EN CURSO" && v.placa === placa);
+  if (abierto && !confirm(`El bus ${placa} ya tiene un viaje sin finalizar (${abierto.ruta}, ${fFecha(abierto.fecha)} ${hhmm(abierto.ini)}). ¿Iniciar otro de todas formas?`)) return;
+  addRuta(ruta); addCond(cond);
+  const b = busDe(placa); if (b){ if (b.cap !== cap) b.cap = cap; } else D.buses.push({placa, cod:"", cap});
+  const v = { id:"V" + Date.now().toString(36), fecha, ruta, placa, cond, cap, ini:Date.now(), fin:0, est:"EN CURSO", pax:[], rech:[] };
+  D.viajes.push(v); D.activo = v.id; guardar(); $("resultado").style.display = "none"; renderTodo();
+};
+window.continuar = id => { D.activo = id; guardar(); $("resultado").style.display = "none"; renderTodo(); };
+$("btnPausar").onclick = () => { detenerCam(); D.activo = null; guardar(); renderTodo(); };
+$("btnFinalizar").onclick = () => {
+  const v = VA(); if (!v) return;
+  if (!confirm(`¿FINALIZAR el viaje?\n\n${v.placa} · ${v.ruta}\nPasajeros: ${v.pax.length} de ${v.cap} (${pct(v.pax.length/v.cap)})\nInicio: ${hhmm(v.ini)}  ·  Fin: ${hhmm(Date.now())}`)) return;
+  detenerCam(); v.fin = Date.now(); v.est = "FINALIZADO"; D.activo = null; persistir();
+  renderTodo();
+  if (D.cfg.urlEnvio){ toast(`✅ Viaje finalizado (${v.pax.length} pax · ${pct(v.pax.length/v.cap)}). Enviando a SharePoint…`, "inf"); enviarPendientes(true); }
+  else alert(`✅ Viaje finalizado\n${v.pax.length} pasajeros · ocupación ${pct(v.pax.length/v.cap)}\n\n(Sin conexión a SharePoint configurada: el viaje queda solo en este celular)`);
+};
+window.anularPax = dni => { const v = VA(); if (!v) return; const x = v.pax.find(p=>p.d===dni);
+  if (x && confirm(`¿Bajar a ${x.n} de este viaje?`)){ v.pax = v.pax.filter(p=>p.d!==dni); guardar(); renderEmbarque(); } };
+window.cerrarViajeAbierto = id => { const v = D.viajes.find(x=>x.id===id); if (!v) return;
+  if (!confirm(`¿Finalizar el viaje ${v.placa} · ${v.ruta} con ${v.pax.length} pasajeros?`)) return;
+  v.fin = Date.now(); v.est = "FINALIZADO"; guardar(); renderTodo(); if (D.cfg.urlEnvio) enviarPendientes(true); };
+
+function renderEmbarque(){
+  const v = VA();
+  $("sinPadron").classList.toggle("oculto", D.pers.length > 0);
+  $("boxNuevo").classList.toggle("oculto", !!v); $("boxActivo").classList.toggle("oculto", !v);
+  $("hdrViaje").textContent = v ? `${v.placa} · ${v.ruta} · ${v.pax.length}/${v.cap}` : "Sin viaje en curso";
+  if (!v){
+    if (!$("vFecha").value) $("vFecha").value = hoyISO();
+    const ab = D.viajes.filter(x=>x.est==="EN CURSO").sort((a,b)=>b.ini-a.ini);
+    $("boxAbiertos").classList.toggle("oculto", !ab.length);
+    $("lstAbiertos").innerHTML = ab.map(x=>`<div class="item"><div><b>${esc(x.placa)} · ${esc(x.ruta)}</b><div class="mini">${fFecha(x.fecha)} · inicio ${hhmm(x.ini)} · ${esc(x.cond)} · ${x.pax.length}/${x.cap}</div></div>
+      <div style="display:flex;gap:6px"><button class="xbtn ok" onclick="continuar('${x.id}')">Continuar</button><button class="xbtn red" onclick="cerrarViajeAbierto('${x.id}')">Finalizar</button></div></div>`).join("");
+    return;
+  }
+  const oc = v.pax.length / v.cap;
+  $("vaTitulo").textContent = `${v.placa} · ${v.ruta}`;
+  $("vaDetalle").textContent = `${fFecha(v.fecha)} · Conductor: ${v.cond} · Inicio ${hhmm(v.ini)}`;
+  $("vaCont").textContent = `${v.pax.length} / ${v.cap}`; $("vaPct").textContent = pct(oc);
+  $("vaBarra").style.width = Math.min(100, oc*100) + "%";
+  $("tbAbordo").innerHTML = v.pax.slice().reverse().map((p,i)=>`<tr><td>${v.pax.length-i}</td><td><b>${esc(p.n)}</b><div class="mini">DNI ${esc(p.d)}${p.e?" · "+esc(p.e):""}</div></td><td>${hhmm(p.t)}</td>
+      <td><button class="xbtn" onclick="anularPax('${esc(p.d)}')">Bajar</button></td></tr>`).join("")
+    || `<tr><td colspan="4" class="mini" style="text-align:center;padding:16px">Aún no hay pasajeros a bordo</td></tr>`;
+}
+
 /* ===================== VALIDACIÓN ===================== */
-function buscarPasajero(raw){
-  const limpio = String(raw).trim().toUpperCase().replace(/\s/g,"");
-  if (!limpio) return null;
-  // 1) coincidencia exacta con fotocheck o DNI
-  let p = S.pax.find(x => (x.fotocheck && x.fotocheck === limpio) || x.dni === limpio || x.dni === normDni(limpio));
-  if (p) return p;
-  // 2) extraer números de 8 dígitos dentro del código leído (DNI electrónico / fotocheck con datos)
-  const runs = limpio.match(/\d+/g) || [];
-  for (const r of runs) if (r.length === 8){ p = S.pax.find(x=>x.dni===r); if (p) return p; }
-  for (const r of runs) if (r.length > 8) for (let i=0;i+8<=r.length;i++){ p = S.pax.find(x=>x.dni===r.substr(i,8)); if (p) return p; }
-  // 3) el código de fotocheck contenido dentro del texto leído
-  p = S.pax.find(x => x.fotocheck && x.fotocheck.length >= 4 && limpio.includes(x.fotocheck));
-  return p || null;
+function buscarPersona(raw){
+  const c = String(raw).trim().toUpperCase().replace(/\s/g,""); if (!c) return null;
+  let p = IDX.fot.get(c) || IDX.dni.get(c) || IDX.dni.get(normDni(c)); if (p) return p;
+  const runs = c.match(/\d+/g) || [];
+  for (const r of runs) if (r.length === 8 && (p = IDX.dni.get(r))) return p;
+  for (const r of runs) if (r.length > 8) for (let i = 0; i + 8 <= r.length; i++) if ((p = IDX.dni.get(r.substr(i,8)))) return p;
+  for (const [k,q] of IDX.fot) if (k.length >= 4 && c.includes(k)) return q;
+  return null;
 }
 let ultimo = {code:"", t:0};
 function procesar(raw, origen){
   raw = String(raw||"").trim(); if (!raw) return;
-  const t = Date.now(); if (raw === ultimo.code && t - ultimo.t < 3000) return; ultimo = {code:raw, t};
-  if (!S.pax.length){ mostrar("no", null, raw, "Primero cargue el manifiesto (pestaña Cargar)"); return; }
-  const p = buscarPasajero(raw);
-  if (!p){
-    S.log.unshift({hora:ahora(), codigo:raw, res:"NO REGISTRADO", origen}); guardar();
-    mostrar("no", null, raw); alarma(); refrescar(); return;
+  const ahora = Date.now(); if (raw === ultimo.code && ahora - ultimo.t < 3000) return; ultimo = {code:raw, t:ahora};
+  $("ultimoLeido").textContent = `Último código leído (${origen}): ${raw.slice(0,120)}`;
+  const v = VA(); if (!v){ return; }
+  const p = buscarPersona(raw);
+  const rechazar = (motivo, nombre) => { v.rech.push({c:raw.slice(0,60), n:nombre||"", t:ahora, m:motivo}); guardar(); alarma(); };
+  if (!p){ rechazar("NO REGISTRADO"); mostrar("no", {titulo:"⛔ NO REGISTRADO", sub:"No figura en el registro de personal", raw}); }
+  else if (!p.hab){ rechazar("NO HABILITADO", p.nombre); mostrar("no", {titulo:"⛔ NO HABILITADO", p, sub:"Está en el registro pero NO habilitado", raw}); }
+  else if (v.pax.some(x=>x.d===p.dni)){ const x = v.pax.find(y=>y.d===p.dni); beep("dup"); mostrar("dup", {titulo:`⚠️ YA SUBIÓ (${hhmm(x.t)})`, p}); }
+  else if (v.pax.length >= v.cap){ rechazar("BUS LLENO", p.nombre); mostrar("no", {titulo:"🚫 BUS LLENO", p, sub:`Capacidad ${v.cap} completa`}); }
+  else {
+    v.pax.push({d:p.dni, n:p.nombre, e:p.empresa, t:ahora}); guardar(); beep("ok");
+    const otro = D.viajes.find(x => x.id !== v.id && x.est === "EN CURSO" && x.pax.some(y=>y.d===p.dni));
+    mostrar("ok", {titulo:"✅ EMBARCADO", p, grande:`N° ${v.pax.length} de ${v.cap}`, sub: otro ? `Ojo: también figura en el bus ${otro.placa}` : ""});
   }
-  if (p.embarcado){
-    S.log.unshift({hora:ahora(), codigo:raw, res:`YA EMBARCADO – ${p.nombre} (asiento ${p.asiento||"-"})`, origen}); guardar();
-    mostrar("dup", p, raw); beep("dup"); refrescar(); return;
-  }
-  if ($("chkAuto").checked) embarcar(p, raw, origen); else mostrar("val", p, raw);
+  renderEmbarque();
 }
-function embarcar(p, raw, origen){
-  p.embarcado = true; p.hora = ahora();
-  S.log.unshift({hora:p.hora, codigo:raw||p.dni, res:`EMBARCADO – ${p.nombre} (asiento ${p.asiento||"-"})`, origen:origen||"manual"});
-  guardar(); mostrar("ok", p, raw); beep("ok"); refrescar();
-}
-function mostrar(tipo, p, raw, extra){
+function mostrar(tipo, o){
   const r = $("resultado"); r.style.display = "block";
-  r.className = tipo==="ok"||tipo==="val" ? "r-ok" : tipo==="dup" ? "r-dup" : "r-no";
-  if (tipo === "no"){
-    r.innerHTML = `<div class="estado">⛔ NO REGISTRADO</div><div class="asiento">✖</div>
-      <div class="nombre">No figura en la relación de pasajeros</div><div class="det">Código leído: ${esc(raw)}</div>
-      ${extra?`<div class="det">${esc(extra)}</div>`:""}<div class="det" style="margin-top:8px">NO PERMITIR EL EMBARQUE – comunicar al supervisor</div>
-      <button class="btn sec" style="margin-top:12px" onclick="cerrarRes()">Aceptar</button>`;
-    return;
-  }
-  const est = tipo==="ok" ? "✅ EMBARCADO" : tipo==="dup" ? `⚠️ YA EMBARCADO (${esc(p.hora)})` : "✔ REGISTRADO – confirmar";
-  r.innerHTML = `<div class="estado">${est}</div><div class="mini" style="color:#fff">ASIENTO</div>
-    <div class="asiento">${esc(p.asiento||"S/A")}</div><div class="nombre">${esc(p.nombre||"(sin nombre)")}</div>
-    <div class="det">DNI ${esc(p.dni)}${p.fotocheck?" · Fotocheck "+esc(p.fotocheck):""}</div>
-    <div class="det">${esc([p.empresa,p.cargo].filter(Boolean).join(" · "))}</div>
-    ${tipo==="val"?`<button class="btn" style="margin-top:12px;background:#fff;color:var(--verde)" onclick="confirmar(${p.id})">CONFIRMAR EMBARQUE</button>`:""}`;
-  if (tipo !== "val") setTimeout(()=>{ if (r.className!=="r-no") r.style.display="none"; }, 6000);
+  r.className = {ok:"r-ok", dup:"r-dup", no:"r-no", info:"r-info"}[tipo];
+  r.innerHTML = `<div class="estado">${o.titulo}</div>` +
+    (o.grande ? `<div class="grande">${esc(o.grande)}</div>` : tipo==="no" ? `<div class="grande">✖</div>` : "") +
+    (o.p ? `<div class="nombre">${esc(o.p.nombre)}</div><div class="det">DNI ${esc(o.p.dni)}${o.p.empresa?" · "+esc(o.p.empresa):""}</div>` : "") +
+    (o.sub ? `<div class="det">${esc(o.sub)}</div>` : "") +
+    (o.raw && !o.p ? `<div class="det">Código leído: ${esc(o.raw.slice(0,60))}</div>` : "") +
+    (tipo==="no" ? `<div class="det" style="margin-top:6px"><b>NO PERMITIR EL EMBARQUE</b></div><button class="btn sec" style="margin-top:10px" onclick="cerrarRes()">Aceptar</button>` : "");
+  if (tipo !== "no") setTimeout(()=>{ if (r.className === "r-ok" || r.className === "r-dup") r.style.display = "none"; }, 5000);
 }
 window.cerrarRes = () => { $("resultado").style.display = "none"; detenerAlarma(); };
-window.confirmar = id => { const p = S.pax.find(x=>x.id===id); if (p && !p.embarcado) embarcar(p, p.dni, "confirmado"); };
+$("btnValidar").onclick = () => { ctx(); ultimo.code = ""; procesar($("inpCodigo").value, "manual"); $("inpCodigo").value = ""; };
+$("inpCodigo").addEventListener("keydown", e => { if (e.key === "Enter"){ e.preventDefault(); $("btnValidar").click(); } });
 
-/* ===================== SONIDO / ALARMA ===================== */
+/* ===================== SONIDO ===================== */
 let actx = null, sirena = null;
-const ctx = () => actx || (actx = new (window.AudioContext||window.webkitAudioContext)());
+const ctx = () => { if (!actx) actx = new (window.AudioContext||window.webkitAudioContext)(); if (actx.state !== "running") actx.resume().catch(()=>{}); return actx; };
+["pointerdown","touchstart","keydown"].forEach(ev => document.addEventListener(ev, () => { try { ctx(); } catch(e){} }, {passive:true}));
 function tono(f, dur, tipo="sine", vol=.3, delay=0){
   if (!$("chkSonido").checked) return; const c = ctx(), o = c.createOscillator(), g = c.createGain();
-  o.type = tipo; o.frequency.value = f; g.gain.value = vol; o.connect(g).connect(c.destination);
-  o.start(c.currentTime+delay); o.stop(c.currentTime+delay+dur);
+  o.type = tipo; o.frequency.value = f; g.gain.value = vol; o.connect(g).connect(c.destination); o.start(c.currentTime+delay); o.stop(c.currentTime+delay+dur);
 }
-function beep(t){ if (t==="ok"){ tono(1200,.12); } else { tono(700,.15,"square",.25); tono(700,.15,"square",.25,.25); }
+function beep(t){ if (t==="ok") tono(1200,.12); else { tono(700,.15,"square",.25); tono(700,.15,"square",.25,.25); }
   if ($("chkVibrar").checked && navigator.vibrate) navigator.vibrate(t==="ok"?80:[150,100,150]); }
 function alarma(){
   detenerAlarma();
@@ -376,86 +684,259 @@ function alarma(){
   if (!$("chkSonido").checked) return;
   const c = ctx(), o = c.createOscillator(), g = c.createGain(), lfo = c.createOscillator(), lg = c.createGain();
   o.type = "sawtooth"; o.frequency.value = 900; lfo.frequency.value = 3; lg.gain.value = 350;
-  lfo.connect(lg).connect(o.frequency); g.gain.value = .35; o.connect(g).connect(c.destination);
-  o.start(); lfo.start(); sirena = {o, lfo};
-  setTimeout(detenerAlarma, 3500);
+  lfo.connect(lg).connect(o.frequency); g.gain.value = .35; o.connect(g).connect(c.destination); o.start(); lfo.start(); sirena = {o, lfo};
+  setTimeout(detenerAlarma, 4000);
 }
 function detenerAlarma(){ if (sirena){ try{ sirena.o.stop(); sirena.lfo.stop(); }catch(e){} sirena = null; } }
 $("btnProbar").onclick = () => alarma();
 
-/* ===================== CÁMARA / ESCÁNER ===================== */
-let stream = null, detector = null, timer = null;
+/* ===================== ESCÁNER (QR + código de barras) ===================== */
+const FORMATOS = ["qr_code","pdf417","code_39","code_128","data_matrix","itf","codabar","code_93","ean_13","aztec"];
+let detector = null, motor = "";
+function cargarScript(src){ return new Promise((ok,ko)=>{ const s=document.createElement("script"); s.src=src; s.onload=ok; s.onerror=ko; document.head.appendChild(s); }); }
+async function obtenerDetector(){
+  if (detector) return detector;
+  if ("BarcodeDetector" in window){
+    try { const sop = await BarcodeDetector.getSupportedFormats(), f = FORMATOS.filter(x=>sop.includes(x));
+      if (f.length){ detector = new BarcodeDetector({formats:f}); motor = "nativo (" + f.join(", ") + ")"; return detector; } } catch(e){}
+  }
+  try { await cargarScript("https://cdn.jsdelivr.net/npm/barcode-detector@2/dist/iife/pure.min.js");
+    detector = new window.BarcodeDetectionAPI.BarcodeDetector({formats:FORMATOS}); motor = "ZXing (descargado)"; return detector;
+  } catch(e){ throw new Error("Este equipo no tiene lector de códigos disponible. Use Chrome actualizado o escriba el DNI."); }
+}
+function recorte(fuente, w, h){ const c = document.createElement("canvas"), cw = Math.round(w*.9), ch = Math.round(h*.5);
+  c.width = cw; c.height = ch; c.getContext("2d").drawImage(fuente, (w-cw)/2, (h-ch)/2, cw, ch, 0, 0, cw, ch); return c; }
+async function detectarEn(fuente, w, h){
+  const d = await obtenerDetector(); let cods = [];
+  try { cods = await d.detect(fuente); } catch(e){}
+  if (!cods.length){ try { cods = await d.detect(recorte(fuente, w, h)); } catch(e){} }
+  return cods;
+}
+let stream = null, timer = null, track = null, linterna = false;
 async function iniciarCam(){
-  ctx(); // habilita audio tras gesto del usuario
-  const av = $("camAviso"); av.classList.add("oculto");
-  if (!("BarcodeDetector" in window)){
-    av.innerHTML = "Este navegador no tiene lector de códigos integrado. Use <b>Google Chrome en Android</b>, o un lector USB/Bluetooth, o digite el DNI.";
-    av.classList.remove("oculto"); return;
-  }
+  ctx(); const av = $("camAviso"); av.classList.add("oculto");
   try {
-    const sop = await BarcodeDetector.getSupportedFormats();
-    const quiero = ["pdf417","code_39","code_128","qr_code","data_matrix","ean_13","itf","codabar","code_93","aztec"].filter(f=>sop.includes(f));
-    detector = new BarcodeDetector({formats: quiero});
-    stream = await navigator.mediaDevices.getUserMedia({video:{facingMode:"environment", width:{ideal:1920}, height:{ideal:1080}}, audio:false});
+    await obtenerDetector();
+    stream = await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:"environment"}, width:{ideal:1920}, height:{ideal:1080}}, audio:false});
+    track = stream.getVideoTracks()[0];
+    try { const cap = track.getCapabilities ? track.getCapabilities() : {};
+      if (cap.focusMode && cap.focusMode.includes("continuous")) await track.applyConstraints({advanced:[{focusMode:"continuous"}]});
+      $("btnLinterna").classList.toggle("oculto", !cap.torch); } catch(e){}
     const v = $("video"); v.srcObject = stream; await v.play();
-    $("videoBox").style.display = "block"; $("btnCam").classList.add("oculto"); $("btnStop").classList.remove("oculto");
+    $("videoBox").style.display = "block"; $("btnCam").classList.add("oculto"); $("camCtrl").classList.remove("oculto");
+    $("diag").textContent = "Lector: " + motor + " · Cámara: " + v.videoWidth + "x" + v.videoHeight;
     let ocupado = false;
-    timer = setInterval(async ()=>{
-      if (ocupado || v.readyState < 2) return; ocupado = true;
-      try { const cods = await detector.detect(v); if (cods.length) procesar(cods[0].rawValue, "cámara"); } catch(e){}
-      ocupado = false;
-    }, 250);
-  } catch(err){
-    av.innerHTML = "No se pudo abrir la cámara: " + esc(err.message) + ". Verifique el permiso de cámara y que la app se abra por HTTPS.";
-    av.classList.remove("oculto");
-  }
+    timer = setInterval(async ()=>{ if (ocupado || v.readyState < 2) return; ocupado = true;
+      try { const cods = await detectarEn(v, v.videoWidth, v.videoHeight); if (cods.length) procesar(cods[0].rawValue, "cámara"); } catch(e){}
+      ocupado = false; }, 300);
+  } catch(err){ av.innerHTML = "No se pudo usar la cámara: " + esc(err.message) + "<br>Pruebe con <b>📸 Tomar foto</b> o escriba el DNI."; av.classList.remove("oculto"); }
 }
 function detenerCam(){
-  clearInterval(timer); timer = null; if (stream) stream.getTracks().forEach(t=>t.stop()); stream = null;
-  $("videoBox").style.display = "none"; $("btnCam").classList.remove("oculto"); $("btnStop").classList.add("oculto");
+  clearInterval(timer); timer = null; if (stream) stream.getTracks().forEach(t=>t.stop()); stream = null; track = null; linterna = false;
+  $("videoBox").style.display = "none"; $("btnCam").classList.remove("oculto"); $("camCtrl").classList.add("oculto");
 }
 $("btnCam").onclick = iniciarCam; $("btnStop").onclick = detenerCam;
-$("btnValidar").onclick = () => { ultimo.code=""; procesar($("inpCodigo").value, "manual"); $("inpCodigo").value=""; $("inpCodigo").focus(); };
-$("inpCodigo").addEventListener("keydown", e => { if (e.key === "Enter"){ e.preventDefault(); $("btnValidar").click(); } });
+$("btnLinterna").onclick = async () => { if (!track) return; linterna = !linterna; try { await track.applyConstraints({advanced:[{torch:linterna}]}); } catch(e){} };
+$("btnFoto").onclick = () => { ctx(); detenerCam(); $("inpFoto").click(); };
+$("inpFoto").addEventListener("change", async e => {
+  const f = e.target.files[0]; e.target.value = ""; if (!f) return;
+  const av = $("camAviso"); av.classList.remove("oculto"); av.innerHTML = "Leyendo foto…";
+  try {
+    const img = await createImageBitmap(f); let cods = await detectarEn(img, img.width, img.height);
+    if (!cods.length){ const k = 1600 / Math.max(img.width, img.height);
+      if (k < 1){ const c = document.createElement("canvas"); c.width = img.width*k; c.height = img.height*k; c.getContext("2d").drawImage(img,0,0,c.width,c.height); cods = await detectarEn(c, c.width, c.height); } }
+    if (cods.length){ av.classList.add("oculto"); ultimo.code = ""; procesar(cods[0].rawValue, "foto"); }
+    else av.innerHTML = "❌ No se encontró código en la foto. Acérquese (que el código llene el ancho), evite reflejos. O escriba el DNI.";
+  } catch(err){ av.innerHTML = "❌ " + esc(err.message); }
+});
 
-/* ===================== LISTA / REGISTRO ===================== */
-function refrescar(){
-  const tot = S.pax.length, ok = S.pax.filter(p=>p.embarcado).length, no = S.log.filter(l=>l.res==="NO REGISTRADO").length;
-  $("kTot").textContent = tot; $("kOk").textContent = ok; $("kPen").textContent = tot-ok; $("kNo").textContent = no;
-  $("hdrViaje").textContent = tot ? `${S.viaje.bus||"Bus"} · ${S.viaje.ruta||S.viaje.archivo}` : "Sin manifiesto cargado";
-  const q = norm($("buscar").value), fl = $("filtro").value;
-  const ordenA = a => { const n = parseFloat(a); return isNaN(n) ? 9999 : n; };
-  $("tbLista").innerHTML = S.pax
-    .filter(p => fl==="todos" || (fl==="ok") === p.embarcado)
-    .filter(p => !q || norm([p.nombre,p.dni,p.asiento,p.empresa,p.fotocheck].join(" ")).includes(q))
-    .sort((a,b)=>ordenA(a.asiento)-ordenA(b.asiento))
-    .map(p => `<tr><td style="font-size:20px;font-weight:800">${esc(p.asiento||"–")}</td>
-      <td><b>${esc(p.nombre)}</b><div class="mini">DNI ${esc(p.dni)} · ${esc(p.empresa)}</div></td>
-      <td>${p.embarcado?`<span class="tag t-ok">A BORDO ${esc(p.hora.slice(0,5))}</span>`:`<span class="tag t-pen">PENDIENTE</span>`}</td>
-      <td>${p.embarcado?`<button class="des" onclick="desembarcar(${p.id})">Anular</button>`:`<button onclick="confirmar(${p.id})">Embarcar</button>`}</td></tr>`).join("")
-    || `<tr><td colspan="4" class="mini" style="text-align:center;padding:20px">Sin registros</td></tr>`;
-  $("tbLog").innerHTML = S.log.map(l => `<tr><td>${esc(l.hora)}</td><td>${esc(l.codigo).slice(0,40)}</td>
-      <td><span class="tag ${l.res==="NO REGISTRADO"?"t-no":l.res.startsWith("YA")?"t-dup":l.res.startsWith("ANULADO")?"t-pen":"t-ok"}">${esc(l.res.split(" –")[0])}</span>
-      <div class="mini">${esc(l.res.split(" – ")[1]||"")}</div></td></tr>`).join("")
-    || `<tr><td colspan="3" class="mini" style="text-align:center;padding:20px">Sin eventos</td></tr>`;
+/* ===================== SINCRONIZACIÓN SHAREPOINT ===================== */
+let tToast = null;
+function toast(msg, tipo="inf", ms=4500){ const t = $("toast"); t.className = tipo; t.textContent = msg; t.style.display = "block";
+  clearTimeout(tToast); tToast = setTimeout(()=>{ t.style.display = "none"; }, ms); }
+const np = v => v.np ?? v.pax.length, nr = v => v.nr ?? v.rech.length;
+const hi = v => v.hi ?? hhmm(v.ini), hf = v => v.hf ?? hhmm(v.fin);
+const dur = v => v.dur ?? Math.round((v.fin - v.ini) / 60000);
+const pendientes = () => D.viajes.filter(v => v.est === "FINALIZADO" && !v.sync);
+function payloadViaje(v){
+  return { id:v.id, equipo:D.cfg.equipo || "", fecha:v.fecha, placa:v.placa, ruta:v.ruta, conductor:v.cond, capacidad:v.cap,
+    inicio:hhmm(v.ini), fin:hhmm(v.fin), duracion:Math.round((v.fin - v.ini) / 60000), pasajeros:v.pax.length,
+    ocupacion:Math.round(v.pax.length / v.cap * 10000) / 10000, rechazos:v.rech.length,
+    detalle:[ ...v.pax.map(p => ({dni:p.d, nombre:p.n, empresa:p.e || "", hora:hhmmss(p.t), resultado:"EMBARCADO"})),
+              ...v.rech.map(r => ({dni:r.c, nombre:r.n || "", empresa:"", hora:hhmmss(r.t), resultado:r.m})) ] };
 }
-window.desembarcar = id => { const p = S.pax.find(x=>x.id===id); if (!p || !confirm(`¿Anular embarque de ${p.nombre}?`)) return;
-  p.embarcado=false; S.log.unshift({hora:ahora(), codigo:p.dni, res:`ANULADO – ${p.nombre}`, origen:"manual"}); p.hora=""; guardar(); refrescar(); };
-$("buscar").oninput = refrescar; $("filtro").onchange = refrescar;
-$("btnLimpiarLog").onclick = () => { if (!confirm("¿Reiniciar todos los embarques y el registro de eventos?")) return;
-  S.pax.forEach(p=>{p.embarcado=false;p.hora="";}); S.log=[]; guardar(); refrescar(); };
+async function fetchT(url, opt = {}, ms = 60000){
+  const ac = new AbortController(), t = setTimeout(() => ac.abort(), ms);
+  try { return await fetch(url, {...opt, signal:ac.signal}); } finally { clearTimeout(t); }
+}
+let enviando = false;
+async function enviarPendientes(avisar){
+  const url = D.cfg.urlEnvio, pend = pendientes();
+  if (!url || !pend.length || enviando){ renderSync(); if (avisar && url && !pend.length) toast("☁️ No hay viajes pendientes de enviar", "inf"); return; }
+  if (!navigator.onLine){ renderSync(); if (avisar) toast(`📵 Sin señal: ${pend.length} viaje(s) quedan pendientes y se enviarán solos`, "err", 6000); return; }
+  enviando = true; renderSync(); let ok = 0, err = 0, motivo = "";
+  for (const v of pend){
+    try {
+      const r = await fetchT(url, {method:"POST", headers:{"Content-Type":"text/plain;charset=UTF-8"}, body:JSON.stringify(payloadViaje(v))});
+      if (r.ok){ v.sync = Date.now(); ok++; await persistir(); } else { err++; motivo = "respuesta HTTP " + r.status; }
+    } catch(e){ err++; motivo = e.name === "AbortError" ? "sin respuesta (tiempo agotado)" : "sin conexión o URL/flujo incorrecto"; }
+  }
+  enviando = false; if (ok) D.cfg.ultimoEnvio = Date.now(); guardar(); renderSync();
+  if (avisar){
+    if (!err) toast(`☁️ ${ok} viaje(s) enviados a SharePoint`, "ok");
+    else toast(`⚠️ Enviados ${ok}, pendientes ${err} (${motivo}). Se reintentará.`, "err", 7000);
+  }
+}
+function renderSync(){
+  const n = pendientes().length, c = D.cfg;
+  $("hdrSync").textContent = !c.urlEnvio ? "" : enviando ? "☁️ enviando…" : n ? `☁️ ${n} por enviar` : "☁️ al día";
+  $("btnEnviarPend").textContent = `⬆ Enviar pendientes (${n})`;
+  $("syncEstado").innerHTML = !c.urlEnvio ? "⚪ Sin conexión configurada: los viajes quedan solo en este celular."
+    : `${n ? "🟠 " + n + " viaje(s) pendientes de envío." : "🟢 Todos los viajes finalizados están en SharePoint."}` +
+      (c.ultimoEnvio ? `<br>Último envío: ${new Date(c.ultimoEnvio).toLocaleString("es-PE")}` : "");
+}
+function cargarCfgForm(){ $("cfgEquipo").value = D.cfg.equipo || ""; $("cfgEnvio").value = D.cfg.urlEnvio || ""; $("cfgLectura").value = D.cfg.urlLectura || ""; }
+const urlOk = u => !u || /^https:\/\/\S+$/i.test(u);
+$("btnCfgGuardar").onclick = () => {
+  const e = $("cfgEnvio").value.trim(), l = $("cfgLectura").value.trim();
+  if (!urlOk(e) || !urlOk(l)){ alert("Las URL deben empezar con https:// y no tener espacios."); return; }
+  D.cfg.equipo = $("cfgEquipo").value.trim(); D.cfg.urlEnvio = e; D.cfg.urlLectura = l; persistir(); renderSync();
+  toast("💾 Conexión guardada", "ok"); if (e && pendientes().length) enviarPendientes(true);
+};
+$("btnEnviarPend").onclick = () => enviarPendientes(true);
+$("btnProbarCentral").onclick = async () => { if (!D.cfg.urlLectura){ alert("Primero guarde la URL de lectura."); return; } await leerCentral(true); };
+$("btnCompartirCfg").onclick = async () => {
+  if (!D.cfg.urlEnvio && !D.cfg.urlLectura){ alert("Primero guarde la conexión."); return; }
+  const data = btoa(unescape(encodeURIComponent(JSON.stringify({e:D.cfg.urlEnvio, l:D.cfg.urlLectura}))));
+  const link = location.origin + location.pathname + "#cfg=" + encodeURIComponent(data);
+  try { if (navigator.share){ await navigator.share({title:"Conexión App Embarque", text:"Abra este enlace en Chrome del otro celular:", url:link}); return; } } catch(e){ if (e.name === "AbortError") return; }
+  try { await navigator.clipboard.writeText(link); toast("📋 Enlace copiado. Péguelo en WhatsApp al otro celular.", "ok", 6000); }
+  catch(e){ prompt("Copie este enlace y envíelo al otro celular:", link); }
+};
+function leerCfgDeEnlace(){
+  const m = location.hash.match(/^#cfg=(.+)$/); if (!m) return;
+  try { const j = JSON.parse(decodeURIComponent(escape(atob(decodeURIComponent(m[1])))));
+    if (confirm("¿Configurar este celular con la conexión a SharePoint recibida?")){
+      D.cfg.urlEnvio = j.e || ""; D.cfg.urlLectura = j.l || "";
+      const eq = prompt("Nombre de este celular (ej.: Celular Bus 2):", D.cfg.equipo || ""); if (eq !== null) D.cfg.equipo = eq.trim();
+      persistir(); toast("✅ Conexión configurada", "ok");
+    }
+  } catch(e){ alert("El enlace de configuración no es válido."); }
+  history.replaceState(null, "", location.pathname);
+}
+window.addEventListener("online", () => enviarPendientes(false));
 
-/* ===================== EXPORTAR XLSX (sin librerías) ===================== */
+/* ---------- Lectura del Excel central ---------- */
+const numv = x => { const n = parseFloat(String(x ?? "").replace(",", ".")); return isFinite(n) ? n : 0; };
+function fechaISO(x){
+  const s = String(x ?? "").trim();
+  if (/^\d+(\.\d+)?$/.test(s)){ const n = +s; if (n > 20000 && n < 80000) return new Date(Date.UTC(1899,11,30) + Math.floor(n) * 864e5).toISOString().slice(0,10); }
+  let m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/); if (m) return `${m[1]}-${pad(m[2])}-${pad(m[3])}`;
+  m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/); if (m) return `${m[3]}-${pad(m[2])}-${pad(m[1])}`;
+  return "";
+}
+function horaTxt(x){
+  const s = String(x ?? "").trim();
+  if (/^\d*\.?\d+$/.test(s) && +s < 1){ const mi = Math.round(+s * 1440); return `${pad(Math.floor(mi/60) % 24)}:${pad(mi % 60)}`; }
+  const m = s.match(/(\d{1,2}):(\d{2})/); return m ? `${pad(m[1])}:${m[2]}` : s;
+}
+async function leerCentral(avisar){
+  const url = D.cfg.urlLectura;
+  if (!url){ toast("Configure la URL de lectura en la pestaña Datos", "err"); return; }
+  $("dEstado").textContent = "⏳ Descargando de SharePoint…";
+  try {
+    const r = await fetchT(url, {method:"GET"}, 60000); if (!r.ok) throw new Error("respuesta HTTP " + r.status);
+    let j = await r.json(); if (!Array.isArray(j)) j = j.value || j.body || j.rows || [];
+    const get = (o, k) => { for (const key of Object.keys(o)) if (norm(key) === k) return o[key]; return ""; };
+    const mapa = new Map();
+    for (const o of j){
+      const v = { id:String(get(o,"ID")).trim(), equipo:String(get(o,"EQUIPO")), fecha:fechaISO(get(o,"FECHA")), placa:String(get(o,"PLACA")).trim(),
+        ruta:String(get(o,"RUTA")).trim(), cond:String(get(o,"CONDUCTOR")).trim(), cap:numv(get(o,"CAPACIDAD")), hi:horaTxt(get(o,"INICIO")),
+        hf:horaTxt(get(o,"FIN")), dur:numv(get(o,"DURACION")), np:numv(get(o,"PASAJEROS")), nr:numv(get(o,"RECHAZOS")), est:"FINALIZADO", pax:[], rech:[] };
+      if (v.id && v.fecha && v.cap > 0) mapa.set(v.id, v);   // un ID repetido cuenta una sola vez
+    }
+    D.remoto = { fecha:Date.now(), viajes:[...mapa.values()] }; guardar();
+    if (avisar) toast(`✅ Conexión OK: ${D.remoto.viajes.length} viajes en SharePoint`, "ok");
+  } catch(e){
+    toast("❌ No se pudo leer SharePoint: " + (e.name === "AbortError" ? "tiempo agotado" : e.message === "Failed to fetch" ? "sin conexión o URL/flujo incorrecto" : e.message), "err", 7000);
+  }
+  renderDashboard();
+}
+
+/* ===================== DASHBOARD ===================== */
+let dGrupo = "ruta", dFuente = "local";
+document.querySelectorAll("#segGrupo button").forEach(b => b.onclick = () => {
+  dGrupo = b.dataset.g; document.querySelectorAll("#segGrupo button").forEach(x=>x.classList.toggle("act", x===b)); renderDashboard(); });
+document.querySelectorAll("#segFuente button").forEach(b => b.onclick = () => {
+  dFuente = b.dataset.f; document.querySelectorAll("#segFuente button").forEach(x=>x.classList.toggle("act", x===b));
+  if (dFuente === "todos" && D.cfg.urlLectura && navigator.onLine && Date.now() - (D.remoto.fecha || 0) > 120000) leerCentral(false);
+  renderDashboard(); });
+$("btnLeerCentral").onclick = () => leerCentral(true);
+function viajesFuente(){
+  const loc = D.viajes.filter(v => v.est === "FINALIZADO");
+  if (dFuente === "local") return loc;
+  const ids = new Set(D.remoto.viajes.map(v => v.id));
+  return [...D.remoto.viajes, ...loc.filter(v => !ids.has(v.id))];
+}
+function prepararFiltros(lista){
+  const anios = new Set([new Date().getFullYear()]); lista.forEach(v => anios.add(+v.fecha.slice(0,4)));
+  const sa = $("dAnio"), ant = sa.value;
+  sa.innerHTML = [...anios].sort((a,b)=>b-a).map(a=>`<option value="${a}">${a}</option>`).join("");
+  if (ant && anios.has(+ant)) sa.value = ant;
+  const sm = $("dMes");
+  if (!sm.options.length){ sm.innerHTML = `<option value="0">Acumulado del año</option>` + MESES.map((m,i)=>`<option value="${i+1}">${m}</option>`).join(""); sm.value = String(new Date().getMonth()+1); }
+}
+function agrupar(viajes, clave){
+  const m = new Map();
+  for (const v of viajes){ const k = v[clave]; const g = m.get(k) || {k, viajes:0, pax:0, cap:0, rech:0};
+    g.viajes++; g.pax += np(v); g.cap += v.cap; g.rech += nr(v); m.set(k, g); }
+  return [...m.values()].map(g => ({...g, oc: g.cap ? g.pax/g.cap : 0})).sort((a,b)=>b.oc-a.oc);
+}
+function barraHTML(etq, det, oc){
+  return `<div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;gap:8px"><b>${esc(etq)}</b><b style="color:${colorOcup(oc)}">${pct(oc)}</b></div>
+    <div class="barra"><i style="width:${Math.min(100,oc*100)}%;background:${colorOcup(oc)}"></i></div><div class="mini">${det}</div></div>`;
+}
+function renderDashboard(){
+  const base = viajesFuente(); prepararFiltros(base);
+  $("btnLeerCentral").classList.toggle("oculto", dFuente !== "todos");
+  const anio = $("dAnio").value, mes = +$("dMes").value;
+  const fin = base.filter(v => v.fecha.slice(0,4) === anio && (mes === 0 || +v.fecha.slice(5,7) === mes));
+  const pax = fin.reduce((s,v)=>s+np(v),0), cap = fin.reduce((s,v)=>s+v.cap,0), oc = cap ? pax/cap : 0;
+  $("dViajes").textContent = fin.length; $("dPax").textContent = pax; $("dAsi").textContent = cap;
+  $("dOcup").textContent = pct(oc); $("dOcup").style.color = colorOcup(oc);
+  $("dTitGrupo").textContent = "Ocupación por " + (dGrupo === "ruta" ? "ruta" : "bus") + (mes ? ` · ${MESES[mes-1]} ${anio}` : ` · acumulado ${anio}`);
+  $("dGrupos").innerHTML = agrupar(fin, dGrupo).map(g => barraHTML(g.k, `${g.viajes} viaje(s) · ${g.pax} pasajeros / ${g.cap} asientos${g.rech?` · ${g.rech} rechazos`:""}`, g.oc)).join("")
+    || `<p class="mini">No hay viajes finalizados en este periodo.</p>`;
+  $("dCardMes").classList.toggle("oculto", mes !== 0);
+  if (mes === 0){
+    $("dMeses").innerHTML = MESES.map((m,i) => { const vs = fin.filter(v => +v.fecha.slice(5,7) === i+1); if (!vs.length) return "";
+      const p = vs.reduce((s,v)=>s+np(v),0), c = vs.reduce((s,v)=>s+v.cap,0);
+      return barraHTML(m, `${vs.length} viaje(s) · ${p}/${c}`, c ? p/c : 0); }).join("") || `<p class="mini">Sin datos.</p>`;
+  }
+  $("dDetalle").innerHTML = fin.slice().sort((a,b)=>(b.fecha+hi(b)).localeCompare(a.fecha+hi(a))).slice(0,300).map(v => { const o = np(v)/v.cap;
+    return `<tr><td>${fFecha(v.fecha)}${v.equipo?`<div class="mini">${esc(v.equipo)}</div>`:""}</td><td><b>${esc(v.placa)}</b><div class="mini">${esc(v.ruta)} · ${esc(v.cond)}</div></td>
+      <td>${hi(v)}–${hf(v)}<div class="mini">${dur(v)} min</div></td><td><b style="color:${colorOcup(o)}">${pct(o)}</b><div class="mini">${np(v)}/${v.cap}</div></td></tr>`; }).join("")
+    || `<tr><td colspan="4" class="mini" style="text-align:center;padding:16px">Sin viajes</td></tr>`;
+  const abiertos = D.viajes.filter(v=>v.est==="EN CURSO").length;
+  if (dFuente === "todos"){
+    const locNo = D.viajes.filter(v => v.est === "FINALIZADO" && !D.remoto.viajes.some(r => r.id === v.id)).length;
+    $("dEstado").textContent = !D.cfg.urlLectura ? "⚠️ Falta configurar la URL de lectura (pestaña Datos)."
+      : D.remoto.fecha ? `☁️ SharePoint: ${D.remoto.viajes.length} viajes · actualizado ${new Date(D.remoto.fecha).toLocaleString("es-PE")}${locNo?` · + ${locNo} de este celular aún no enviados`:""}`
+      : "Toque «Actualizar desde SharePoint».";
+  } else $("dEstado").textContent = "📱 Solo los viajes de este celular.";
+  $("dNota").textContent = "Ocupación = pasajeros ÷ asientos ofrecidos. Verde ≥ 80 %, ámbar 50–79 %, rojo < 50 %." + (abiertos ? ` Hay ${abiertos} viaje(s) sin finalizar en este celular que no se cuentan.` : "");
+}
+$("dAnio").onchange = renderDashboard; $("dMes").onchange = renderDashboard;
+
+/* ===================== EXPORTAR / RESPALDO ===================== */
 const CRC = (()=>{ const t = new Uint32Array(256); for (let n=0;n<256;n++){ let c=n; for(let k=0;k<8;k++) c = c&1 ? 0xEDB88320^(c>>>1) : c>>>1; t[n]=c>>>0; } return t; })();
 const crc32 = u8 => { let c = 0xFFFFFFFF; for (const b of u8) c = CRC[(c^b)&255]^(c>>>8); return (c^0xFFFFFFFF)>>>0; };
 function zipStore(files){
   const enc = new TextEncoder(), parts = [], cen = []; let off = 0;
   for (const [name, txt] of files){
-    const nm = enc.encode(name), data = enc.encode(txt), crc = crc32(data);
-    const lh = new DataView(new ArrayBuffer(30));
+    const nm = enc.encode(name), data = enc.encode(txt), crc = crc32(data), lh = new DataView(new ArrayBuffer(30));
     lh.setUint32(0,0x04034b50,true); lh.setUint16(4,20,true); lh.setUint16(6,0x0800,true); lh.setUint32(14,crc,true);
-    lh.setUint32(18,data.length,true); lh.setUint32(22,data.length,true); lh.setUint16(26,nm.length,true);
-    parts.push(new Uint8Array(lh.buffer), nm, data);
+    lh.setUint32(18,data.length,true); lh.setUint32(22,data.length,true); lh.setUint16(26,nm.length,true); parts.push(new Uint8Array(lh.buffer), nm, data);
     const ch = new DataView(new ArrayBuffer(46));
     ch.setUint32(0,0x02014b50,true); ch.setUint16(4,20,true); ch.setUint16(6,20,true); ch.setUint16(8,0x0800,true); ch.setUint32(16,crc,true);
     ch.setUint32(20,data.length,true); ch.setUint32(24,data.length,true); ch.setUint16(28,nm.length,true); ch.setUint32(42,off,true);
@@ -469,46 +950,70 @@ const xe = s => String(s ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").repla
 const letra = i => { let s=""; i++; while(i){ const m=(i-1)%26; s=String.fromCharCode(65+m)+s; i=Math.floor((i-1)/26);} return s; };
 function hojaXml(filas){
   return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetData>` +
-    filas.map((f,r)=>`<row r="${r+1}">`+f.map((v,c)=>`<c r="${letra(c)}${r+1}" t="inlineStr"${r===0?' s="1"':''}><is><t xml:space="preserve">${xe(v)}</t></is></c>`).join("")+`</row>`).join("") +
-    `</sheetData></worksheet>`;
+    filas.map((f,r)=>`<row r="${r+1}">`+f.map((v,c)=> (typeof v === "number" && isFinite(v) && r > 0)
+      ? `<c r="${letra(c)}${r+1}"><v>${v}</v></c>`
+      : `<c r="${letra(c)}${r+1}" t="inlineStr"${r===0?' s="1"':''}><is><t xml:space="preserve">${xe(v)}</t></is></c>`).join("")+`</row>`).join("") + `</sheetData></worksheet>`;
 }
+function descargar(blob, nombre){ const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = nombre; document.body.appendChild(a); a.click(); a.remove(); }
+const sello = () => { const d = new Date(); return `${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}_${pad(d.getHours())}${pad(d.getMinutes())}`; };
 function exportar(){
-  if (!S.pax.length){ alert("No hay manifiesto cargado."); return; }
-  const h1 = [["N°","NOMBRES Y APELLIDOS","DNI","FOTOCHECK","N° ASIENTO","CARGO","EMPRESA","ORIGEN","DESTINO","ABORDO","HORA EMBARQUE"],
-    ...S.pax.map((p,i)=>[i+1,p.nombre,p.dni,p.fotocheck,p.asiento,p.cargo,p.empresa,p.origen,p.destino,p.embarcado?"P":"",p.hora])];
-  const h2 = [["HORA","CÓDIGO LEÍDO","RESULTADO","ORIGEN"], ...S.log.slice().reverse().map(l=>[l.hora,l.codigo,l.res,l.origen])];
-  const ok = S.pax.filter(p=>p.embarcado).length;
-  const h3 = [["DATO","VALOR"],["Bus / Placa",S.viaje.bus],["Ruta / Turno",S.viaje.ruta],["Archivo origen",S.viaje.archivo],["Cargado",S.viaje.cargado],
-    ["Exportado",new Date().toLocaleString("es-PE")],["Total manifiesto",S.pax.length],["Embarcados",ok],["No se presentaron",S.pax.length-ok],
-    ["Intentos no registrados",S.log.filter(l=>l.res==="NO REGISTRADO").length]];
-  const ns = 'xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"';
-  const files = [
-    ["[Content_Types].xml",`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>${[1,2,3].map(i=>`<Override PartName="/xl/worksheets/sheet${i}.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>`).join("")}</Types>`],
-    ["_rels/.rels",`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>`],
-    ["xl/workbook.xml",`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook ${ns}><sheets><sheet name="Manifiesto" sheetId="1" r:id="rId1"/><sheet name="Eventos" sheetId="2" r:id="rId2"/><sheet name="Resumen" sheetId="3" r:id="rId3"/></sheets></workbook>`],
-    ["xl/_rels/workbook.xml.rels",`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">${[1,2,3].map(i=>`<Relationship Id="rId${i}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet${i}.xml"/>`).join("")}<Relationship Id="rId9" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>`],
-    ["xl/styles.xml",`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><fonts count="2"><font><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><name val="Calibri"/></font></fonts><fills count="2"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill></fills><borders count="1"><border/></borders><cellStyleXfs count="1"><xf/></cellStyleXfs><cellXfs count="2"><xf/><xf fontId="1" applyFont="1"/></cellXfs></styleSheet>`],
-    ["xl/worksheets/sheet1.xml", hojaXml(h1)], ["xl/worksheets/sheet2.xml", hojaXml(h2)], ["xl/worksheets/sheet3.xml", hojaXml(h3)]
+  const hojas = [
+    ["Personal", [["DNI","NOMBRE","EMPRESA","CARGO","FOTOCHECK","HABILITADO"], ...D.pers.map(p=>[p.dni,p.nombre,p.empresa,p.cargo,p.fot,p.hab?"SI":"NO"])]],
+    ["Viajes", [["FECHA","PLACA","RUTA","CONDUCTOR","CAPACIDAD","HORA INICIO","HORA FIN","ESTADO","PASAJEROS","OCUPACION %","RECHAZOS","ENVIADO SHAREPOINT"],
+      ...D.viajes.map(v=>[fFecha(v.fecha),v.placa,v.ruta,v.cond,v.cap,hhmm(v.ini),hhmm(v.fin),v.est,v.pax.length,Math.round(v.pax.length/v.cap*100),v.rech.length,v.sync?"SI":"NO"])]],
+    ["Embarques", [["FECHA","PLACA","RUTA","CONDUCTOR","HORA","DNI","NOMBRE","EMPRESA"],
+      ...D.viajes.flatMap(v=>v.pax.map(p=>[fFecha(v.fecha),v.placa,v.ruta,v.cond,hhmmss(p.t),p.d,p.n,p.e||""]))]],
+    ["Rechazos", [["FECHA","PLACA","RUTA","HORA","CODIGO LEIDO","NOMBRE","MOTIVO"],
+      ...D.viajes.flatMap(v=>v.rech.map(r=>[fFecha(v.fecha),v.placa,v.ruta,hhmmss(r.t),r.c,r.n,r.m]))]]
   ];
-  const a = document.createElement("a"); a.href = URL.createObjectURL(zipStore(files));
-  const d = new Date(), f = `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,"0")}${String(d.getDate()).padStart(2,"0")}_${String(d.getHours()).padStart(2,"0")}${String(d.getMinutes()).padStart(2,"0")}`;
-  a.download = `Embarque_${(S.viaje.bus||"bus").replace(/[^\w-]/g,"")}_${f}.xlsx`; a.click();
+  const ns = 'xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"';
+  const n = hojas.length, ids = [...Array(n).keys()].map(i=>i+1);
+  const files = [
+    ["[Content_Types].xml",`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>${ids.map(i=>`<Override PartName="/xl/worksheets/sheet${i}.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>`).join("")}</Types>`],
+    ["_rels/.rels",`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>`],
+    ["xl/workbook.xml",`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook ${ns}><sheets>${hojas.map((h,i)=>`<sheet name="${h[0]}" sheetId="${i+1}" r:id="rId${i+1}"/>`).join("")}</sheets></workbook>`],
+    ["xl/_rels/workbook.xml.rels",`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">${ids.map(i=>`<Relationship Id="rId${i}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet${i}.xml"/>`).join("")}<Relationship Id="rId99" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>`],
+    ["xl/styles.xml",`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><fonts count="2"><font><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><name val="Calibri"/></font></fonts><fills count="2"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill></fills><borders count="1"><border/></borders><cellStyleXfs count="1"><xf/></cellStyleXfs><cellXfs count="2"><xf/><xf fontId="1" applyFont="1"/></cellXfs></styleSheet>`],
+    ...hojas.map((h,i)=>[`xl/worksheets/sheet${i+1}.xml`, hojaXml(h[1])])
+  ];
+  descargar(zipStore(files), `Embarque_${sello()}.xlsx`);
 }
 $("btnExport").onclick = exportar;
+$("btnBackup").onclick = () => descargar(new Blob([JSON.stringify({app:"embarque", ver:5, fecha:Date.now(), D})], {type:"application/json"}), `Respaldo_Embarque_${sello()}.json`);
+$("btnRestore").onclick = () => $("inpRestore").click();
+$("inpRestore").addEventListener("change", async e => {
+  const f = e.target.files[0]; e.target.value = ""; if (!f) return;
+  try { const j = JSON.parse(await f.text()); if (!j || j.app !== "embarque" || !j.D) throw new Error("Archivo de respaldo no válido.");
+    if (!confirm(`¿Reemplazar los datos de este equipo con el respaldo del ${new Date(j.fecha).toLocaleString("es-PE")}?\n${j.D.pers.length} personas · ${j.D.viajes.length} viajes`)) return;
+    D = Object.assign({ pers:[], rutas:[], buses:[], cond:[], viajes:[], activo:null, padron:{}, cfg:{urlEnvio:"",urlLectura:"",equipo:""}, remoto:{viajes:[],fecha:0} }, j.D); reindex(); await persistir(); renderTodo(); alert("✅ Respaldo restaurado.");
+  } catch(err){ alert("❌ " + err.message); }
+});
+$("btnBorrarViajes").onclick = () => {
+  if (!D.viajes.length) return;
+  if (!confirm(`¿Borrar ${D.viajes.length} viajes? Exporte antes.`) || !confirm("¿Seguro? No se puede deshacer.")) return;
+  D.viajes = []; D.activo = null; persistir(); renderTodo();
+};
 
 /* ===================== NAVEGACIÓN ===================== */
+const TABS = ["embarque","personal","rutas","dashboard","datos"];
+window.irA = tab => document.querySelector(`nav button[data-tab="${tab}"]`).click();
 document.querySelectorAll("nav button").forEach(b => b.onclick = () => {
   document.querySelectorAll("nav button").forEach(x=>x.classList.toggle("act", x===b));
-  ["escanear","lista","registro","cargar"].forEach(t => $("tab-"+t).classList.toggle("oculto", t!==b.dataset.tab));
-  if (b.dataset.tab !== "escanear") detenerCam();
+  TABS.forEach(t => $("tab-"+t).classList.toggle("oculto", t !== b.dataset.tab));
+  if (b.dataset.tab !== "embarque") detenerCam();
+  if (b.dataset.tab === "dashboard") renderDashboard();
+  if (b.dataset.tab === "personal") renderPersonal();
 });
-setInterval(()=>{$("hdrHora").textContent = new Date().toLocaleTimeString("es-PE",{hour:"2-digit",minute:"2-digit",hour12:false});},1000);
-$("inpBus").value = S.viaje.bus||""; $("inpRuta").value = S.viaje.ruta||"";
-if (!S.pax.length) document.querySelector('nav button[data-tab="cargar"]').click();
-refrescar();
-if ("serviceWorker" in navigator && location.protocol==="https:") navigator.serviceWorker.register("sw.js");
-// exportar funciones para pruebas
-window.__test = {leerXlsx, interpretar, buscarPasajero, zipStore};
+function renderTodo(){ renderCatalogos(); renderEmbarque(); renderPersonal(); renderSync(); if (!$("tab-dashboard").classList.contains("oculto")) renderDashboard(); }
+setInterval(()=>{ $("hdrHora").textContent = hhmm(Date.now()); }, 1000); $("hdrHora").textContent = hhmm(Date.now());
+
+(async () => {
+  await cargarEstado(); leerCfgDeEnlace(); reindex(); cargarCfgForm(); renderTodo();
+  if (D.cfg.urlEnvio) setTimeout(() => enviarPendientes(false), 1500);
+  if (!D.pers.length) irA("personal");
+  if ("serviceWorker" in navigator && location.protocol === "https:") navigator.serviceWorker.register("sw.js");
+})();
+window.__t = { get D(){ return D; }, buscarPersona, persistir, payloadViaje };
 </script>
 </body>
 </html>
