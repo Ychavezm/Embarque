@@ -33,6 +33,7 @@ main{padding:12px;max-width:860px;margin:0 auto}
 .btn:disabled{opacity:.45}
 .row{display:flex;gap:8px}.row>*{flex:1}
 input[type=text],input[type=search],input[type=number],input[type=date],select{width:100%;padding:11px;font-size:16px;border:1px solid #c3cad4;border-radius:10px;background:#fff}
+textarea{width:100%;padding:10px;font-size:13px;border:1px solid #c3cad4;border-radius:10px;font-family:monospace}
 label{font-size:13px;color:#56606e;display:block;margin:8px 0 4px}
 .combo{display:flex;gap:6px}.combo input{flex:1}
 .combo select{flex:0 0 52px;width:52px;padding:0;border:0;border-radius:10px;color:transparent;-webkit-appearance:none;appearance:none;background:var(--azul) url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2720%27 height=%2720%27%3E%3Cpath d=%27M4 7l6 6 6-6%27 stroke=%27white%27 stroke-width=%273%27 fill=%27none%27/%3E%3C/svg%3E") center/22px no-repeat}
@@ -51,15 +52,13 @@ label{font-size:13px;color:#56606e;display:block;margin:8px 0 4px}
 table{width:100%;border-collapse:collapse;font-size:14px}
 th,td{padding:8px 6px;border-bottom:1px solid #e3e7ec;text-align:left;vertical-align:middle}
 th{background:#eef1f5;font-size:11px;text-transform:uppercase;color:#56606e}
-.tag{display:inline-block;padding:3px 8px;border-radius:20px;font-size:12px;font-weight:700;color:#fff}
-.t-ok{background:var(--verde)}.t-no{background:var(--rojo)}.t-am{background:var(--ambar)}.t-gr{background:#8b96a5}.t-az{background:var(--azul)}
 .mini{font-size:12px;color:#56606e}
 .aviso{background:#fff4e0;border-left:4px solid var(--ambar);padding:10px;border-radius:8px;font-size:13px;margin-top:8px}
 .aviso.okk{background:#e8f5ec;border-color:var(--verde)}
 .aviso.error{background:#fde7e7;border-color:var(--rojo)}
 .oculto{display:none!important}
 .chk{display:flex;align-items:center;gap:8px;font-size:14px;margin-top:8px}
-.chk input{width:20px;height:20px}
+.chk input{width:20px;height:20px;flex:0 0 20px}
 .sw{border:0;border-radius:20px;padding:8px 0;width:64px;font-weight:800;color:#fff;font-size:14px}
 .sw.si{background:var(--verde)}.sw.no{background:var(--rojo)}
 .xbtn{border:0;border-radius:8px;padding:7px 10px;font-weight:700;color:#fff;background:#8b96a5}
@@ -72,18 +71,17 @@ th{background:#eef1f5;font-size:11px;text-transform:uppercase;color:#56606e}
 .barra{height:14px;background:#e3e7ec;border-radius:7px;overflow:hidden;margin-top:4px}
 .barra i{display:block;height:100%}
 .ocupGrande{font-size:30px;font-weight:900}
-#toast{position:fixed;left:12px;right:12px;bottom:16px;z-index:50;padding:14px;border-radius:12px;color:#fff;font-weight:700;font-size:15px;text-align:center;box-shadow:0 4px 14px rgba(0,0,0,.25);display:none}
-#toast.ok{background:var(--verde)}#toast.err{background:var(--rojo)}#toast.inf{background:#5b6675}
-textarea{width:100%;padding:10px;font-size:13px;border:1px solid #c3cad4;border-radius:10px;font-family:monospace}
 #ultimoLeido{font-family:monospace;font-size:12px;word-break:break-all;color:#56606e;margin-top:6px}
 .seg{display:flex;border:1px solid #c3cad4;border-radius:10px;overflow:hidden}
 .seg button{flex:1;border:0;background:#fff;padding:10px;font-weight:700;color:#56606e}
 .seg button.act{background:var(--azul);color:#fff}
+#toast{position:fixed;left:12px;right:12px;bottom:16px;z-index:50;padding:14px;border-radius:12px;color:#fff;font-weight:700;font-size:15px;text-align:center;box-shadow:0 4px 14px rgba(0,0,0,.25);display:none}
+#toast.ok{background:var(--verde)}#toast.err{background:var(--rojo)}#toast.inf{background:#5b6675}
 </style>
 </head>
 <body>
 <header>
-  <div><h1>🚌 Control de Pasajeros <span class="ver">v6</span></h1><small id="hdrViaje">Sin viaje en curso</small></div>
+  <div><h1>🚌 Control de Pasajeros <span class="ver">v7</span></h1><small id="hdrViaje">Sin viaje en curso</small></div>
   <div style="text-align:right"><div id="hdrHora" style="font-weight:700"></div><div id="hdrSync" style="font-size:11px;opacity:.9"></div></div>
 </header>
 <nav>
@@ -98,8 +96,6 @@ textarea{width:100%;padding:10px;font-size:13px;border:1px solid #c3cad4;border-
 <!-- ===================== EMBARQUE ===================== -->
 <section id="tab-embarque">
   <div id="sinPadron" class="aviso error oculto">⚠️ <b>No hay personal registrado.</b> Vaya a la pestaña <b>Personal</b> y cargue el Excel.</div>
-
-  <!-- Sin viaje activo: formulario -->
   <div id="boxNuevo">
     <div class="card">
       <h3>🟢 Iniciar viaje</h3>
@@ -121,8 +117,6 @@ textarea{width:100%;padding:10px;font-size:13px;border:1px solid #c3cad4;border-
       <div id="lstAbiertos"></div>
     </div>
   </div>
-
-  <!-- Con viaje activo -->
   <div id="boxActivo" class="oculto">
     <div class="viaje">
       <div class="t1" id="vaTitulo"></div>
@@ -173,10 +167,10 @@ textarea{width:100%;padding:10px;font-size:13px;border:1px solid #c3cad4;border-
   </div>
   <div class="card">
     <h3>📥 Cargar / actualizar desde Excel</h3>
-    <input type="file" id="inpPadron" accept=".xlsx,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv,application/octet-stream">
+    <input type="file" id="inpPadron" accept=".xlsx,.csv,.txt,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv,text/plain,application/octet-stream">
     <label class="chk"><input type="checkbox" id="chkAusentes"><span>Marcar como <b>NO habilitados</b> a los que no estén en este Excel</span></label>
     <div id="padronMsg"></div>
-    <p class="mini">El personal queda <b>guardado en el equipo</b>. Al cargar otro Excel se <b>agregan</b> los nuevos y se <b>actualizan</b> los existentes (por DNI); nadie se borra. Columnas: <b>DNI</b> (obligatoria), NOMBRES, EMPRESA, CARGO, FOTOCHECK, <b>HABILITADO</b> (SI/NO). Si el Excel no trae HABILITADO, se respeta lo que usted cambió a mano.</p>
+    <p class="mini">Acepta <b>.xlsx</b> o <b>.csv</b>. El personal queda <b>guardado en el equipo</b>. Al cargar otro Excel se <b>agregan</b> los nuevos y se <b>actualizan</b> los existentes (por DNI); nadie se borra. Columnas: <b>DNI</b> (obligatoria), NOMBRE, EMPRESA, CARGO, FOTOCHECK, <b>HABILITADO</b> (SI/NO). Si el Excel no trae HABILITADO, se respeta lo que usted cambió a mano.</p>
     <p class="mini" id="padronInfo"></p>
   </div>
   <div class="card">
@@ -279,7 +273,7 @@ textarea{width:100%;padding:10px;font-size:13px;border:1px solid #c3cad4;border-
     <h3>💾 Respaldo</h3>
     <div class="row"><button class="btn" id="btnBackup">Guardar respaldo</button><button class="btn sec" id="btnRestore">Restaurar</button></div>
     <input type="file" id="inpRestore" accept=".json,application/json" class="oculto">
-    <p class="mini">Los datos viven solo en este equipo. Guarde un respaldo cada semana (y antes de borrar datos del navegador o cambiar de celular).</p>
+    <p class="mini">Los datos viven en este equipo. Guarde un respaldo cada semana (y antes de borrar datos del navegador o cambiar de celular).</p>
   </div>
   <div class="card">
     <h3>🔊 Alarma</h3>
@@ -314,7 +308,7 @@ const norm = s => String(s ?? "").normalize("NFD").replace(/[\u0300-\u036f]/g,""
 const colorOcup = x => x >= .8 ? "var(--verde)" : x >= .5 ? "var(--ambar)" : "var(--rojo)";
 const MESES = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
 
-/* ===================== ESTADO + ALMACENAMIENTO (IndexedDB) ===================== */
+/* ===================== ESTADO + ALMACENAMIENTO ===================== */
 let D = { pers:[], rutas:[], buses:[], cond:[], viajes:[], activo:null, padron:{archivo:"", fecha:0}, cfg:{}, remoto:{viajes:[], fecha:0} };
 const IDB = {
   db:null,
@@ -339,7 +333,6 @@ async function cargarEstado(){
   if (g) D = Object.assign(D, g);
   D.cfg = Object.assign({urlEnvio:"", urlLectura:"", equipo:""}, D.cfg || {});
   D.remoto = D.remoto && D.remoto.viajes ? D.remoto : {viajes:[], fecha:0};
-  // Migrar catálogo de versiones anteriores (v4)
   try { const c = JSON.parse(localStorage.getItem("ctrlPasajeros_cat") || "null");
     if (c && !D.rutas.length && !D.buses.length){
       D.rutas = (c.rutas||[]).slice();
@@ -356,16 +349,26 @@ function reindex(){
   for (const p of D.pers){ IDX.dni.set(p.dni, p); if (p.fot) IDX.fot.set(p.fot, p); }
 }
 
-/* ===================== LECTOR EXCEL ===================== */
+/* ===================== LECTOR EXCEL / CSV ===================== */
 async function inflateRaw(u8){
+  if (typeof DecompressionStream === "undefined") throw new Error("Este navegador es antiguo y no puede leer .xlsx. Actualice Chrome o cargue el archivo como «CSV UTF-8».");
   const ds = new DecompressionStream("deflate-raw");
   return new Uint8Array(await new Response(new Blob([u8]).stream().pipeThrough(ds)).arrayBuffer());
 }
 async function unzip(ab){
   const dv = new DataView(ab), u8 = new Uint8Array(ab), files = {};
+  if (ab.byteLength < 30) throw new Error("El archivo está vacío o incompleto. Descárguelo de nuevo.");
+  const b0 = u8[0], b1 = u8[1], b2 = u8[2], b3 = u8[3];
+  if (b0 === 0xD0 && b1 === 0xCF && b2 === 0x11 && b3 === 0xE0)
+    throw new Error("El Excel está PROTEGIDO (etiqueta de confidencialidad/cifrado de MINSUR) o es formato antiguo .xls, y la app no puede abrirlo. Solución: en Excel use Archivo → Guardar como → «CSV UTF-8 (delimitado por comas) (*.csv)» y cargue ese .csv. O cambie la etiqueta de confidencialidad a una sin cifrado.");
+  if (!(b0 === 0x50 && b1 === 0x4B)){
+    const ini = new TextDecoder().decode(u8.subarray(0, 300)).toLowerCase();
+    if (ini.includes("<html") || ini.includes("<!doctype")) throw new Error("Lo que se descargó es una PÁGINA WEB, no el Excel (pasa al guardar el enlace de OneDrive/SharePoint). Abra el Excel → Archivo → Guardar una copia / Descargar una copia, y cargue ese archivo. O guárdelo como CSV.");
+    throw new Error("Este archivo no es un Excel .xlsx. Guárdelo en Excel como .xlsx o como «CSV UTF-8» y vuelva a cargarlo.");
+  }
   let eocd = -1;
-  for (let i = ab.byteLength - 22; i >= Math.max(0, ab.byteLength - 66000); i--) if (dv.getUint32(i,true) === 0x06054b50){ eocd = i; break; }
-  if (eocd < 0) throw new Error("El archivo no es un .xlsx válido (¿se descargó completo?)");
+  for (let i = ab.byteLength - 22; i >= 0; i--) if (dv.getUint32(i,true) === 0x06054b50){ eocd = i; break; }
+  if (eocd < 0) throw new Error("El .xlsx está incompleto o dañado. Descárguelo de nuevo, o guárdelo como «CSV UTF-8» y cargue el .csv.");
   const n = dv.getUint16(eocd+10,true); let p = dv.getUint32(eocd+16,true); const td = new TextDecoder();
   for (let k = 0; k < n; k++){
     const method = dv.getUint16(p+10,true), csize = dv.getUint32(p+20,true);
@@ -417,7 +420,9 @@ async function leerXlsx(ab){
   return res;
 }
 function leerCsv(txt){
-  const l0 = txt.split("\n")[0], sep = (l0.match(/;/g)||[]).length > (l0.match(/,/g)||[]).length ? ";" : ",";
+  txt = txt.replace(/^\uFEFF/, "");
+  const l0 = txt.split("\n")[0], cnt = ch => (l0.split(ch).length - 1);
+  const sep = [";", ",", "\t"].sort((a,b)=>cnt(b)-cnt(a))[0];
   const filas = []; let f = [], c = "", q = false;
   for (let i = 0; i < txt.length; i++){
     const ch = txt[i];
@@ -428,7 +433,12 @@ function leerCsv(txt){
   if (c || f.length){ f.push(c); filas.push(f); }
   return [{nombre:"CSV", filas}];
 }
-// Números que Excel guarda como 40635666, 40635666.0 o 4.0635666E7
+async function leerCsvArchivo(file){
+  const buf = new Uint8Array(await file.arrayBuffer());
+  let txt = new TextDecoder("utf-8").decode(buf);
+  if (txt.includes("\uFFFD")) txt = new TextDecoder("windows-1252").decode(buf);   // CSV guardado sin UTF-8
+  return leerCsv(txt);
+}
 const numTxt = v => { let s = String(v ?? "").trim().replace(/[\s']/g,"");
   if (/^[+-]?\d+(\.\d+)?[eE][+-]?\d+$/.test(s) || /^\d+\.\d+$/.test(s)){ const n = Number(s); if (isFinite(n) && Math.abs(n - Math.round(n)) < 1e-6) s = String(Math.round(n)); }
   return s; };
@@ -486,9 +496,10 @@ $("inpPadron").addEventListener("change", async e => {
   const f = e.target.files[0]; e.target.value = ""; if (!f) return;
   const msg = $("padronMsg"); msg.innerHTML = "<p class='mini'>Leyendo archivo…</p>";
   try {
-    const hojas = f.name.toLowerCase().endsWith(".csv") ? leerCsv(await f.text()) : await leerXlsx(await f.arrayBuffer());
+    const nom = f.name.toLowerCase();
+    const hojas = (nom.endsWith(".csv") || nom.endsWith(".txt")) ? await leerCsvArchivo(f) : await leerXlsx(await f.arrayBuffer());
     const r = interpretarPadron(hojas);
-    if (!r || !r.filas.length) throw new Error("No se encontró una columna DNI con personas. Revise el encabezado.");
+    if (!r || !r.filas.length) throw new Error("No se encontró una columna llamada DNI con personas. Revise que la primera fila tenga los títulos (DNI, NOMBRE, …).");
     const k = importarPadron(r, $("chkAusentes").checked);
     D.padron = { archivo:f.name, fecha:Date.now() }; guardar();
     const dupl = r.filas.length - new Set(r.filas.map(x=>x.dni)).size;
@@ -499,7 +510,7 @@ $("inpPadron").addEventListener("change", async e => {
       (dupl ? `<div class="aviso">⚠️ ${dupl} DNI repetidos en el Excel (se usó la última fila).</div>` : "") +
       (raros ? `<div class="aviso">⚠️ ${raros} documentos no tienen 8 dígitos (CE/pasaporte o error).</div>` : "");
     renderTodo();
-  } catch(err){ msg.innerHTML = `<div class="aviso error">❌ ${esc(err.message)}</div>`; }
+  } catch(err){ msg.innerHTML = `<div class="aviso error">❌ ${esc(err.message)}</div><p class="mini">Archivo: ${esc(f.name)} · ${Math.round(f.size/1024)} KB</p>`; }
 });
 
 /* ===================== PERSONAL: LISTADO ===================== */
@@ -582,7 +593,7 @@ $("btnIniciar").onclick = () => {
   if (abierto && !confirm(`El bus ${placa} ya tiene un viaje sin finalizar (${abierto.ruta}, ${fFecha(abierto.fecha)} ${hhmm(abierto.ini)}). ¿Iniciar otro de todas formas?`)) return;
   addRuta(ruta); addCond(cond);
   const b = busDe(placa); if (b){ if (b.cap !== cap) b.cap = cap; } else D.buses.push({placa, cod:"", cap});
-  const v = { id:"V" + Date.now().toString(36), fecha, ruta, placa, cond, cap, ini:Date.now(), fin:0, est:"EN CURSO", pax:[], rech:[] };
+  const v = { id:"V" + Date.now().toString(36) + Math.random().toString(36).slice(2,5), fecha, ruta, placa, cond, cap, ini:Date.now(), fin:0, est:"EN CURSO", pax:[], rech:[] };
   D.viajes.push(v); D.activo = v.id; guardar(); $("resultado").style.display = "none"; renderTodo();
 };
 window.continuar = id => { D.activo = id; guardar(); $("resultado").style.display = "none"; renderTodo(); };
@@ -639,7 +650,7 @@ function procesar(raw, origen){
   raw = String(raw||"").trim(); if (!raw) return;
   const ahora = Date.now(); if (raw === ultimo.code && ahora - ultimo.t < 3000) return; ultimo = {code:raw, t:ahora};
   $("ultimoLeido").textContent = `Último código leído (${origen}): ${raw.slice(0,120)}`;
-  const v = VA(); if (!v){ return; }
+  const v = VA(); if (!v) return;
   const p = buscarPersona(raw);
   const rechazar = (motivo, nombre) => { v.rech.push({c:raw.slice(0,60), n:nombre||"", t:ahora, m:motivo}); guardar(); alarma(); };
   if (!p){ rechazar("NO REGISTRADO"); mostrar("no", {titulo:"⛔ NO REGISTRADO", sub:"No figura en el registro de personal", raw}); }
@@ -826,7 +837,6 @@ function leerCfgDeEnlace(){
 }
 window.addEventListener("online", () => enviarPendientes(false));
 
-/* ---------- Lectura del Excel central ---------- */
 const numv = x => { const n = parseFloat(String(x ?? "").replace(",", ".")); return isFinite(n) ? n : 0; };
 function fechaISO(x){
   const s = String(x ?? "").trim();
@@ -853,7 +863,7 @@ async function leerCentral(avisar){
       const v = { id:String(get(o,"ID")).trim(), equipo:String(get(o,"EQUIPO")), fecha:fechaISO(get(o,"FECHA")), placa:String(get(o,"PLACA")).trim(),
         ruta:String(get(o,"RUTA")).trim(), cond:String(get(o,"CONDUCTOR")).trim(), cap:numv(get(o,"CAPACIDAD")), hi:horaTxt(get(o,"INICIO")),
         hf:horaTxt(get(o,"FIN")), dur:numv(get(o,"DURACION")), np:numv(get(o,"PASAJEROS")), nr:numv(get(o,"RECHAZOS")), est:"FINALIZADO", pax:[], rech:[] };
-      if (v.id && v.fecha && v.cap > 0) mapa.set(v.id, v);   // un ID repetido cuenta una sola vez
+      if (v.id && v.fecha && v.cap > 0) mapa.set(v.id, v);
     }
     D.remoto = { fecha:Date.now(), viajes:[...mapa.values()] }; guardar();
     if (avisar) toast(`✅ Conexión OK: ${D.remoto.viajes.length} viajes en SharePoint`, "ok");
@@ -967,7 +977,7 @@ function exportar(){
       ...D.viajes.flatMap(v=>v.rech.map(r=>[fFecha(v.fecha),v.placa,v.ruta,hhmmss(r.t),r.c,r.n,r.m]))]]
   ];
   const ns = 'xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"';
-  const n = hojas.length, ids = [...Array(n).keys()].map(i=>i+1);
+  const ids = [...Array(hojas.length).keys()].map(i=>i+1);
   const files = [
     ["[Content_Types].xml",`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>${ids.map(i=>`<Override PartName="/xl/worksheets/sheet${i}.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>`).join("")}</Types>`],
     ["_rels/.rels",`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>`],
@@ -979,13 +989,14 @@ function exportar(){
   descargar(zipStore(files), `Embarque_${sello()}.xlsx`);
 }
 $("btnExport").onclick = exportar;
-$("btnBackup").onclick = () => descargar(new Blob([JSON.stringify({app:"embarque", ver:5, fecha:Date.now(), D})], {type:"application/json"}), `Respaldo_Embarque_${sello()}.json`);
+$("btnBackup").onclick = () => descargar(new Blob([JSON.stringify({app:"embarque", ver:7, fecha:Date.now(), D})], {type:"application/json"}), `Respaldo_Embarque_${sello()}.json`);
 $("btnRestore").onclick = () => $("inpRestore").click();
 $("inpRestore").addEventListener("change", async e => {
   const f = e.target.files[0]; e.target.value = ""; if (!f) return;
   try { const j = JSON.parse(await f.text()); if (!j || j.app !== "embarque" || !j.D) throw new Error("Archivo de respaldo no válido.");
     if (!confirm(`¿Reemplazar los datos de este equipo con el respaldo del ${new Date(j.fecha).toLocaleString("es-PE")}?\n${j.D.pers.length} personas · ${j.D.viajes.length} viajes`)) return;
-    D = Object.assign({ pers:[], rutas:[], buses:[], cond:[], viajes:[], activo:null, padron:{}, cfg:{urlEnvio:"",urlLectura:"",equipo:""}, remoto:{viajes:[],fecha:0} }, j.D); reindex(); await persistir(); renderTodo(); alert("✅ Respaldo restaurado.");
+    D = Object.assign({ pers:[], rutas:[], buses:[], cond:[], viajes:[], activo:null, padron:{}, cfg:{urlEnvio:"",urlLectura:"",equipo:""}, remoto:{viajes:[],fecha:0} }, j.D);
+    reindex(); await persistir(); cargarCfgForm(); renderTodo(); alert("✅ Respaldo restaurado.");
   } catch(err){ alert("❌ " + err.message); }
 });
 $("btnBorrarViajes").onclick = () => {
@@ -1009,8 +1020,8 @@ setInterval(()=>{ $("hdrHora").textContent = hhmm(Date.now()); }, 1000); $("hdrH
 
 (async () => {
   await cargarEstado(); leerCfgDeEnlace(); reindex(); cargarCfgForm(); renderTodo();
-  if (D.cfg.urlEnvio) setTimeout(() => enviarPendientes(false), 1500);
   if (!D.pers.length) irA("personal");
+  if (D.cfg.urlEnvio) setTimeout(() => enviarPendientes(false), 1500);
   if ("serviceWorker" in navigator && location.protocol === "https:") navigator.serviceWorker.register("sw.js");
 })();
 window.__t = { get D(){ return D; }, buscarPersona, persistir, payloadViaje };
