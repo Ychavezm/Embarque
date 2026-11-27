@@ -1,1030 +1,204 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<meta name="theme-color" content="#0b3d6b">
-<meta name="mobile-web-app-capable" content="yes">
-<link rel="manifest" href="manifest.webmanifest">
-<link rel="icon" href="icon-192.png">
-<link rel="apple-touch-icon" href="icon-192.png">
-<title>Control de Pasajeros – Embarque</title>
-<style>
-:root{--azul:#0b3d6b;--verde:#1b8a3a;--rojo:#c62828;--ambar:#e69500;--gris:#f1f3f6;--txt:#1d2430}
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{margin:0;font-family:Segoe UI,Roboto,Arial,sans-serif;background:var(--gris);color:var(--txt)}
-header{background:var(--azul);color:#fff;padding:10px 14px;display:flex;align-items:center;justify-content:space-between}
-header h1{font-size:17px;margin:0}
-header small{opacity:.85;font-size:12px;display:block}
-.ver{font-size:11px;background:#e69500;padding:1px 6px;border-radius:8px;vertical-align:middle}
-nav{display:flex;background:#fff;border-bottom:1px solid #d5dae1;position:sticky;top:0;z-index:5}
-nav button{flex:1;border:0;background:none;padding:12px 2px;font-size:13px;font-weight:600;color:#56606e;border-bottom:3px solid transparent}
-nav button.act{color:var(--azul);border-bottom-color:var(--azul)}
-main{padding:12px;max-width:860px;margin:0 auto}
-.card{background:#fff;border-radius:12px;padding:14px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
-.card h3{margin:0 0 8px;font-size:16px}
-.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
-.kpi{background:#fff;border-radius:10px;padding:8px 4px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.08)}
-.kpi b{display:block;font-size:22px}
-.kpi span{font-size:10px;color:#56606e;text-transform:uppercase}
-.c-ok{color:var(--verde)}.c-no{color:var(--rojo)}.c-az{color:var(--azul)}.c-am{color:var(--ambar)}
-.btn{border:0;border-radius:10px;padding:13px 14px;font-size:16px;font-weight:700;color:#fff;background:var(--azul);width:100%}
-.btn.sec{background:#5b6675}.btn.ok{background:var(--verde)}.btn.red{background:var(--rojo)}.btn.amb{background:var(--ambar)}
-.btn:disabled{opacity:.45}
-.row{display:flex;gap:8px}.row>*{flex:1}
-input[type=text],input[type=search],input[type=number],input[type=date],select{width:100%;padding:11px;font-size:16px;border:1px solid #c3cad4;border-radius:10px;background:#fff}
-textarea{width:100%;padding:10px;font-size:13px;border:1px solid #c3cad4;border-radius:10px;font-family:monospace}
-label{font-size:13px;color:#56606e;display:block;margin:8px 0 4px}
-.combo{display:flex;gap:6px}.combo input{flex:1}
-.combo select{flex:0 0 52px;width:52px;padding:0;border:0;border-radius:10px;color:transparent;-webkit-appearance:none;appearance:none;background:var(--azul) url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2720%27 height=%2720%27%3E%3Cpath d=%27M4 7l6 6 6-6%27 stroke=%27white%27 stroke-width=%273%27 fill=%27none%27/%3E%3C/svg%3E") center/22px no-repeat}
-.combo select option{color:#1d2430}
-#videoBox{position:relative;background:#000;border-radius:12px;overflow:hidden;aspect-ratio:4/3;display:none}
-#video{width:100%;height:100%;object-fit:cover}
-#videoBox .guia{position:absolute;inset:25% 5%;border:3px dashed rgba(255,255,255,.85);border-radius:10px}
-#videoBox .tip{position:absolute;left:0;right:0;bottom:6px;text-align:center;color:#fff;font-size:12px;text-shadow:0 0 4px #000}
-#resultado{border-radius:14px;padding:16px;text-align:center;color:#fff;display:none;margin-top:12px}
-#resultado .estado{font-size:23px;font-weight:800}
-#resultado .grande{font-size:44px;font-weight:900;line-height:1.1;margin:6px 0}
-#resultado .nombre{font-size:20px;font-weight:700}
-#resultado .det{font-size:14px;opacity:.95;margin-top:4px}
-.r-ok{background:var(--verde)}.r-dup{background:var(--ambar)}.r-no{background:var(--rojo);animation:blink .5s steps(1) infinite}.r-info{background:#5b6675}
-@keyframes blink{50%{background:#7a0000}}
-table{width:100%;border-collapse:collapse;font-size:14px}
-th,td{padding:8px 6px;border-bottom:1px solid #e3e7ec;text-align:left;vertical-align:middle}
-th{background:#eef1f5;font-size:11px;text-transform:uppercase;color:#56606e}
-.mini{font-size:12px;color:#56606e}
-.aviso{background:#fff4e0;border-left:4px solid var(--ambar);padding:10px;border-radius:8px;font-size:13px;margin-top:8px}
-.aviso.okk{background:#e8f5ec;border-color:var(--verde)}
-.aviso.error{background:#fde7e7;border-color:var(--rojo)}
-.oculto{display:none!important}
-.chk{display:flex;align-items:center;gap:8px;font-size:14px;margin-top:8px}
-.chk input{width:20px;height:20px;flex:0 0 20px}
-.sw{border:0;border-radius:20px;padding:8px 0;width:64px;font-weight:800;color:#fff;font-size:14px}
-.sw.si{background:var(--verde)}.sw.no{background:var(--rojo)}
-.xbtn{border:0;border-radius:8px;padding:7px 10px;font-weight:700;color:#fff;background:#8b96a5}
-.xbtn.red{background:var(--rojo)}.xbtn.ok{background:var(--verde)}
-.item{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px;border:1px solid #e3e7ec;border-radius:10px;margin-bottom:6px}
-.item b{font-size:15px}
-.viaje{background:var(--azul);color:#fff;border-radius:12px;padding:12px;margin-bottom:12px}
-.viaje .t1{font-size:18px;font-weight:800}
-.viaje .t2{font-size:13px;opacity:.9;margin-top:2px}
-.barra{height:14px;background:#e3e7ec;border-radius:7px;overflow:hidden;margin-top:4px}
-.barra i{display:block;height:100%}
-.ocupGrande{font-size:30px;font-weight:900}
-#ultimoLeido{font-family:monospace;font-size:12px;word-break:break-all;color:#56606e;margin-top:6px}
-.seg{display:flex;border:1px solid #c3cad4;border-radius:10px;overflow:hidden}
-.seg button{flex:1;border:0;background:#fff;padding:10px;font-weight:700;color:#56606e}
-.seg button.act{background:var(--azul);color:#fff}
-#toast{position:fixed;left:12px;right:12px;bottom:16px;z-index:50;padding:14px;border-radius:12px;color:#fff;font-weight:700;font-size:15px;text-align:center;box-shadow:0 4px 14px rgba(0,0,0,.25);display:none}
-#toast.ok{background:var(--verde)}#toast.err{background:var(--rojo)}#toast.inf{background:#5b6675}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0b4a78">
+  <meta name="description" content="Control de Pasajeros – Embarque">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon-192.png">
+  <title>Control de Pasajeros – Embarque</title>
+  <script defer src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script defer src="https://unpkg.com/@zxing/library@0.21.3/umd/index.min.js"></script>
+  <style>
+    :root{--blue:#0b4a78;--blue2:#123f66;--green:#168b3d;--red:#b81313;--amber:#d88a00;--ink:#17202b;--muted:#637083;--line:#d8dee7;--bg:#f0f3f7;--card:#fff}
+    *{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink);background:var(--bg)}
+    button,input,select,textarea{font:inherit}button{cursor:pointer}.hidden{display:none!important}.muted{color:var(--muted)}.small{font-size:12px}.nowrap{white-space:nowrap}
+    header{position:sticky;top:0;z-index:20;background:var(--blue);color:#fff;padding:10px max(16px,env(safe-area-inset-right)) 10px max(16px,env(safe-area-inset-left));box-shadow:0 2px 8px #0002}
+    .headrow{max-width:1120px;margin:auto;display:flex;align-items:center;gap:10px}.brand{font-size:20px;font-weight:800;flex:1}.version{background:#f6a800;color:#15202b;border-radius:14px;padding:3px 8px;font-size:12px;font-weight:900}.cloud{font-size:12px;opacity:.95}
+    nav{position:sticky;top:50px;z-index:19;display:flex;overflow:auto;background:#fff;border-bottom:1px solid var(--line);box-shadow:0 1px 4px #0001}nav button{flex:1;min-width:92px;border:0;border-bottom:3px solid transparent;background:#fff;color:#4d596a;padding:14px 10px;font-weight:700}nav button.active{color:var(--blue);border-bottom-color:var(--blue)}
+    main{max-width:1120px;margin:0 auto;padding:14px}.page{display:none}.page.active{display:block}.card{background:var(--card);border:1px solid #e2e6ec;border-radius:14px;box-shadow:0 2px 7px #14213d10;padding:14px;margin-bottom:12px}
+    h2,h3{margin:0 0 12px}h2{font-size:20px}h3{font-size:16px}.grid{display:grid;gap:10px}.g2{grid-template-columns:repeat(2,minmax(0,1fr))}.g3{grid-template-columns:repeat(3,minmax(0,1fr))}.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+    label{display:block;font-size:12px;font-weight:800;color:#526075;margin-bottom:5px}input,select,textarea{width:100%;min-height:44px;border:1px solid #c9d1dc;border-radius:9px;padding:9px 11px;background:#fff;color:var(--ink)}input:focus,select:focus,textarea:focus{outline:3px solid #1493e426;border-color:#148bd0}
+    .btn{border:0;border-radius:9px;padding:11px 14px;background:#e4e9ef;color:#243142;font-weight:800}.btn.primary{background:var(--blue);color:#fff}.btn.success{background:var(--green);color:#fff}.btn.danger{background:var(--red);color:#fff}.btn.amber{background:var(--amber);color:#fff}.btn.outline{background:#fff;border:1px solid #b9c4d1}.btn.block{width:100%}.btn:disabled{opacity:.45;cursor:not-allowed}.row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.row>*{flex:0 0 auto}.row .grow{flex:1 1 180px}
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.stat{background:#fff;border:1px solid #e2e6ec;border-radius:12px;padding:13px 6px;text-align:center;box-shadow:0 2px 6px #0000000c}.stat b{display:block;font-size:25px}.stat span{font-size:11px;color:#566172}.stat.green b{color:var(--green)}.stat.red b{color:var(--red)}
+    .notice{padding:11px 12px;border-radius:9px;margin:8px 0;background:#eaf4fb;color:#16486c;border-left:4px solid #3a92cc}.notice.ok{background:#eaf7ee;color:#145c2b;border-color:#1c9b49}.notice.warn{background:#fff5de;color:#694700;border-color:#dfa000}.notice.err{background:#fdecec;color:#7d1111;border-color:#c92525}
+    .tablewrap{overflow:auto;border:1px solid var(--line);border-radius:10px}table{border-collapse:collapse;width:100%;background:#fff}th,td{padding:9px 8px;border-bottom:1px solid #e2e6ec;text-align:left;font-size:13px;vertical-align:middle}th{background:#e9eef4;color:#455266;font-size:11px;text-transform:uppercase;position:sticky;top:0}tr:last-child td{border-bottom:0}.linkbtn{border:0;background:none;color:#d41212;font-weight:900;text-decoration:underline;padding:3px 5px}.pill{display:inline-block;padding:3px 8px;border-radius:12px;font-weight:800;font-size:11px}.pill.ok{background:#dff3e5;color:#12662d}.pill.no{background:#fde1e1;color:#941414}.progress{height:12px;border-radius:8px;background:#e0e5eb;overflow:hidden}.progress i{display:block;height:100%;background:var(--green)}
+    .seg{display:flex;border:1px solid #aebdcc;border-radius:9px;overflow:hidden}.seg button{flex:1;border:0;padding:9px;background:#fff;color:#33465d;font-weight:700}.seg button.active{background:var(--blue);color:#fff}
+    .cameraBox{position:fixed;inset:0;z-index:100;background:#02070ceF;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;color:#fff}.cameraPanel{width:min(700px,100%);position:relative}.cameraBox video{width:100%;max-height:72vh;object-fit:cover;border-radius:16px;background:#000}.scanframe{position:absolute;left:9%;right:9%;top:26%;height:42%;border:3px solid #38ef76;border-radius:16px;box-shadow:0 0 0 9999px #0005;pointer-events:none}.scanline{position:absolute;left:12%;right:12%;top:46%;height:2px;background:#ff3030;box-shadow:0 0 8px #ff3030;animation:sweep 1.7s infinite alternate ease-in-out}@keyframes sweep{from{transform:translateY(-70px)}to{transform:translateY(70px)}}.cameraTop{display:flex;align-items:center;gap:10px;margin-bottom:9px}.cameraTop b{flex:1}.cameraActions{display:flex;gap:8px;margin-top:10px}.cameraActions .btn{flex:1}
+    .modal{position:fixed;inset:0;z-index:90;background:#0a1524aa;display:flex;align-items:center;justify-content:center;padding:12px}.modalCard{background:#fff;width:min(960px,100%);max-height:94vh;overflow:auto;border-radius:15px;box-shadow:0 18px 50px #0006}.modalHead{position:sticky;top:0;z-index:2;display:flex;gap:10px;align-items:center;background:var(--blue);color:#fff;padding:13px 15px}.modalHead h2{flex:1;margin:0}.modalBody{padding:14px}.close{width:38px;height:38px;border:0;border-radius:50%;background:#ffffff22;color:#fff;font-size:24px}
+    .result{padding:18px;border-radius:14px;text-align:center;color:#fff}.result.ok{background:#087b30}.result.err{background:#9b0505}.result.warn{background:#a56000}.result .icon{font-size:56px;font-weight:900}.result h2{font-size:25px;margin:4px 0}.result p{margin:6px 0}
+    .listItem{display:flex;gap:9px;align-items:center;padding:10px 0;border-bottom:1px solid #e5e9ef}.listItem:last-child{border-bottom:0}.listItem .main{flex:1}.listItem strong{display:block}.listItem small{color:var(--muted)}
+    .empty{text-align:center;color:#6a7686;padding:24px 10px}.dangerZone{border:1px solid #efb4b4;background:#fff5f5}.footerNote{font-size:11px;color:#657387;margin-top:8px}
+    @media(max-width:720px){main{padding:10px}.g2,.g3,.g4{grid-template-columns:1fr}.stats{grid-template-columns:repeat(4,1fr)}.stat{padding:10px 2px}.stat b{font-size:22px}.stat span{font-size:9px}.brand{font-size:18px}.cloud{display:none}nav{top:48px}th,td{font-size:12px;padding:8px 6px}.hideMobile{display:none}.modal{padding:0}.modalCard{max-height:100vh;height:100%;border-radius:0}}
+  </style>
 </head>
 <body>
-<header>
-  <div><h1>🚌 Control de Pasajeros <span class="ver">v7</span></h1><small id="hdrViaje">Sin viaje en curso</small></div>
-  <div style="text-align:right"><div id="hdrHora" style="font-weight:700"></div><div id="hdrSync" style="font-size:11px;opacity:.9"></div></div>
-</header>
-<nav>
-  <button data-tab="embarque" class="act">Embarque</button>
-  <button data-tab="personal">Personal</button>
-  <button data-tab="rutas">Rutas</button>
-  <button data-tab="dashboard">Dashboard</button>
-  <button data-tab="datos">Datos</button>
+<header><div class="headrow"><div class="brand">🚌 Control de Pasajeros</div><span class="version">v8</span><span id="cloudState" class="cloud">☁️ sin configurar</span><span id="clock" class="nowrap">--:--</span></div></header>
+<nav id="tabs">
+  <button data-page="embarque" class="active">Embarque</button><button data-page="personal">Personal</button><button data-page="rutas">Rutas</button><button data-page="dashboard">Dashboard</button><button data-page="datos">Datos</button>
 </nav>
 <main>
-
-<!-- ===================== EMBARQUE ===================== -->
-<section id="tab-embarque">
-  <div id="sinPadron" class="aviso error oculto">⚠️ <b>No hay personal registrado.</b> Vaya a la pestaña <b>Personal</b> y cargue el Excel.</div>
-  <div id="boxNuevo">
-    <div class="card">
-      <h3>🟢 Iniciar viaje</h3>
-      <label for="vFecha">Fecha</label>
-      <input type="date" id="vFecha">
-      <label for="vRuta">Ruta</label>
-      <div class="combo"><input type="text" id="vRuta" list="dlRuta" placeholder="Escriba o elija ▾" autocomplete="off"><select id="sRuta" aria-label="Elegir ruta"></select></div>
-      <label for="vPlaca">Placa del bus</label>
-      <div class="combo"><input type="text" id="vPlaca" list="dlPlaca" placeholder="Escriba o elija ▾" autocomplete="off" style="text-transform:uppercase"><select id="sPlaca" aria-label="Elegir placa"></select></div>
-      <label for="vCap">Capacidad del bus (asientos)</label>
-      <input type="number" id="vCap" min="1" max="120" inputmode="numeric" placeholder="Se llena sola al elegir la placa">
-      <label for="vCond">Conductor</label>
-      <div class="combo"><input type="text" id="vCond" list="dlCond" placeholder="Escriba o elija ▾" autocomplete="off"><select id="sCond" aria-label="Elegir conductor"></select></div>
-      <button class="btn ok" id="btnIniciar" style="margin-top:14px">▶ INICIAR EMBARQUE</button>
-      <p class="mini">Si escribe una ruta, placa o conductor nuevo, se guarda solo en la pestaña Rutas.</p>
+<section id="page-embarque" class="page active">
+  <div id="tripSetup" class="card">
+    <h2>Iniciar viaje</h2>
+    <div class="grid g2">
+      <div><label>Fecha</label><input id="tripDate" type="date"></div>
+      <div><label>Ruta</label><input id="tripRoute" list="routeList" placeholder="Elija o escriba una ruta"><datalist id="routeList"></datalist></div>
+      <div><label>Placa del bus</label><input id="tripBus" list="busList" placeholder="Elija o escriba la placa"><datalist id="busList"></datalist></div>
+      <div><label>Conductor</label><input id="tripDriver" list="driverList" placeholder="Elija o escriba el conductor"><datalist id="driverList"></datalist></div>
     </div>
-    <div class="card" id="boxAbiertos">
-      <h3>⏸ Viajes sin finalizar</h3>
-      <div id="lstAbiertos"></div>
-    </div>
+    <div id="busHint" class="footerNote"></div>
+    <button id="startTripBtn" class="btn primary block" style="margin-top:12px">▶ INICIAR EMBARQUE</button>
   </div>
-  <div id="boxActivo" class="oculto">
-    <div class="viaje">
-      <div class="t1" id="vaTitulo"></div>
-      <div class="t2" id="vaDetalle"></div>
-      <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-top:8px">
-        <div><div class="ocupGrande" id="vaCont">0 / 0</div><div class="t2">pasajeros a bordo</div></div>
-        <div style="text-align:right"><div class="ocupGrande" id="vaPct">0%</div><div class="t2">ocupación</div></div>
-      </div>
-      <div class="barra" style="background:rgba(255,255,255,.25)"><i id="vaBarra" style="background:#fff;width:0"></i></div>
+  <div id="tripActive" class="hidden">
+    <div class="card"><div class="row"><div class="grow"><strong id="activeTitle"></strong><div id="activeMeta" class="small muted"></div></div><button id="cancelTripBtn" class="btn outline">Anular</button></div></div>
+    <div class="stats"><div class="stat"><b id="aTotal">0</b><span>LECTURAS</span></div><div class="stat green"><b id="aAccepted">0</b><span>EMBARCADOS</span></div><div class="stat"><b id="aCapacity">0</b><span>CAPACIDAD</span></div><div class="stat red"><b id="aRejected">0</b><span>RECHAZOS</span></div></div>
+    <div class="card" style="margin-top:10px">
+      <button id="cameraBtn" class="btn primary block" style="font-size:18px">▣ Escanear en vivo DNI / QR</button>
+      <div class="footerNote" style="text-align:center">La cámara lee automáticamente. No toma ni guarda fotografías.</div>
+      <div class="row" style="margin-top:12px"><input id="dniInput" class="grow" inputmode="numeric" autocomplete="off" placeholder="DNI o contenido del código"><button id="validateBtn" class="btn success">Validar</button></div>
+      <label style="margin-top:10px"><input id="autoBoard" type="checkbox" checked style="width:auto;min-height:auto"> Embarcar automáticamente al validar</label>
+      <div id="scanMessage"></div>
     </div>
-    <div class="card">
-      <div class="row">
-        <button class="btn" id="btnCam">📷 Cámara en vivo</button>
-        <button class="btn amb" id="btnFoto">📸 Tomar foto</button>
-      </div>
-      <input type="file" id="inpFoto" accept="image/*" capture="environment" class="oculto">
-      <div class="row oculto" id="camCtrl" style="margin-top:8px">
-        <button class="btn sec" id="btnLinterna">🔦 Linterna</button>
-        <button class="btn sec" id="btnStop">⏹ Detener</button>
-      </div>
-      <div id="camAviso" class="aviso oculto"></div>
-      <div id="videoBox" style="margin-top:10px"><video id="video" playsinline muted></video><div class="guia"></div><div class="tip">Código dentro del recuadro · 15–25 cm · buena luz</div></div>
-      <label for="inpCodigo">DNI (manual o lector USB/Bluetooth)</label>
-      <div class="row">
-        <input type="text" id="inpCodigo" inputmode="numeric" autocomplete="off" placeholder="Escriba el DNI">
-        <button class="btn ok" id="btnValidar" style="flex:0 0 110px">Validar</button>
-      </div>
-      <div id="ultimoLeido"></div>
-      <div id="resultado"></div>
-    </div>
-    <div class="card" style="padding:0;overflow:auto">
-      <table><thead><tr><th>#</th><th>Pasajero a bordo</th><th>Hora</th><th></th></tr></thead><tbody id="tbAbordo"></tbody></table>
-    </div>
-    <div class="row">
-      <button class="btn sec" id="btnPausar">⏸ Salir sin finalizar</button>
-      <button class="btn red" id="btnFinalizar">🏁 FINALIZAR VIAJE</button>
-    </div>
-    <p class="mini">«Salir sin finalizar» deja el viaje abierto para continuarlo después. Solo los viajes FINALIZADOS cuentan en el Dashboard.</p>
+    <div class="card"><div class="row"><h3 class="grow">Registro del viaje</h3><button id="finishTripBtn" class="btn danger">FINALIZAR VIAJE</button></div><div id="activeLog"></div></div>
   </div>
 </section>
 
-<!-- ===================== PERSONAL ===================== -->
-<section id="tab-personal" class="oculto">
-  <div class="kpis" style="grid-template-columns:repeat(3,1fr)">
-    <div class="kpi"><b id="pTot" class="c-az">0</b><span>Registrados</span></div>
-    <div class="kpi"><b id="pSi" class="c-ok">0</b><span>Habilitados</span></div>
-    <div class="kpi"><b id="pNo" class="c-no">0</b><span>No habilitados</span></div>
-  </div>
-  <div class="card">
-    <h3>📥 Cargar / actualizar desde Excel</h3>
-    <input type="file" id="inpPadron" accept=".xlsx,.csv,.txt,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv,text/plain,application/octet-stream">
-    <label class="chk"><input type="checkbox" id="chkAusentes"><span>Marcar como <b>NO habilitados</b> a los que no estén en este Excel</span></label>
-    <div id="padronMsg"></div>
-    <p class="mini">Acepta <b>.xlsx</b> o <b>.csv</b>. El personal queda <b>guardado en el equipo</b>. Al cargar otro Excel se <b>agregan</b> los nuevos y se <b>actualizan</b> los existentes (por DNI); nadie se borra. Columnas: <b>DNI</b> (obligatoria), NOMBRE, EMPRESA, CARGO, FOTOCHECK, <b>HABILITADO</b> (SI/NO). Si el Excel no trae HABILITADO, se respeta lo que usted cambió a mano.</p>
-    <p class="mini" id="padronInfo"></p>
-  </div>
-  <div class="card">
-    <h3>➕ Agregar persona a mano</h3>
-    <div class="row"><input type="text" id="mDni" inputmode="numeric" placeholder="DNI" style="flex:0 0 38%"><input type="text" id="mNom" placeholder="Apellidos y nombres"></div>
-    <div class="row" style="margin-top:8px"><input type="text" id="mEmp" placeholder="Empresa"><button class="btn ok" id="btnAddPers" style="flex:0 0 110px">Agregar</button></div>
-  </div>
-  <div class="card">
-    <div class="row">
-      <input type="search" id="pBuscar" placeholder="Buscar nombre, DNI o empresa">
-      <select id="pFiltro" style="flex:0 0 135px"><option value="todos">Todos</option><option value="si">Habilitados</option><option value="no">No habilitados</option></select>
-    </div>
-    <p class="mini" style="margin:6px 0 0">Toque <b>SI / NO</b> para cambiar la habilitación.</p>
-  </div>
-  <div class="card" style="padding:0;overflow:auto">
-    <table><thead><tr><th>Persona</th><th>Habilitado</th><th></th></tr></thead><tbody id="tbPers"></tbody></table>
-    <p class="mini" id="pMas" style="padding:8px 10px;margin:0"></p>
+<section id="page-personal" class="page">
+  <div class="card"><h2>Padrón de personal</h2><div class="row"><input id="personFile" type="file" accept=".xlsx,.xls,.csv" class="grow"><button id="importPeopleBtn" class="btn primary">Cargar archivo</button></div><div id="padronInfo" class="footerNote"></div></div>
+  <div class="card"><div class="row"><input id="personSearch" class="grow" placeholder="Buscar por nombre, DNI o empresa"><button id="newPersonBtn" class="btn success">+ Persona</button></div><div id="peopleTable" style="margin-top:10px"></div></div>
+</section>
+
+<section id="page-rutas" class="page">
+  <div class="grid g3">
+    <div class="card"><h3>Rutas</h3><div class="row"><input id="newRoute" class="grow" placeholder="Nueva ruta"><button id="addRouteBtn" class="btn success">+</button></div><div id="routesList"></div></div>
+    <div class="card"><h3>Buses</h3><input id="newBusPlate" placeholder="Placa"><input id="newBusCode" placeholder="Código / descripción" style="margin-top:7px"><input id="newBusCap" type="number" min="1" placeholder="Capacidad" style="margin-top:7px"><button id="addBusBtn" class="btn success block" style="margin-top:7px">Agregar bus</button><div id="busesList"></div></div>
+    <div class="card"><h3>Conductores</h3><input id="newDriverName" placeholder="Nombre completo"><input id="newDriverDni" inputmode="numeric" placeholder="DNI" style="margin-top:7px"><button id="addDriverBtn" class="btn success block" style="margin-top:7px">Agregar conductor</button><div id="driversList"></div></div>
   </div>
 </section>
 
-<!-- ===================== RUTAS ===================== -->
-<section id="tab-rutas" class="oculto">
+<section id="page-dashboard" class="page">
   <div class="card">
-    <h3>🛣️ Rutas</h3>
-    <div class="row"><input type="text" id="nRuta" placeholder="Ej.: Lima – Paracas" autocomplete="off"><button class="btn ok" id="btnAddRuta" style="flex:0 0 60px;font-size:22px">+</button></div>
-    <div id="lstRutas" style="margin-top:10px"></div>
+    <div class="grid g2"><div><label>Año</label><select id="dashYear"></select></div><div><label>Mes</label><select id="dashMonth"></select></div></div>
+    <div class="seg" style="margin-top:9px"><button id="modeLocal" class="active">📱 Este celular</button><button id="modeRemote">☁️ Todos (SharePoint)</button></div>
+    <div class="seg" style="margin-top:7px"><button id="groupRoute" class="active">Por ruta</button><button id="groupBus">Por bus</button></div>
+    <div class="row" style="margin-top:9px"><span id="dashStatus" class="small muted grow">Solo viajes de este celular.</span><button id="refreshRemoteBtn" class="btn outline hidden">Actualizar</button></div>
   </div>
-  <div class="card">
-    <h3>🚌 Buses</h3>
-    <div class="row"><input type="text" id="nPlaca" placeholder="Placa" autocomplete="off" style="text-transform:uppercase"><input type="number" id="nCap" placeholder="Capacidad" inputmode="numeric" style="flex:0 0 32%"></div>
-    <div class="row" style="margin-top:8px"><input type="text" id="nCod" placeholder="Código / descripción (opcional)"><button class="btn ok" id="btnAddBus" style="flex:0 0 60px;font-size:22px">+</button></div>
-    <div id="lstBuses" style="margin-top:10px"></div>
-  </div>
-  <div class="card">
-    <h3>🧑‍✈️ Conductores</h3>
-    <div class="row"><input type="text" id="nCond" placeholder="Nombre del conductor"><input type="text" id="nCondDni" placeholder="DNI (opc.)" inputmode="numeric" style="flex:0 0 32%"></div>
-    <button class="btn ok" id="btnAddCond" style="margin-top:8px">+ Agregar conductor</button>
-    <div id="lstCond" style="margin-top:10px"></div>
-  </div>
+  <div class="stats"><div class="stat"><b id="dTrips">0</b><span>VIAJES</span></div><div class="stat green"><b id="dPassengers">0</b><span>PASAJEROS</span></div><div class="stat"><b id="dSeats">0</b><span>ASIENTOS</span></div><div class="stat red"><b id="dOccupancy">0%</b><span>OCUPACIÓN</span></div></div>
+  <div class="card" style="margin-top:10px"><h3 id="groupTitle">Ocupación por ruta</h3><div id="groupSummary"></div></div>
+  <div class="card"><h3>Detalle de viajes</h3><div id="tripTable"></div></div>
+  <div class="footerNote">Toca el porcentaje de OCUP. para abrir el detalle de pasajeros y descargarlo en Excel.</div>
 </section>
 
-<!-- ===================== DASHBOARD ===================== -->
-<section id="tab-dashboard" class="oculto">
-  <div class="card">
-    <div class="row">
-      <select id="dAnio"></select>
-      <select id="dMes"></select>
-    </div>
-    <div class="seg" id="segFuente" style="margin-top:8px"><button data-f="local" class="act">📱 Este celular</button><button data-f="todos">☁️ Todos (SharePoint)</button></div>
-    <div class="seg" id="segGrupo" style="margin-top:8px"><button data-g="ruta" class="act">Por ruta</button><button data-g="placa">Por bus</button></div>
-    <button class="btn sec oculto" id="btnLeerCentral" style="margin-top:8px">🔄 Actualizar desde SharePoint</button>
-    <p class="mini" id="dEstado" style="margin:6px 0 0"></p>
-  </div>
-  <div class="kpis">
-    <div class="kpi"><b id="dViajes" class="c-az">0</b><span>Viajes</span></div>
-    <div class="kpi"><b id="dPax" class="c-ok">0</b><span>Pasajeros</span></div>
-    <div class="kpi"><b id="dAsi">0</b><span>Asientos</span></div>
-    <div class="kpi"><b id="dOcup" class="c-am">0%</b><span>Ocupación</span></div>
-  </div>
-  <div class="card">
-    <h3 id="dTitGrupo">Ocupación por ruta</h3>
-    <div id="dGrupos"></div>
-  </div>
-  <div class="card" id="dCardMes">
-    <h3>Tendencia mensual de ocupación</h3>
-    <div id="dMeses"></div>
-  </div>
-  <div class="card" style="padding:0;overflow:auto">
-    <h3 style="padding:12px 12px 0">Detalle de viajes</h3>
-    <table><thead><tr><th>Fecha</th><th>Bus / Ruta</th><th>Horario</th><th>Ocup.</th></tr></thead><tbody id="dDetalle"></tbody></table>
-  </div>
-  <p class="mini" id="dNota"></p>
-</section>
-
-<!-- ===================== DATOS ===================== -->
-<section id="tab-datos" class="oculto">
-  <div class="card">
-    <h3>☁️ SharePoint central</h3>
-    <label for="cfgEquipo">Nombre de este celular</label>
-    <input type="text" id="cfgEquipo" placeholder="Ej.: Celular Garita 1">
-    <label for="cfgEnvio">URL de envío (flujo «Recibir viaje»)</label>
-    <textarea id="cfgEnvio" rows="3" placeholder="https://..."></textarea>
-    <label for="cfgLectura">URL de lectura (flujo «Leer viajes»)</label>
-    <textarea id="cfgLectura" rows="3" placeholder="https://..."></textarea>
-    <button class="btn" id="btnCfgGuardar" style="margin-top:10px">💾 Guardar conexión</button>
-    <div class="row" style="margin-top:8px">
-      <button class="btn ok" id="btnEnviarPend">⬆ Enviar pendientes</button>
-      <button class="btn sec" id="btnProbarCentral">🔌 Probar lectura</button>
-    </div>
-    <button class="btn amb" id="btnCompartirCfg" style="margin-top:8px">📤 Compartir conexión a otro celular</button>
-    <p class="mini" id="syncEstado"></p>
-    <p class="mini">Al <b>FINALIZAR</b> cada viaje se envía solo al Excel central. Si no hay señal, queda pendiente y se reenvía cuando vuelva la conexión.</p>
-  </div>
-  <div class="card">
-    <h3>⬇ Exportar</h3>
-    <button class="btn ok" id="btnExport">Exportar todo a Excel</button>
-    <p class="mini">Hojas: Personal, Viajes, Embarques, Rechazos.</p>
-  </div>
-  <div class="card">
-    <h3>💾 Respaldo</h3>
-    <div class="row"><button class="btn" id="btnBackup">Guardar respaldo</button><button class="btn sec" id="btnRestore">Restaurar</button></div>
-    <input type="file" id="inpRestore" accept="*/*" class="oculto">
-    <p class="mini">Los datos viven en este equipo. Guarde un respaldo cada semana (y antes de borrar datos del navegador o cambiar de celular).</p>
-  </div>
-  <div class="card">
-    <h3>🔊 Alarma</h3>
-    <label class="chk"><input type="checkbox" id="chkSonido" checked> Sonido</label>
-    <label class="chk"><input type="checkbox" id="chkVibrar" checked> Vibración</label>
-    <button class="btn sec" id="btnProbar" style="margin-top:10px">Probar alarma</button>
-  </div>
-  <div class="card">
-    <h3>🗑 Borrar</h3>
-    <button class="btn red" id="btnBorrarViajes">Borrar historial de viajes</button>
-    <p class="mini">No borra al personal ni las rutas. Exporte antes.</p>
-    <p class="mini" id="diag"></p>
-  </div>
+<section id="page-datos" class="page">
+  <div class="card"><h2>Conexión SharePoint</h2><label>Nombre de este celular</label><input id="cfgDevice" placeholder="Ej. Garita 1"><label style="margin-top:8px">URL de envío (Power Automate)</label><textarea id="cfgSend" rows="3"></textarea><label style="margin-top:8px">URL de lectura</label><textarea id="cfgRead" rows="3"></textarea><div class="row" style="margin-top:9px"><button id="saveCfgBtn" class="btn primary">Guardar conexión</button><button id="testReadBtn" class="btn outline">Probar lectura</button><button id="shareCfgBtn" class="btn outline">Compartir conexión</button></div><div id="cfgMessage"></div></div>
+  <div class="card"><h3>Envíos pendientes</h3><div class="row"><span id="pendingCount" class="grow">0 viaje(s)</span><button id="sendPendingBtn" class="btn success">Enviar pendientes</button></div></div>
+  <div class="card"><h3>Respaldo</h3><div class="row"><button id="exportBackupBtn" class="btn primary">💾 Guardar respaldo</button><input id="backupFile" type="file" accept=".json" class="grow"><button id="importBackupBtn" class="btn outline">Restaurar</button></div></div>
+  <div class="card dangerZone"><h3>Borrar datos de prueba</h3><p class="small muted">Borra viajes locales y pendientes. Conserva padrón, rutas, buses, conductores y conexión.</p><button id="clearTripsBtn" class="btn danger">Borrar viajes</button></div>
 </section>
 </main>
 
-<div id="toast"></div>
-<datalist id="dlRuta"></datalist><datalist id="dlPlaca"></datalist><datalist id="dlCond"></datalist>
+<div id="cameraOverlay" class="cameraBox hidden" role="dialog" aria-modal="true">
+  <div class="cameraPanel"><div class="cameraTop"><b>Apunte al código de barras del DNI o al QR del fotocheck</b><button id="closeCameraBtn" class="close">×</button></div><video id="cameraVideo" autoplay muted playsinline></video><div class="scanframe"></div><div class="scanline"></div><div id="cameraStatus" class="notice warn">Iniciando cámara…</div><div class="cameraActions"><button id="torchBtn" class="btn outline hidden">Linterna</button><button id="switchCameraBtn" class="btn outline">Cambiar cámara</button><button id="cameraCancelBtn" class="btn danger">Cancelar</button></div></div>
+</div>
+
+<div id="detailModal" class="modal hidden"><div class="modalCard"><div class="modalHead"><h2>Detalle de pasajeros</h2><button id="closeDetailBtn" class="close">×</button></div><div class="modalBody"><div id="detailTripInfo"></div><div class="row" style="margin:12px 0"><button id="downloadDetailBtn" class="btn success">⬇ Descargar en Excel</button><span id="detailCount" class="muted small"></span></div><div id="detailPassengers"></div></div></div></div>
+<div id="personModal" class="modal hidden"><div class="modalCard" style="max-width:560px;height:auto"><div class="modalHead"><h2>Persona</h2><button id="closePersonBtn" class="close">×</button></div><div class="modalBody"><input id="editPersonIndex" type="hidden"><label>DNI</label><input id="editDni" inputmode="numeric"><label style="margin-top:8px">Nombre</label><input id="editName"><label style="margin-top:8px">Empresa</label><input id="editCompany"><label style="margin-top:8px">Cargo</label><input id="editRole"><label style="margin-top:8px">Fotocheck</label><input id="editBadge"><label style="margin-top:10px"><input id="editEnabled" type="checkbox" checked style="width:auto;min-height:auto"> Habilitado para embarcar</label><button id="savePersonBtn" class="btn success block" style="margin-top:12px">Guardar</button></div></div></div>
 
 <script>
-"use strict";
-/* ===================== UTILIDADES ===================== */
-const $ = id => document.getElementById(id);
-const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-const pad = n => String(n).padStart(2,"0");
-const hhmm = t => t ? new Date(t).toLocaleTimeString("es-PE",{hour:"2-digit",minute:"2-digit",hour12:false}) : "";
-const hhmmss = t => t ? new Date(t).toLocaleTimeString("es-PE",{hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false}) : "";
-const hoyISO = () => { const d = new Date(); return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`; };
-const fFecha = iso => iso ? iso.split("-").reverse().join("/") : "";
-const pct = x => Math.round((x||0)*100) + "%";
-const norm = s => String(s ?? "").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toUpperCase().replace(/[^A-Z0-9]/g,"");
-const colorOcup = x => x >= .8 ? "var(--verde)" : x >= .5 ? "var(--ambar)" : "var(--rojo)";
-const MESES = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
+'use strict';
+const APP_VERSION=8, STORE_KEY='embarque_v8';
+const DEFAULTS={pers:[],rutas:[],buses:[],cond:[],viajes:[],activo:null,padron:{},cfg:{urlEnvio:'',urlLectura:'',equipo:'',ultimoEnvio:0},remoto:{fecha:0,viajes:[],embarques:[]},pendientes:[]};
+let D=loadData(), dashboardMode='local', dashboardGroup='route', selectedDetail=null;
+let camera={stream:null,reader:null,detector:null,running:false,facing:'environment',track:null,torch:false};
+const $=id=>document.getElementById(id), esc=v=>String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+function cloneDefaults(){return JSON.parse(JSON.stringify(DEFAULTS))}
+function normalizeData(x){x=x&&x.D?x.D:x||{};const n=cloneDefaults();for(const k of Object.keys(n))if(x[k]!==undefined)n[k]=x[k];n.pers=Array.isArray(n.pers)?n.pers:[];n.rutas=Array.isArray(n.rutas)?n.rutas:[];n.buses=Array.isArray(n.buses)?n.buses:[];n.cond=Array.isArray(n.cond)?n.cond:[];n.viajes=Array.isArray(n.viajes)?n.viajes:[];n.pendientes=Array.isArray(n.pendientes)?n.pendientes:[];n.cfg={...DEFAULTS.cfg,...(n.cfg||{})};n.remoto={...DEFAULTS.remoto,...(n.remoto||{})};n.remoto.viajes=Array.isArray(n.remoto.viajes)?n.remoto.viajes:[];n.remoto.embarques=Array.isArray(n.remoto.embarques)?n.remoto.embarques:[];return n}
+function loadData(){const keys=[STORE_KEY,'embarque_v7','embarque_v6','embarque_data','embarque'];for(const k of keys){try{const x=JSON.parse(localStorage.getItem(k));if(x&&(x.D?.pers||x.pers||x.D?.rutas||x.rutas)){const n=normalizeData(x);localStorage.setItem(STORE_KEY,JSON.stringify(n));return n}}catch(e){}}for(let i=0;i<localStorage.length;i++){try{const x=JSON.parse(localStorage.getItem(localStorage.key(i)));if(x&&(x.D?.pers||x.pers)&&(x.D?.rutas||x.rutas)){const n=normalizeData(x);localStorage.setItem(STORE_KEY,JSON.stringify(n));return n}}catch(e){}}return cloneDefaults()}
+function save(){localStorage.setItem(STORE_KEY,JSON.stringify(D));localStorage.setItem('embarque_v7',JSON.stringify(D));updateCloud()}
+function val(o,...names){for(const n of names){if(o&&o[n]!==undefined&&o[n]!==null&&o[n]!=='')return o[n]}return''}
+function num(v){v=String(v??'').replace('%','').replace(',','.');const n=Number(v);return Number.isFinite(n)?n:0}
+function norm(s){return String(s??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim().toLowerCase()}
+function dateISO(d=new Date()){return new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,10)}
+function timeNow(){return new Date().toLocaleTimeString('es-PE',{hour:'2-digit',minute:'2-digit',hour12:false})}
+function uid(){return 'V'+Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
+function beep(ok=true){try{const C=window.AudioContext||window.webkitAudioContext,a=new C(),o=a.createOscillator(),g=a.createGain();o.connect(g);g.connect(a.destination);o.frequency.value=ok?880:180;g.gain.value=.08;o.start();o.stop(a.currentTime+(ok?.16:.45))}catch(e){}if(navigator.vibrate)navigator.vibrate(ok?120:[180,80,180])}
+function downloadBlob(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000)}
+function safeName(s){return String(s||'viaje').replace(/[^a-z0-9áéíóúñ_-]+/gi,'_').replace(/^_+|_+$/g,'').slice(0,80)}
+function updateClock(){$('clock').textContent=timeNow()}
+function updateCloud(){const pending=D.pendientes?.length||0;$('cloudState').textContent=!D.cfg.urlEnvio?'☁️ sin configurar':pending?`☁️ ${pending} por enviar`:'☁️ al día';$('pendingCount').textContent=`${pending} viaje(s)`;$('sendPendingBtn').disabled=!pending}
+function showPage(name){document.querySelectorAll('.page').forEach(x=>x.classList.toggle('active',x.id==='page-'+name));document.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('active',x.dataset.page===name));if(name==='dashboard')renderDashboard();if(name==='personal')renderPeople();if(name==='rutas')renderRoutes();if(name==='datos')renderConfig()}
+function showMsg(el,text,type='notice'){el.innerHTML=text?`<div class="${type}">${esc(text)}</div>`:''}
 
-/* ===================== ESTADO + ALMACENAMIENTO ===================== */
-let D = { pers:[], rutas:[], buses:[], cond:[], viajes:[], activo:null, padron:{archivo:"", fecha:0}, cfg:{}, remoto:{viajes:[], fecha:0} };
-const IDB = {
-  db:null,
-  open(){ return new Promise((ok,ko)=>{ const r = indexedDB.open("embarqueDB",1);
-    r.onupgradeneeded = () => r.result.createObjectStore("kv");
-    r.onsuccess = () => { this.db = r.result; ok(); }; r.onerror = () => ko(r.error); }); },
-  get(k){ return new Promise((ok,ko)=>{ const q = this.db.transaction("kv").objectStore("kv").get(k); q.onsuccess=()=>ok(q.result); q.onerror=()=>ko(q.error); }); },
-  set(k,v){ return new Promise((ok,ko)=>{ const t = this.db.transaction("kv","readwrite"); t.objectStore("kv").put(v,k); t.oncomplete=()=>ok(); t.onerror=()=>ko(t.error); }); }
-};
-let tGuardar = null;
-function guardar(){ clearTimeout(tGuardar); tGuardar = setTimeout(persistir, 200); }
-async function persistir(){
-  clearTimeout(tGuardar);
-  try { if (IDB.db) { await IDB.set("estado", JSON.parse(JSON.stringify(D))); return; } } catch(e){}
-  try { localStorage.setItem("embarque_v5", JSON.stringify(D)); } catch(e){ alert("⚠️ No se pudo guardar: memoria llena. Exporte y borre viajes antiguos."); }
+function parseCfgHash(){if(!location.hash.startsWith('#cfg='))return;try{const x=JSON.parse(decodeURIComponent(escape(atob(location.hash.slice(5)))));D.cfg={...D.cfg,...x};save();history.replaceState(null,'',location.pathname+location.search);alert('Conexión recibida y guardada en este celular.')}catch(e){alert('No se pudo leer la conexión compartida.') }}
+function init(){parseCfgHash();$('tripDate').value=dateISO();updateClock();setInterval(updateClock,30000);document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>showPage(b.dataset.page));bindEvents();renderAll();if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});window.addEventListener('online',()=>sendPending(false));setTimeout(()=>sendPending(false),2500)}
+function bindEvents(){
+ $('startTripBtn').onclick=startTrip;$('cancelTripBtn').onclick=cancelTrip;$('finishTripBtn').onclick=finishTrip;$('cameraBtn').onclick=()=>startCamera();$('validateBtn').onclick=()=>validateScan($('dniInput').value);$('dniInput').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();validateScan(e.target.value)}};$('tripBus').onchange=renderBusHint;
+ $('closeCameraBtn').onclick=stopCamera;$('cameraCancelBtn').onclick=stopCamera;$('switchCameraBtn').onclick=()=>{camera.facing=camera.facing==='environment'?'user':'environment';startCamera(true)};$('torchBtn').onclick=toggleTorch;
+ $('personSearch').oninput=renderPeople;$('importPeopleBtn').onclick=importPeople;$('newPersonBtn').onclick=()=>openPerson();$('closePersonBtn').onclick=closePerson;$('savePersonBtn').onclick=savePerson;
+ $('addRouteBtn').onclick=addRoute;$('addBusBtn').onclick=addBus;$('addDriverBtn').onclick=addDriver;
+ $('modeLocal').onclick=()=>setDashMode('local');$('modeRemote').onclick=()=>setDashMode('remote');$('groupRoute').onclick=()=>setDashGroup('route');$('groupBus').onclick=()=>setDashGroup('bus');$('dashYear').onchange=renderDashboard;$('dashMonth').onchange=renderDashboard;$('refreshRemoteBtn').onclick=refreshRemote;
+ $('closeDetailBtn').onclick=closeDetail;$('downloadDetailBtn').onclick=downloadDetail;
+ $('saveCfgBtn').onclick=saveConfig;$('testReadBtn').onclick=refreshRemote;$('shareCfgBtn').onclick=shareConfig;$('sendPendingBtn').onclick=()=>sendPending(true);$('exportBackupBtn').onclick=exportBackup;$('importBackupBtn').onclick=importBackup;$('clearTripsBtn').onclick=clearTrips;
 }
-document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") persistir(); });
-async function cargarEstado(){
-  let g = null;
-  try { await IDB.open(); g = await IDB.get("estado"); } catch(e){}
-  if (!g) { try { g = JSON.parse(localStorage.getItem("embarque_v5") || "null"); } catch(e){} }
-  if (g) D = Object.assign(D, g);
-  D.cfg = Object.assign({urlEnvio:"", urlLectura:"", equipo:""}, D.cfg || {});
-  D.remoto = D.remoto && D.remoto.viajes ? D.remoto : {viajes:[], fecha:0};
-  try { const c = JSON.parse(localStorage.getItem("ctrlPasajeros_cat") || "null");
-    if (c && !D.rutas.length && !D.buses.length){
-      D.rutas = (c.rutas||[]).slice();
-      D.buses = (c.buses||[]).map(b=>({placa:b.placa, cod:b.desc||"", cap:0}));
-      guardar();
-    } } catch(e){}
-  try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch(e){}
-}
+function renderAll(){renderLists();renderActive();renderPeople();renderRoutes();renderDashboardFilters();renderDashboard();renderConfig();updateCloud()}
+function renderLists(){$('routeList').innerHTML=D.rutas.map(x=>`<option value="${esc(x)}">`).join('');$('busList').innerHTML=D.buses.map(x=>`<option value="${esc(x.placa)}">${esc(x.cod||'')}</option>`).join('');$('driverList').innerHTML=D.cond.map(x=>`<option value="${esc(x.nombre)}">${esc(x.dni||'')}</option>`).join('');renderBusHint()}
+function renderBusHint(){const b=D.buses.find(x=>norm(x.placa)===norm($('tripBus').value));$('busHint').textContent=b?`${b.cod||'Bus'} · capacidad ${b.cap||0}`:''}
+function startTrip(){const fecha=$('tripDate').value||dateISO(),ruta=$('tripRoute').value.trim(),placa=$('tripBus').value.trim().toUpperCase(),conductor=$('tripDriver').value.trim();if(!ruta||!placa||!conductor)return alert('Complete ruta, placa y conductor.');const bus=D.buses.find(x=>norm(x.placa)===norm(placa));D.activo={id:uid(),fecha,ruta,placa,conductor,capacidad:num(bus?.cap),inicio:timeNow(),inicioTs:Date.now(),detalle:[]};save();renderActive()}
+function cancelTrip(){if(!confirm('¿Anular este viaje? Se borrará su registro actual.'))return;D.activo=null;save();renderActive()}
+function renderActive(){const a=D.activo;$('tripSetup').classList.toggle('hidden',!!a);$('tripActive').classList.toggle('hidden',!a);if(!a)return;const accepted=a.detalle.filter(x=>x.resultado==='EMBARCADO').length,rejected=a.detalle.length-accepted;$('activeTitle').textContent=`${a.placa} · ${a.ruta}`;$('activeMeta').textContent=`${a.fecha} · ${a.conductor} · Inicio ${a.inicio}`;$('aTotal').textContent=a.detalle.length;$('aAccepted').textContent=accepted;$('aCapacity').textContent=a.capacidad||'—';$('aRejected').textContent=rejected;const rows=[...a.detalle].reverse();$('activeLog').innerHTML=rows.length?`<div class="tablewrap"><table><thead><tr><th>Hora</th><th>DNI</th><th>Pasajero</th><th>Resultado</th></tr></thead><tbody>${rows.map(x=>`<tr><td>${esc(x.hora)}</td><td>${esc(x.dni)}</td><td><b>${esc(x.nombre||'—')}</b><br><span class="muted small">${esc(x.empresa||'')}</span></td><td><span class="pill ${x.resultado==='EMBARCADO'?'ok':'no'}">${esc(x.resultado)}</span></td></tr>`).join('')}</tbody></table></div>`:'<div class="empty">Aún no hay lecturas.</div>'}
+function extractDni(raw){const text=String(raw??'').trim(),preferred=text.match(/(?:DNI|DOCUMENTO|DOC|ID)[^0-9]{0,16}(\d{8})(?!\d)/i);if(preferred)return preferred[1];const candidates=[...text.matchAll(/(?<!\d)(\d{8})(?!\d)/g)].map(m=>m[1]);for(const c of candidates)if(D.pers.some(p=>String(p.dni).padStart(8,'0')===c))return c;const digits=text.replace(/\D/g,'');if(digits.length===8)return digits;for(let i=0;i<=digits.length-8;i++){const c=digits.slice(i,i+8);if(D.pers.some(p=>String(p.dni).padStart(8,'0')===c))return c}return candidates[0]||''}
+function validateScan(raw){if(!D.activo)return alert('Primero inicie un viaje.');const dni=extractDni(raw);$('dniInput').value='';if(!dni){beep(false);return showMsg($('scanMessage'),'No pude encontrar un DNI de 8 dígitos en el código. Intente otra vez.','notice err')}const exists=D.activo.detalle.find(x=>x.dni===dni&&x.resultado==='EMBARCADO');if(exists){beep(false);return showResult('warn','⚠','YA EMBARCADO',`El DNI ${dni} ya fue registrado en este viaje.`)}const p=D.pers.find(x=>String(x.dni).padStart(8,'0')===dni);let r;if(!p)r={dni,nombre:'',empresa:'',cargo:'',fot:'',resultado:'NO REGISTRADO'};else if(p.hab===false||norm(p.habilitado)==='no')r={...p,dni,resultado:'NO HABILITADO'};else r={...p,dni,resultado:$('autoBoard').checked?'EMBARCADO':'VALIDADO'};r.hora=timeNow();D.activo.detalle.push(r);save();renderActive();if(r.resultado==='EMBARCADO'){beep(true);showResult('ok','✓','EMBARQUE AUTORIZADO',`${p.nombre} · DNI ${dni}`)}else{beep(false);showResult('err','✕',r.resultado,r.resultado==='NO REGISTRADO'?`DNI ${dni} no figura en el padrón.`:`${p?.nombre||dni} no está habilitado.`)}}
+function showResult(type,icon,title,text){$('scanMessage').innerHTML=`<div class="result ${type}"><div class="icon">${icon}</div><h2>${esc(title)}</h2><p>${esc(text)}</p><button class="btn outline" onclick="this.parentElement.remove()">Aceptar</button></div>`}
+async function finishTrip(){const a=D.activo;if(!a)return;const accepted=a.detalle.filter(x=>x.resultado==='EMBARCADO'),rejected=a.detalle.filter(x=>x.resultado!=='EMBARCADO');if(!confirm(`Finalizar viaje con ${accepted.length} pasajero(s) embarcado(s)?`))return;const fin=timeNow(),dur=Math.max(0,Math.round((Date.now()-a.inicioTs)/60000)),ocup=a.capacidad?accepted.length/a.capacidad:0;const v={...a,fin,duracion:dur,pasajeros:accepted.length,ocupacion:ocup,rechazos:rejected.length,equipo:D.cfg.equipo||'Este celular',detalle:a.detalle.map(x=>({...x,id_viaje:a.id,equipo:D.cfg.equipo||'Este celular',fecha:a.fecha,placa:a.placa,ruta:a.ruta}))};delete v.inicioTs;D.viajes.push(v);D.activo=null;D.pendientes.push(v);save();renderActive();renderDashboardFilters();await sendPending(false);alert('Viaje finalizado y guardado.')}
 
-/* ===================== ÍNDICE DE PERSONAL ===================== */
-let IDX = { dni:new Map(), fot:new Map() };
-function reindex(){
-  IDX = { dni:new Map(), fot:new Map() };
-  for (const p of D.pers){ IDX.dni.set(p.dni, p); if (p.fot) IDX.fot.set(p.fot, p); }
-}
+async function startCamera(restart=false){if(!D.activo)return alert('Primero inicie un viaje.');await stopCamera();$('cameraOverlay').classList.remove('hidden');$('cameraStatus').className='notice warn';$('cameraStatus').textContent='Abriendo cámara trasera…';try{const stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:camera.facing},width:{ideal:1280},height:{ideal:720}},audio:false});camera.stream=stream;camera.track=stream.getVideoTracks()[0];$('cameraVideo').srcObject=stream;await $('cameraVideo').play();camera.running=true;const caps=camera.track.getCapabilities?.()||{};$('torchBtn').classList.toggle('hidden',!caps.torch);$('cameraStatus').className='notice ok';$('cameraStatus').textContent='Cámara en vivo: acerque el código al recuadro. Se leerá automáticamente.';if('BarcodeDetector'in window){let formats=['qr_code','code_128','code_39','ean_13','ean_8','itf','upc_a','upc_e','pdf417','data_matrix','codabar'];try{const supported=await BarcodeDetector.getSupportedFormats();formats=formats.filter(x=>supported.includes(x))}catch(e){}camera.detector=new BarcodeDetector({formats});nativeScanLoop()}else if(window.ZXing){camera.reader=new ZXing.BrowserMultiFormatReader();camera.reader.decodeFromStream(stream,$('cameraVideo'),(result,err)=>{if(result&&camera.running)codeDetected(result.getText())})}else{$('cameraStatus').className='notice err';$('cameraStatus').textContent='Este navegador no tiene lector compatible. Abra la app en Google Chrome actualizado y verifique que tenga internet la primera vez.'}}catch(e){$('cameraStatus').className='notice err';$('cameraStatus').textContent='No se pudo abrir la cámara. Autorice el permiso de cámara en Chrome y vuelva a intentar.'}}
+async function nativeScanLoop(){if(!camera.running||!camera.detector)return;try{const codes=await camera.detector.detect($('cameraVideo'));if(codes?.length)return codeDetected(codes[0].rawValue)}catch(e){}setTimeout(nativeScanLoop,120)}
+async function codeDetected(text){if(!camera.running)return;camera.running=false;$('cameraStatus').className='notice ok';$('cameraStatus').textContent='Código leído. Validando…';await stopCamera();validateScan(text)}
+async function stopCamera(){camera.running=false;try{camera.reader?.reset()}catch(e){}camera.reader=null;camera.detector=null;if(camera.stream)camera.stream.getTracks().forEach(t=>t.stop());camera.stream=null;camera.track=null;$('cameraVideo').srcObject=null;$('cameraOverlay').classList.add('hidden')}
+async function toggleTorch(){if(!camera.track)return;try{camera.torch=!camera.torch;await camera.track.applyConstraints({advanced:[{torch:camera.torch}]});$('torchBtn').textContent=camera.torch?'Apagar linterna':'Linterna'}catch(e){alert('La linterna no está disponible en este celular.')}}
 
-/* ===================== LECTOR EXCEL / CSV ===================== */
-async function inflateRaw(u8){
-  if (typeof DecompressionStream === "undefined") throw new Error("Este navegador es antiguo y no puede leer .xlsx. Actualice Chrome o cargue el archivo como «CSV UTF-8».");
-  const ds = new DecompressionStream("deflate-raw");
-  return new Uint8Array(await new Response(new Blob([u8]).stream().pipeThrough(ds)).arrayBuffer());
-}
-async function unzip(ab){
-  const dv = new DataView(ab), u8 = new Uint8Array(ab), files = {};
-  if (ab.byteLength < 30) throw new Error("El archivo está vacío o incompleto. Descárguelo de nuevo.");
-  const b0 = u8[0], b1 = u8[1], b2 = u8[2], b3 = u8[3];
-  if (b0 === 0xD0 && b1 === 0xCF && b2 === 0x11 && b3 === 0xE0)
-    throw new Error("El Excel está PROTEGIDO (etiqueta de confidencialidad/cifrado de MINSUR) o es formato antiguo .xls, y la app no puede abrirlo. Solución: en Excel use Archivo → Guardar como → «CSV UTF-8 (delimitado por comas) (*.csv)» y cargue ese .csv. O cambie la etiqueta de confidencialidad a una sin cifrado.");
-  if (!(b0 === 0x50 && b1 === 0x4B)){
-    const ini = new TextDecoder().decode(u8.subarray(0, 300)).toLowerCase();
-    if (ini.includes("<html") || ini.includes("<!doctype")) throw new Error("Lo que se descargó es una PÁGINA WEB, no el Excel (pasa al guardar el enlace de OneDrive/SharePoint). Abra el Excel → Archivo → Guardar una copia / Descargar una copia, y cargue ese archivo. O guárdelo como CSV.");
-    throw new Error("Este archivo no es un Excel .xlsx. Guárdelo en Excel como .xlsx o como «CSV UTF-8» y vuelva a cargarlo.");
-  }
-  let eocd = -1;
-  for (let i = ab.byteLength - 22; i >= 0; i--) if (dv.getUint32(i,true) === 0x06054b50){ eocd = i; break; }
-  if (eocd < 0) throw new Error("El .xlsx está incompleto o dañado. Descárguelo de nuevo, o guárdelo como «CSV UTF-8» y cargue el .csv.");
-  const n = dv.getUint16(eocd+10,true); let p = dv.getUint32(eocd+16,true); const td = new TextDecoder();
-  for (let k = 0; k < n; k++){
-    const method = dv.getUint16(p+10,true), csize = dv.getUint32(p+20,true);
-    const nl = dv.getUint16(p+28,true), el = dv.getUint16(p+30,true), cl = dv.getUint16(p+32,true);
-    const off = dv.getUint32(p+42,true), name = td.decode(u8.subarray(p+46,p+46+nl));
-    files[name] = {method, csize, off}; p += 46 + nl + el + cl;
-  }
-  return async name => {
-    const f = files[name]; if (!f) return null;
-    const lnl = dv.getUint16(f.off+26,true), lel = dv.getUint16(f.off+28,true);
-    const data = u8.subarray(f.off+30+lnl+lel, f.off+30+lnl+lel+f.csize);
-    return new TextDecoder("utf-8").decode(f.method === 0 ? data : await inflateRaw(data));
-  };
-}
-const xmlDec = s => s.replace(/&lt;/g,"<").replace(/&gt;/g,">").replace(/&quot;/g,'"').replace(/&apos;/g,"'")
-  .replace(/&#(\d+);/g,(m,d)=>String.fromCharCode(+d)).replace(/&#x([0-9a-f]+);/gi,(m,h)=>String.fromCharCode(parseInt(h,16))).replace(/&amp;/g,"&");
-const colIdx = ref => { let c = 0; for (const ch of ref.replace(/\d+/g,"")) c = c*26 + ch.charCodeAt(0) - 64; return c-1; };
-function textoDe(xml){ const out=[]; xml.replace(/<t(?:\s[^>]*)?>([\s\S]*?)<\/t>/g,(m,t)=>out.push(t)); return xmlDec(out.join("")); }
-async function leerXlsx(ab){
-  const get = await unzip(ab);
-  const sst = []; const ss = await get("xl/sharedStrings.xml");
-  if (ss) ss.replace(/<si>([\s\S]*?)<\/si>/g,(m,si)=>{ sst.push(textoDe(si)); });
-  const wb = await get("xl/workbook.xml"), rels = await get("xl/_rels/workbook.xml.rels") || "";
-  const relMap = {}; rels.replace(/<Relationship\b[^>]*>/g, tag => {
-    const id = (tag.match(/Id="([^"]+)"/)||[])[1], tg = (tag.match(/Target="([^"]+)"/)||[])[1];
-    if (id && tg) relMap[id] = tg.startsWith("/") ? tg.slice(1) : "xl/" + tg.replace(/^\.\//,"");
-  });
-  const hojas = []; (wb||"").replace(/<sheet\b[^>]*>/g, tag => {
-    hojas.push({nombre: xmlDec((tag.match(/name="([^"]*)"/)||[])[1]||""), path: relMap[(tag.match(/r:id="([^"]+)"/)||[])[1]]});
-  });
-  const res = [];
-  for (const h of hojas){
-    const xml = h.path && await get(h.path); if (!xml) continue;
-    const filas = [];
-    xml.replace(/<row\b([^>]*)>([\s\S]*?)<\/row>/g,(m,ra,row)=>{
-      const fila = [], rn = +((ra.match(/\br="(\d+)"/)||[])[1]||0);
-      row.replace(/<c\b([^>]*?)(?:\/>|>([\s\S]*?)<\/c>)/g,(mm,attrs,inner)=>{
-        const r = (attrs.match(/r="([A-Z]+\d+)"/)||[])[1], t = (attrs.match(/t="([^"]+)"/)||[])[1];
-        let v = ""; inner = inner || "";
-        if (t === "s"){ const x = inner.match(/<v>([\s\S]*?)<\/v>/); v = x ? sst[+x[1]] ?? "" : ""; }
-        else if (t === "inlineStr") v = textoDe(inner);
-        else { const x = inner.match(/<v>([\s\S]*?)<\/v>/); v = x ? xmlDec(x[1]) : ""; }
-        fila[r ? colIdx(r) : fila.length] = v;
-      });
-      if (rn > 0) filas[rn-1] = fila; else filas.push(fila);
-    });
-    res.push({nombre:h.nombre, filas});
-  }
-  return res;
-}
-function leerCsv(txt){
-  txt = txt.replace(/^\uFEFF/, "");
-  const l0 = txt.split("\n")[0], cnt = ch => (l0.split(ch).length - 1);
-  const sep = [";", ",", "\t"].sort((a,b)=>cnt(b)-cnt(a))[0];
-  const filas = []; let f = [], c = "", q = false;
-  for (let i = 0; i < txt.length; i++){
-    const ch = txt[i];
-    if (q){ if (ch === '"' && txt[i+1] === '"'){ c += '"'; i++; } else if (ch === '"') q = false; else c += ch; }
-    else if (ch === '"') q = true; else if (ch === sep){ f.push(c); c = ""; }
-    else if (ch === "\n"){ f.push(c.replace(/\r$/,"")); filas.push(f); f = []; c = ""; } else c += ch;
-  }
-  if (c || f.length){ f.push(c); filas.push(f); }
-  return [{nombre:"CSV", filas}];
-}
-async function leerCsvArchivo(file){
-  const buf = new Uint8Array(await file.arrayBuffer());
-  let txt = new TextDecoder("utf-8").decode(buf);
-  if (txt.includes("\uFFFD")) txt = new TextDecoder("windows-1252").decode(buf);   // CSV guardado sin UTF-8
-  return leerCsv(txt);
-}
-const numTxt = v => { let s = String(v ?? "").trim().replace(/[\s']/g,"");
-  if (/^[+-]?\d+(\.\d+)?[eE][+-]?\d+$/.test(s) || /^\d+\.\d+$/.test(s)){ const n = Number(s); if (isFinite(n) && Math.abs(n - Math.round(n)) < 1e-6) s = String(Math.round(n)); }
-  return s; };
-const normDni = v => { const s = numTxt(v).toUpperCase(); return /^\d{1,8}$/.test(s) ? s.padStart(8,"0") : s; };
+function renderPeople(){const q=norm($('personSearch')?.value||''),arr=D.pers.map((p,i)=>({...p,_i:i})).filter(p=>!q||norm(`${p.dni} ${p.nombre} ${p.empresa}`).includes(q));$('padronInfo').textContent=D.padron?.archivo?`${D.padron.archivo} · ${D.pers.length} persona(s)`:`${D.pers.length} persona(s) guardadas`;$('peopleTable').innerHTML=arr.length?`<div class="tablewrap"><table><thead><tr><th>DNI</th><th>Nombre</th><th>Empresa</th><th>Estado</th><th></th></tr></thead><tbody>${arr.slice(0,500).map(p=>`<tr><td>${esc(p.dni)}</td><td><b>${esc(p.nombre)}</b><br><span class="small muted">${esc(p.cargo||'')}</span></td><td>${esc(p.empresa||'')}</td><td><span class="pill ${p.hab!==false?'ok':'no'}">${p.hab!==false?'SI':'NO'}</span></td><td><button class="btn outline" onclick="openPerson(${p._i})">Editar</button></td></tr>`).join('')}</tbody></table></div>${arr.length>500?'<div class="footerNote">Mostrando las primeras 500 coincidencias.</div>':''}`:'<div class="empty">No hay personas.</div>'}
+async function importPeople(){const f=$('personFile').files[0];if(!f)return alert('Elija un archivo Excel o CSV.');try{let rows;if(/\.csv$/i.test(f.name)){rows=parseCSV(await f.text())}else{if(!window.XLSX)throw new Error('No se pudo cargar el lector de Excel. Compruebe internet o guarde el archivo como CSV UTF-8.');const data=await f.arrayBuffer(),wb=XLSX.read(data,{type:'array'}),ws=wb.Sheets[wb.SheetNames.find(n=>/personal|padron/i.test(n))||wb.SheetNames[0]];rows=XLSX.utils.sheet_to_json(ws,{defval:''})}const parsed=rows.map(r=>{const m={};for(const [k,v] of Object.entries(r))m[norm(k).replace(/[^a-z0-9]/g,'')]=v;const dni=String(m.dni||m.documento||m.numerodni||'').replace(/\D/g,'').padStart(8,'0');if(!/^\d{8}$/.test(dni))return null;const h=norm(m.habilitado??m.hab??'si');return{dni,nombre:String(m.nombre||m.nombres||m.nombreyapellidos||'').trim(),empresa:String(m.empresa||'').trim(),cargo:String(m.cargo||'').trim(),fot:String(m.fotocheck||m.fot||'').trim(),hab:!['no','false','0','inactivo'].includes(h)}}).filter(x=>x&&x.nombre);if(!parsed.length)throw new Error('No encontré filas válidas. Se necesitan las columnas DNI y NOMBRE.');const map=new Map(D.pers.map(p=>[String(p.dni).padStart(8,'0'),p]));parsed.forEach(p=>map.set(p.dni,p));D.pers=[...map.values()].sort((a,b)=>a.nombre.localeCompare(b.nombre));D.padron={archivo:f.name,fecha:Date.now()};save();renderPeople();alert(`${parsed.length} fila(s) leídas. El padrón quedó con ${D.pers.length} persona(s).`)}catch(e){alert(e.message||'No se pudo leer el archivo.')}}
+function parseCSV(text){const lines=text.replace(/^\uFEFF/,'').split(/\r?\n/).filter(x=>x.trim()),sep=(lines[0].match(/;/g)||[]).length>(lines[0].match(/,/g)||[]).length?';':',';const parse=l=>{const a=[];let s='',q=false;for(let i=0;i<l.length;i++){const c=l[i];if(c==='"'){if(q&&l[i+1]==='"'){s+='"';i++}else q=!q}else if(c===sep&&!q){a.push(s);s=''}else s+=c}a.push(s);return a};const h=parse(lines.shift());return lines.map(l=>Object.fromEntries(parse(l).map((v,i)=>[h[i]||`C${i}`,v])))}
+function openPerson(i='') {const p=i===''?{dni:'',nombre:'',empresa:'',cargo:'',fot:'',hab:true}:D.pers[i];$('editPersonIndex').value=i;$('editDni').value=p.dni;$('editName').value=p.nombre;$('editCompany').value=p.empresa||'';$('editRole').value=p.cargo||'';$('editBadge').value=p.fot||'';$('editEnabled').checked=p.hab!==false;$('personModal').classList.remove('hidden')}
+function closePerson(){$('personModal').classList.add('hidden')}
+function savePerson(){const dni=$('editDni').value.replace(/\D/g,'').padStart(8,'0'),nombre=$('editName').value.trim();if(!/^\d{8}$/.test(dni)||!nombre)return alert('Ingrese DNI de 8 dígitos y nombre.');const p={dni,nombre,empresa:$('editCompany').value.trim(),cargo:$('editRole').value.trim(),fot:$('editBadge').value.trim(),hab:$('editEnabled').checked},i=$('editPersonIndex').value;if(i===''){const old=D.pers.findIndex(x=>String(x.dni).padStart(8,'0')===dni);old>=0?D.pers[old]=p:D.pers.push(p)}else D.pers[Number(i)]=p;D.pers.sort((a,b)=>a.nombre.localeCompare(b.nombre));save();closePerson();renderPeople()}
 
-const CAMPOS = {
-  dni:["DNI","NDNI","DOCUMENTO","NDOCUMENTO","NRODOCUMENTO","NUMERODOCUMENTO","DOC","NRODNI"],
-  nombre:["NOMBRESYAPELLIDOS","APELLIDOSYNOMBRES","NOMBRE","NOMBRES","NOMBRECOMPLETO","PASAJERO","TRABAJADOR","COLABORADOR"],
-  fot:["FOTOCHECK","CODIGOFOTOCHECK","NFOTOCHECK","CARNET","CODIGOTRABAJADOR","CODTRABAJADOR","FICHA"],
-  cargo:["CARGO","PUESTO","POSICION"], empresa:["EMPRESA","CONTRATISTA","RAZONSOCIAL"],
-  hab:["HABILITADO","HABILITADA","AUTORIZADO","ACTIVO","ESTADO","HABILITACION"]
-};
-const NO_HAB = ["NO","N","0","FALSE","FALSO","INHABILITADO","NOHABILITADO","BLOQUEADO","CESADO","INACTIVO","BAJA","SUSPENDIDO"];
-function interpretarPadron(hojas){
-  let mejor = null;
-  for (const h of hojas){
-    for (let r = 0; r < Math.min(40, h.filas.length); r++){
-      const m = {};
-      (h.filas[r]||[]).forEach((v,i)=>{ const n = norm(v); for (const [k,al] of Object.entries(CAMPOS)) if (m[k]===undefined && al.includes(n)) m[k]=i; });
-      if (m.dni === undefined) continue;
-      const filas = [];
-      for (let i = r+1; i < h.filas.length; i++){
-        const f = h.filas[i] || [], dni = normDni(f[m.dni]); if (!dni) continue;
-        const g = k => m[k] !== undefined ? String(f[m[k]] ?? "").trim() : "";
-        const hv = norm(g("hab"));
-        filas.push({ dni, nombre:g("nombre"), fot:numTxt(g("fot")).toUpperCase(), empresa:g("empresa"), cargo:g("cargo"),
-          traeHab: m.hab !== undefined && hv !== "", hab: !NO_HAB.includes(hv) });
-      }
-      if (!mejor || filas.length > mejor.filas.length) mejor = {hoja:h.nombre, fila:r+1, tieneHab: m.hab !== undefined, filas};
-      break;
-    }
-  }
-  return mejor;
-}
-function importarPadron(r, marcarAusentes){
-  let nuevos = 0, act = 0, aSi = 0, aNo = 0, aus = 0; const vistos = new Set();
-  for (const x of r.filas){
-    vistos.add(x.dni);
-    let p = IDX.dni.get(x.dni);
-    if (p){
-      p.nombre = x.nombre || p.nombre; p.fot = x.fot || p.fot; p.empresa = x.empresa || p.empresa; p.cargo = x.cargo || p.cargo;
-      if (x.traeHab && p.hab !== x.hab){ p.hab = x.hab; x.hab ? aSi++ : aNo++; }
-      act++;
-    } else {
-      p = { dni:x.dni, nombre:x.nombre, fot:x.fot, empresa:x.empresa, cargo:x.cargo, hab: x.traeHab ? x.hab : true };
-      D.pers.push(p); IDX.dni.set(p.dni, p); nuevos++;
-    }
-  }
-  if (marcarAusentes) for (const p of D.pers) if (!vistos.has(p.dni) && p.hab){ p.hab = false; aus++; }
-  D.pers.sort((a,b)=>a.nombre.localeCompare(b.nombre,"es"));
-  reindex(); guardar();
-  return {nuevos, act, aSi, aNo, aus};
-}
-$("inpPadron").addEventListener("change", async e => {
-  const f = e.target.files[0]; e.target.value = ""; if (!f) return;
-  const msg = $("padronMsg"); msg.innerHTML = "<p class='mini'>Leyendo archivo…</p>";
-  try {
-    const nom = f.name.toLowerCase();
-    const hojas = (nom.endsWith(".csv") || nom.endsWith(".txt")) ? await leerCsvArchivo(f) : await leerXlsx(await f.arrayBuffer());
-    const r = interpretarPadron(hojas);
-    if (!r || !r.filas.length) throw new Error("No se encontró una columna llamada DNI con personas. Revise que la primera fila tenga los títulos (DNI, NOMBRE, …).");
-    const k = importarPadron(r, $("chkAusentes").checked);
-    D.padron = { archivo:f.name, fecha:Date.now() }; guardar();
-    const dupl = r.filas.length - new Set(r.filas.map(x=>x.dni)).size;
-    const raros = r.filas.filter(x=>!/^\d{8}$/.test(x.dni)).length;
-    msg.innerHTML = `<div class="aviso okk">✅ Hoja <b>${esc(r.hoja)}</b>: ${r.filas.length} filas leídas.<br>
-      <b>${k.nuevos}</b> nuevos · <b>${k.act}</b> actualizados${k.aSi?` · ${k.aSi} pasaron a SI`:""}${k.aNo?` · ${k.aNo} pasaron a NO`:""}${k.aus?` · ${k.aus} marcados NO por no estar en el Excel`:""}.</div>` +
-      (!r.tieneHab ? `<div class="aviso">ℹ️ El Excel no tiene columna HABILITADO: los nuevos quedan en SI y se respetan los cambios manuales.</div>` : "") +
-      (dupl ? `<div class="aviso">⚠️ ${dupl} DNI repetidos en el Excel (se usó la última fila).</div>` : "") +
-      (raros ? `<div class="aviso">⚠️ ${raros} documentos no tienen 8 dígitos (CE/pasaporte o error).</div>` : "");
-    renderTodo();
-  } catch(err){ msg.innerHTML = `<div class="aviso error">❌ ${esc(err.message)}</div><p class="mini">Archivo: ${esc(f.name)} · ${Math.round(f.size/1024)} KB</p>`; }
-});
+function renderRoutes(){const list=(id,arr,type,fmt)=>$(id).innerHTML=arr.length?arr.map((x,i)=>`<div class="listItem"><div class="main">${fmt(x)}</div><button class="btn outline" onclick="removeMaster('${type}',${i})">×</button></div>`).join(''):'<div class="empty">Sin registros.</div>';list('routesList',D.rutas,'route',x=>`<strong>${esc(x)}</strong>`);list('busesList',D.buses,'bus',x=>`<strong>${esc(x.placa)}</strong><small>${esc(x.cod||'')} · ${esc(x.cap||0)} asientos</small>`);list('driversList',D.cond,'driver',x=>`<strong>${esc(x.nombre)}</strong><small>${esc(x.dni||'')}</small>`);renderLists()}
+function addRoute(){const x=$('newRoute').value.trim().toUpperCase();if(x&&!D.rutas.some(y=>norm(y)===norm(x)))D.rutas.push(x);$('newRoute').value='';save();renderRoutes()}
+function addBus(){const placa=$('newBusPlate').value.trim().toUpperCase(),cap=num($('newBusCap').value);if(!placa||!cap)return alert('Ingrese placa y capacidad.');const x={placa,cod:$('newBusCode').value.trim(),cap},i=D.buses.findIndex(y=>norm(y.placa)===norm(placa));i>=0?D.buses[i]=x:D.buses.push(x);['newBusPlate','newBusCode','newBusCap'].forEach(id=>$(id).value='');save();renderRoutes()}
+function addDriver(){const nombre=$('newDriverName').value.trim().toUpperCase(),dni=$('newDriverDni').value.replace(/\D/g,'');if(!nombre)return alert('Ingrese el nombre.');D.cond.push({nombre,dni});$('newDriverName').value='';$('newDriverDni').value='';save();renderRoutes()}
+function removeMaster(type,i){if(!confirm('¿Eliminar este registro?'))return;if(type==='route')D.rutas.splice(i,1);if(type==='bus')D.buses.splice(i,1);if(type==='driver')D.cond.splice(i,1);save();renderRoutes()}
 
-/* ===================== PERSONAL: LISTADO ===================== */
-const LIM = 200;
-function renderPersonal(){
-  const si = D.pers.filter(p=>p.hab).length;
-  $("pTot").textContent = D.pers.length; $("pSi").textContent = si; $("pNo").textContent = D.pers.length - si;
-  $("padronInfo").textContent = D.padron.archivo ? `Última carga: ${D.padron.archivo} · ${new Date(D.padron.fecha).toLocaleString("es-PE")}` : "";
-  const q = norm($("pBuscar").value), fl = $("pFiltro").value;
-  const lista = D.pers.filter(p => (fl==="todos" || (fl==="si") === p.hab) && (!q || norm(p.nombre+" "+p.dni+" "+p.empresa+" "+p.fot).includes(q)));
-  $("tbPers").innerHTML = lista.slice(0, LIM).map(p => `<tr>
-      <td><b>${esc(p.nombre||"(sin nombre)")}</b><div class="mini">DNI ${esc(p.dni)}${p.empresa?" · "+esc(p.empresa):""}${p.cargo?" · "+esc(p.cargo):""}</div></td>
-      <td><button class="sw ${p.hab?"si":"no"}" onclick="togHab('${esc(p.dni)}')">${p.hab?"SI":"NO"}</button></td>
-      <td><button class="xbtn" onclick="borrarPers('${esc(p.dni)}')" title="Eliminar">✖</button></td></tr>`).join("")
-    || `<tr><td colspan="3" class="mini" style="text-align:center;padding:20px">${D.pers.length ? "Sin resultados" : "Cargue el Excel de personal"}</td></tr>`;
-  $("pMas").textContent = lista.length > LIM ? `Mostrando ${LIM} de ${lista.length}. Use el buscador para encontrar a alguien.` : (lista.length ? `${lista.length} persona(s)` : "");
-}
-window.togHab = dni => { const p = IDX.dni.get(dni); if (!p) return; p.hab = !p.hab; guardar(); renderPersonal(); };
-window.borrarPers = dni => { const p = IDX.dni.get(dni); if (!p || !confirm(`¿Eliminar del registro a ${p.nombre} (${p.dni})?\nSi solo no debe viajar, mejor póngalo en NO.`)) return;
-  D.pers = D.pers.filter(x=>x.dni!==dni); reindex(); guardar(); renderPersonal(); };
-$("btnAddPers").onclick = () => {
-  const dni = normDni($("mDni").value), nom = $("mNom").value.trim();
-  if (!dni || !nom){ alert("Ingrese DNI y nombre."); return; }
-  let p = IDX.dni.get(dni);
-  if (p){ if (!confirm(`El DNI ${dni} ya existe (${p.nombre}). ¿Actualizar sus datos?`)) return; p.nombre = nom; p.empresa = $("mEmp").value.trim() || p.empresa; }
-  else { p = {dni, nombre:nom, fot:"", empresa:$("mEmp").value.trim(), cargo:"", hab:true}; D.pers.push(p); D.pers.sort((a,b)=>a.nombre.localeCompare(b.nombre,"es")); }
-  reindex(); guardar(); $("mDni").value = $("mNom").value = $("mEmp").value = ""; renderPersonal();
-};
-$("pBuscar").oninput = renderPersonal; $("pFiltro").onchange = renderPersonal;
+function normalizeTrip(v,remote=false){const cap=num(val(v,'capacidad','CAPACIDAD')),pas=num(val(v,'pasajeros','PASAJEROS')),rawOcc=val(v,'ocupacion','OCUPACION');let occ=num(rawOcc);if(occ>1)occ/=100;if(!occ&&cap)occ=pas/cap;return{id:String(val(v,'id','ID')),equipo:val(v,'equipo','EQUIPO'),fecha:String(val(v,'fecha','FECHA')).slice(0,10),placa:val(v,'placa','PLACA'),ruta:val(v,'ruta','RUTA'),conductor:val(v,'conductor','CONDUCTOR'),capacidad:cap,inicio:val(v,'inicio','INICIO'),fin:val(v,'fin','FIN'),duracion:num(val(v,'duracion','DURACION')),pasajeros:pas,ocupacion:occ,rechazos:num(val(v,'rechazos','RECHAZOS')),detalle:Array.isArray(v.detalle)?v.detalle:[],_remote:remote,_raw:v}}
+function normalizeBoarding(x){return{id_viaje:String(val(x,'id_viaje','ID_VIAJE','idViaje')),equipo:val(x,'equipo','EQUIPO'),fecha:val(x,'fecha','FECHA'),placa:val(x,'placa','PLACA'),ruta:val(x,'ruta','RUTA'),hora:val(x,'hora','HORA'),dni:String(val(x,'dni','DNI')),nombre:val(x,'nombre','NOMBRE'),empresa:val(x,'empresa','EMPRESA'),resultado:val(x,'resultado','RESULTADO')||'EMBARCADO'}}
+function renderDashboardFilters(){const years=[...new Set([...D.viajes,...(D.remoto.viajes||[])].map(v=>Number(String(val(v,'fecha','FECHA')).slice(0,4))).filter(Boolean))];years.push(new Date().getFullYear());const uniq=[...new Set(years)].sort((a,b)=>b-a),cur=$('dashYear').value||String(new Date().getFullYear());$('dashYear').innerHTML=uniq.map(y=>`<option ${String(y)===cur?'selected':''}>${y}</option>`).join('');if(!$('dashMonth').options.length){const ms=['Acumulado','Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];$('dashMonth').innerHTML=ms.map((m,i)=>`<option value="${i}">${m}</option>`).join('');$('dashMonth').value=String(new Date().getMonth()+1)}}
+function setDashMode(m){dashboardMode=m;$('modeLocal').classList.toggle('active',m==='local');$('modeRemote').classList.toggle('active',m==='remote');$('refreshRemoteBtn').classList.toggle('hidden',m!=='remote');if(m==='remote'&&!D.remoto.viajes.length)refreshRemote();else renderDashboard()}
+function setDashGroup(g){dashboardGroup=g;$('groupRoute').classList.toggle('active',g==='route');$('groupBus').classList.toggle('active',g==='bus');renderDashboard()}
+function tripsForDashboard(){const raw=dashboardMode==='remote'?D.remoto.viajes:D.viajes,year=Number($('dashYear').value),month=Number($('dashMonth').value);return raw.map(v=>normalizeTrip(v,dashboardMode==='remote')).filter(v=>{const d=new Date(v.fecha+'T12:00:00');return d.getFullYear()===year&&(!month||d.getMonth()+1===month)})}
+function renderDashboard(){renderDashboardFilters();const arr=tripsForDashboard(),p=arr.reduce((s,x)=>s+x.pasajeros,0),seats=arr.reduce((s,x)=>s+x.capacidad,0),occ=seats?p/seats:0;$('dTrips').textContent=arr.length;$('dPassengers').textContent=p;$('dSeats').textContent=seats;$('dOccupancy').textContent=Math.round(occ*100)+'%';$('dashStatus').textContent=dashboardMode==='local'?'📱 Solo los viajes de este celular.':`☁️ ${D.remoto.fecha?'Actualizado '+new Date(D.remoto.fecha).toLocaleString('es-PE'):'Sin actualizar'} · ${D.remoto.embarques?.length||0} registros de pasajeros`;
+ const key=dashboardGroup==='route'?'ruta':'placa',groups={};for(const v of arr){const k=v[key]||'SIN DATO';groups[k]??={trips:0,p:0,seats:0,reject:0};groups[k].trips++;groups[k].p+=v.pasajeros;groups[k].seats+=v.capacidad;groups[k].reject+=v.rechazos}$('groupTitle').textContent=`Ocupación por ${dashboardGroup==='route'?'ruta':'bus'}`;$('groupSummary').innerHTML=Object.keys(groups).length?Object.entries(groups).sort((a,b)=>b[1].p-a[1].p).map(([k,g])=>{const o=g.seats?g.p/g.seats:0,c=o>=.8?'#168b3d':o>=.5?'#d88a00':'#d02020';return`<div style="margin:12px 0"><div class="row"><b class="grow">${esc(k)}</b><b style="color:${c}">${Math.round(o*100)}%</b></div><div class="progress"><i style="width:${Math.min(100,o*100)}%;background:${c}"></i></div><div class="small muted">${g.trips} viaje(s) · ${g.p} pasajeros / ${g.seats} asientos · ${g.reject} rechazos</div></div>`}).join(''):'<div class="empty">No hay viajes para este periodo.</div>';
+ $('tripTable').innerHTML=arr.length?`<div class="tablewrap"><table><thead><tr><th>Fecha</th><th>Bus / ruta</th><th>Horario</th><th>Ocup.</th></tr></thead><tbody>${arr.slice().sort((a,b)=>(b.fecha+b.inicio).localeCompare(a.fecha+a.inicio)).map((v,i)=>`<tr><td>${esc(formatDate(v.fecha))}</td><td><b>${esc(v.placa)}</b><br><span class="small muted">${esc(v.ruta)} · ${esc(v.conductor)}</span></td><td>${esc(v.inicio)}–${esc(v.fin)}<br><span class="small muted">${v.duracion} min</span></td><td><button class="linkbtn" data-trip="${esc(v.id)}" data-remote="${v._remote?'1':'0'}">${Math.round(v.ocupacion*100)}%</button><br><span class="small">${v.pasajeros}/${v.capacidad||'—'}</span></td></tr>`).join('')}</tbody></table></div>`:'<div class="empty">No hay viajes para este periodo.</div>';document.querySelectorAll('[data-trip]').forEach(b=>b.onclick=()=>openDetail(b.dataset.trip,b.dataset.remote==='1'))}
+function formatDate(s){const [y,m,d]=String(s).slice(0,10).split('-');return d&&m&&y?`${d}/${m}/${y}`:s}
+async function refreshRemote(){if(!D.cfg.urlLectura){alert('Primero pegue la URL de lectura en Datos.');showPage('datos');return}$('dashStatus').textContent='Consultando SharePoint…';try{const r=await fetch(D.cfg.urlLectura,{method:'GET',cache:'no-store'});if(!r.ok)throw new Error(`HTTP ${r.status}`);const data=await r.json();let viajes=[],embarques=[];if(Array.isArray(data))viajes=data;else{viajes=data.viajes||data.Viajes||data.trips||data.value||[];embarques=data.embarques||data.Embarques||data.passengers||data.detalle||[]}D.remoto={fecha:Date.now(),viajes:Array.isArray(viajes)?viajes:[],embarques:Array.isArray(embarques)?embarques:[]};save();renderDashboardFilters();renderDashboard();showMsg($('cfgMessage'),`Lectura correcta: ${D.remoto.viajes.length} viajes y ${D.remoto.embarques.length} registros de pasajeros.`,'notice ok')}catch(e){showMsg($('cfgMessage'),`No se pudo leer SharePoint: ${e.message}`,'notice err');$('dashStatus').textContent='Error al consultar SharePoint.'}}
+function getTrip(id,remote){const raw=(remote?D.remoto.viajes:D.viajes).find(x=>String(val(x,'id','ID'))===String(id));return raw?normalizeTrip(raw,remote):null}
+function detailForTrip(t){if(!t)return[];if(t._remote)return(D.remoto.embarques||[]).map(normalizeBoarding).filter(x=>x.id_viaje===String(t.id));return(t.detalle||[]).map(x=>normalizeBoarding({...x,id_viaje:t.id,fecha:t.fecha,placa:t.placa,ruta:t.ruta}))}
+function openDetail(id,remote){const t=getTrip(id,remote);if(!t)return alert('No se encontró el viaje.');selectedDetail={trip:t,rows:detailForTrip(t)};$('detailTripInfo').innerHTML=`<div class="grid g4"><div><label>Fecha</label><b>${esc(formatDate(t.fecha))}</b></div><div><label>Bus</label><b>${esc(t.placa)}</b></div><div><label>Ruta</label><b>${esc(t.ruta)}</b></div><div><label>Horario</label><b>${esc(t.inicio)}–${esc(t.fin)}</b></div></div><div class="notice">${esc(t.conductor)} · ${t.pasajeros} pasajeros · ${Math.round(t.ocupacion*100)}% de ocupación</div>`;$('detailCount').textContent=`${selectedDetail.rows.length} registro(s)`;$('downloadDetailBtn').disabled=!selectedDetail.rows.length;$('detailPassengers').innerHTML=selectedDetail.rows.length?`<div class="tablewrap"><table><thead><tr><th>#</th><th>Hora</th><th>DNI</th><th>Nombre</th><th>Empresa</th><th>Resultado</th></tr></thead><tbody>${selectedDetail.rows.map((x,i)=>`<tr><td>${i+1}</td><td>${esc(x.hora)}</td><td>${esc(x.dni)}</td><td><b>${esc(x.nombre||'—')}</b></td><td>${esc(x.empresa||'')}</td><td><span class="pill ${norm(x.resultado)==='embarcado'?'ok':'no'}">${esc(x.resultado)}</span></td></tr>`).join('')}</tbody></table></div>`:`<div class="notice warn">${t._remote?'Este viaje viene de SharePoint, pero el flujo de lectura todavía no devolvió la tabla Embarques. Actualice el flujo «Embarque – Leer viajes» según el archivo PASO_EXTRA_SHAREPOINT.txt incluido en la versión 8.':'Este viaje no tiene detalle de pasajeros guardado.'}</div>`;$('detailModal').classList.remove('hidden')}
+function closeDetail(){$('detailModal').classList.add('hidden');selectedDetail=null}
+function downloadDetail(){if(!selectedDetail?.rows.length)return;const t=selectedDetail.trip,rows=selectedDetail.rows.map((x,i)=>({'N°':i+1,'FECHA':t.fecha,'PLACA':t.placa,'RUTA':t.ruta,'CONDUCTOR':t.conductor,'HORA':x.hora,'DNI':x.dni,'NOMBRE':x.nombre,'EMPRESA':x.empresa,'RESULTADO':x.resultado})),base=`Detalle_${safeName(t.placa)}_${t.fecha}_${safeName(t.ruta)}`;if(window.XLSX){const wb=XLSX.utils.book_new(),summary=[['DETALLE DE PASAJEROS'],['ID VIAJE',t.id],['FECHA',t.fecha],['PLACA',t.placa],['RUTA',t.ruta],['CONDUCTOR',t.conductor],['INICIO',t.inicio],['FIN',t.fin],['PASAJEROS',t.pasajeros],['CAPACIDAD',t.capacidad],['OCUPACIÓN',t.ocupacion]];const ws1=XLSX.utils.aoa_to_sheet(summary),ws2=XLSX.utils.json_to_sheet(rows);ws1['!cols']=[{wch:18},{wch:42}];ws2['!cols']=[{wch:5},{wch:12},{wch:14},{wch:30},{wch:24},{wch:16},{wch:20},{wch:30},{wch:22},{wch:18}];XLSX.utils.book_append_sheet(wb,ws1,'Resumen');XLSX.utils.book_append_sheet(wb,ws2,'Pasajeros');XLSX.writeFile(wb,base+'.xlsx')}else{const h=Object.keys(rows[0]),csv='\uFEFF'+[h.join(';'),...rows.map(r=>h.map(k=>`"${String(r[k]??'').replace(/"/g,'""')}"`).join(';'))].join('\r\n');downloadBlob(new Blob([csv],{type:'text/csv;charset=utf-8'}),base+'.csv')}}
 
-/* ===================== RUTAS / BUSES / CONDUCTORES ===================== */
-function addRuta(v){ v = String(v||"").trim().replace(/\s+/g," "); if (v && !D.rutas.some(r=>norm(r)===norm(v))) D.rutas.push(v); return v; }
-function addCond(v, dni){ v = String(v||"").trim().replace(/\s+/g," "); if (v && !D.cond.some(c=>norm(c.nombre)===norm(v))) D.cond.push({nombre:v, dni:dni||""}); return v; }
-function busDe(placa){ return D.buses.find(b=>b.placa===placa); }
-function renderCatalogos(){
-  D.rutas.sort((a,b)=>a.localeCompare(b,"es")); D.buses.sort((a,b)=>a.placa.localeCompare(b.placa)); D.cond.sort((a,b)=>a.nombre.localeCompare(b.nombre,"es"));
-  $("lstRutas").innerHTML = D.rutas.map((r,i)=>`<div class="item"><b>${esc(r)}</b><button class="xbtn red" onclick="borrarRuta(${i})">Eliminar</button></div>`).join("") || `<p class="mini">Sin rutas.</p>`;
-  $("lstBuses").innerHTML = D.buses.map((b,i)=>`<div class="item"><div style="flex:1"><b>${esc(b.placa)}</b><div class="mini">${esc(b.cod)}</div></div>
-      <div style="width:90px"><input type="number" value="${b.cap||""}" min="1" placeholder="Cap." onchange="capBus(${i},this.value)" style="padding:8px"></div>
-      <button class="xbtn red" onclick="borrarBus(${i})">✖</button></div>`).join("") || `<p class="mini">Sin buses.</p>`;
-  $("lstCond").innerHTML = D.cond.map((c,i)=>`<div class="item"><div><b>${esc(c.nombre)}</b><div class="mini">${c.dni?"DNI "+esc(c.dni):""}</div></div><button class="xbtn red" onclick="borrarCond(${i})">Eliminar</button></div>`).join("") || `<p class="mini">Sin conductores.</p>`;
-  const opts = arr => `<option value="">▾</option>` + arr.map(x=>`<option value="${esc(x)}">${esc(x)}</option>`).join("");
-  $("sRuta").innerHTML = opts(D.rutas); $("dlRuta").innerHTML = D.rutas.map(x=>`<option value="${esc(x)}">`).join("");
-  $("sPlaca").innerHTML = `<option value="">▾</option>` + D.buses.map(b=>`<option value="${esc(b.placa)}">${esc(b.placa)}${b.cap?" · "+b.cap+" asientos":""}${b.cod?" · "+esc(b.cod):""}</option>`).join("");
-  $("dlPlaca").innerHTML = D.buses.map(b=>`<option value="${esc(b.placa)}">`).join("");
-  $("sCond").innerHTML = opts(D.cond.map(c=>c.nombre)); $("dlCond").innerHTML = D.cond.map(c=>`<option value="${esc(c.nombre)}">`).join("");
-}
-$("btnAddRuta").onclick = () => { const v = $("nRuta").value.trim(); if (!v) return;
-  if (D.rutas.some(r=>norm(r)===norm(v))){ alert("Esa ruta ya existe."); return; } addRuta(v); guardar(); $("nRuta").value=""; renderCatalogos(); };
-$("btnAddBus").onclick = () => {
-  const placa = $("nPlaca").value.trim().toUpperCase().replace(/\s+/g,""), cap = parseInt($("nCap").value,10);
-  if (!placa || !(cap > 0)){ alert("Ingrese placa y capacidad."); return; }
-  if (busDe(placa)){ alert("Esa placa ya existe. Corrija la capacidad en la lista."); return; }
-  D.buses.push({placa, cod:$("nCod").value.trim(), cap}); guardar(); $("nPlaca").value=$("nCap").value=$("nCod").value=""; renderCatalogos(); };
-$("btnAddCond").onclick = () => { const v = $("nCond").value.trim(); if (!v) return;
-  if (D.cond.some(c=>norm(c.nombre)===norm(v))){ alert("Ese conductor ya existe."); return; }
-  addCond(v, $("nCondDni").value.trim()); guardar(); $("nCond").value=$("nCondDni").value=""; renderCatalogos(); };
-$("nRuta").addEventListener("keydown", e => { if (e.key==="Enter") $("btnAddRuta").click(); });
-window.borrarRuta = i => { if (confirm(`¿Eliminar la ruta "${D.rutas[i]}"?`)){ D.rutas.splice(i,1); guardar(); renderCatalogos(); } };
-window.borrarBus = i => { if (confirm(`¿Eliminar el bus ${D.buses[i].placa}?`)){ D.buses.splice(i,1); guardar(); renderCatalogos(); } };
-window.borrarCond = i => { if (confirm(`¿Eliminar a ${D.cond[i].nombre}?`)){ D.cond.splice(i,1); guardar(); renderCatalogos(); } };
-window.capBus = (i,v) => { const n = parseInt(v,10); if (n > 0){ D.buses[i].cap = n; guardar(); renderCatalogos(); } };
+function renderConfig(){$('cfgDevice').value=D.cfg.equipo||'';$('cfgSend').value=D.cfg.urlEnvio||'';$('cfgRead').value=D.cfg.urlLectura||'';updateCloud()}
+function saveConfig(){D.cfg.equipo=$('cfgDevice').value.trim();D.cfg.urlEnvio=$('cfgSend').value.trim();D.cfg.urlLectura=$('cfgRead').value.trim();save();showMsg($('cfgMessage'),'Conexión guardada.','notice ok')}
+async function shareConfig(){saveConfig();const cfg={equipo:D.cfg.equipo,urlEnvio:D.cfg.urlEnvio,urlLectura:D.cfg.urlLectura},link=location.origin+location.pathname+'#cfg='+btoa(unescape(encodeURIComponent(JSON.stringify(cfg))));try{if(navigator.share)await navigator.share({title:'Conexión App Embarque',text:'Abra este enlace en Chrome para configurar la app:',url:link});else{await navigator.clipboard.writeText(link);alert('Enlace copiado. Envíelo por WhatsApp.')}}catch(e){}}
+function payload(v){return{id:v.id,equipo:v.equipo||D.cfg.equipo||'Este celular',fecha:v.fecha,placa:v.placa,ruta:v.ruta,conductor:v.conductor,capacidad:v.capacidad,inicio:v.inicio,fin:v.fin,duracion:v.duracion,pasajeros:v.pasajeros,ocupacion:v.ocupacion,rechazos:v.rechazos,detalle:(v.detalle||[]).map(x=>({id_viaje:v.id,equipo:v.equipo||D.cfg.equipo||'Este celular',fecha:v.fecha,placa:v.placa,ruta:v.ruta,hora:x.hora,dni:x.dni,nombre:x.nombre||'',empresa:x.empresa||'',resultado:x.resultado}))}}
+async function sendPending(show=true){if(!navigator.onLine||!D.cfg.urlEnvio||!D.pendientes.length){if(show&&!D.cfg.urlEnvio)alert('Configure la URL de envío.');return}let sent=0,lastErr='';for(const v of [...D.pendientes]){try{const r=await fetch(D.cfg.urlEnvio,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload(v))});if(!r.ok)throw new Error(`HTTP ${r.status}`);D.pendientes=D.pendientes.filter(x=>x.id!==v.id);sent++;save()}catch(e){lastErr=e.message;break}}if(show)showMsg($('cfgMessage'),sent?`☁️ ${sent} viaje(s) enviados a SharePoint.`:`No se pudo enviar: ${lastErr||'sin conexión'}`,sent?'notice ok':'notice err');updateCloud()}
+function exportBackup(){const data={app:'embarque',ver:APP_VERSION,fecha:Date.now(),D};downloadBlob(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),`Respaldo_Embarque_${dateISO().replace(/-/g,'')}_${timeNow().replace(':','')}.json`)}
+async function importBackup(){const f=$('backupFile').files[0];if(!f)return alert('Elija el respaldo JSON.');try{const x=JSON.parse(await f.text());if(x.app!=='embarque'&&!x.D)throw new Error('No es un respaldo de Embarque.');if(!confirm('¿Restaurar este respaldo y reemplazar los datos actuales?'))return;D=normalizeData(x);save();renderAll();alert('Respaldo restaurado.')}catch(e){alert(e.message||'No se pudo restaurar.')}}
+function clearTrips(){if(!confirm('¿Borrar todos los viajes locales y pendientes? Esta acción no borra SharePoint.'))return;D.viajes=[];D.pendientes=[];D.activo=null;save();renderAll();alert('Viajes locales borrados.')}
 
-/* ===================== VIAJES ===================== */
-const VA = () => D.viajes.find(v => v.id === D.activo) || null;
-$("sRuta").onchange = () => { if ($("sRuta").value) $("vRuta").value = $("sRuta").value; $("sRuta").value = ""; };
-$("sCond").onchange = () => { if ($("sCond").value) $("vCond").value = $("sCond").value; $("sCond").value = ""; };
-$("sPlaca").onchange = () => { if ($("sPlaca").value){ $("vPlaca").value = $("sPlaca").value; capDePlaca(); } $("sPlaca").value = ""; };
-function capDePlaca(){ const b = busDe($("vPlaca").value.trim().toUpperCase()); if (b && b.cap) $("vCap").value = b.cap; }
-$("vPlaca").addEventListener("change", capDePlaca); $("vPlaca").addEventListener("input", capDePlaca);
-
-$("btnIniciar").onclick = () => {
-  ctx();
-  const fecha = $("vFecha").value, ruta = $("vRuta").value.trim(), placa = $("vPlaca").value.trim().toUpperCase().replace(/\s+/g,""),
-        cap = parseInt($("vCap").value,10), cond = $("vCond").value.trim();
-  const falta = [!fecha&&"fecha", !ruta&&"ruta", !placa&&"placa", !(cap>0)&&"capacidad", !cond&&"conductor"].filter(Boolean);
-  if (falta.length){ alert("Complete: " + falta.join(", ")); return; }
-  if (!D.pers.length && !confirm("No hay personal registrado: todos saldrán como NO REGISTRADO. ¿Continuar?")) return;
-  const abierto = D.viajes.find(v => v.est === "EN CURSO" && v.placa === placa);
-  if (abierto && !confirm(`El bus ${placa} ya tiene un viaje sin finalizar (${abierto.ruta}, ${fFecha(abierto.fecha)} ${hhmm(abierto.ini)}). ¿Iniciar otro de todas formas?`)) return;
-  addRuta(ruta); addCond(cond);
-  const b = busDe(placa); if (b){ if (b.cap !== cap) b.cap = cap; } else D.buses.push({placa, cod:"", cap});
-  const v = { id:"V" + Date.now().toString(36) + Math.random().toString(36).slice(2,5), fecha, ruta, placa, cond, cap, ini:Date.now(), fin:0, est:"EN CURSO", pax:[], rech:[] };
-  D.viajes.push(v); D.activo = v.id; guardar(); $("resultado").style.display = "none"; renderTodo();
-};
-window.continuar = id => { D.activo = id; guardar(); $("resultado").style.display = "none"; renderTodo(); };
-$("btnPausar").onclick = () => { detenerCam(); D.activo = null; guardar(); renderTodo(); };
-$("btnFinalizar").onclick = () => {
-  const v = VA(); if (!v) return;
-  if (!confirm(`¿FINALIZAR el viaje?\n\n${v.placa} · ${v.ruta}\nPasajeros: ${v.pax.length} de ${v.cap} (${pct(v.pax.length/v.cap)})\nInicio: ${hhmm(v.ini)}  ·  Fin: ${hhmm(Date.now())}`)) return;
-  detenerCam(); v.fin = Date.now(); v.est = "FINALIZADO"; D.activo = null; persistir();
-  renderTodo();
-  if (D.cfg.urlEnvio){ toast(`✅ Viaje finalizado (${v.pax.length} pax · ${pct(v.pax.length/v.cap)}). Enviando a SharePoint…`, "inf"); enviarPendientes(true); }
-  else alert(`✅ Viaje finalizado\n${v.pax.length} pasajeros · ocupación ${pct(v.pax.length/v.cap)}\n\n(Sin conexión a SharePoint configurada: el viaje queda solo en este celular)`);
-};
-window.anularPax = dni => { const v = VA(); if (!v) return; const x = v.pax.find(p=>p.d===dni);
-  if (x && confirm(`¿Bajar a ${x.n} de este viaje?`)){ v.pax = v.pax.filter(p=>p.d!==dni); guardar(); renderEmbarque(); } };
-window.cerrarViajeAbierto = id => { const v = D.viajes.find(x=>x.id===id); if (!v) return;
-  if (!confirm(`¿Finalizar el viaje ${v.placa} · ${v.ruta} con ${v.pax.length} pasajeros?`)) return;
-  v.fin = Date.now(); v.est = "FINALIZADO"; guardar(); renderTodo(); if (D.cfg.urlEnvio) enviarPendientes(true); };
-
-function renderEmbarque(){
-  const v = VA();
-  $("sinPadron").classList.toggle("oculto", D.pers.length > 0);
-  $("boxNuevo").classList.toggle("oculto", !!v); $("boxActivo").classList.toggle("oculto", !v);
-  $("hdrViaje").textContent = v ? `${v.placa} · ${v.ruta} · ${v.pax.length}/${v.cap}` : "Sin viaje en curso";
-  if (!v){
-    if (!$("vFecha").value) $("vFecha").value = hoyISO();
-    const ab = D.viajes.filter(x=>x.est==="EN CURSO").sort((a,b)=>b.ini-a.ini);
-    $("boxAbiertos").classList.toggle("oculto", !ab.length);
-    $("lstAbiertos").innerHTML = ab.map(x=>`<div class="item"><div><b>${esc(x.placa)} · ${esc(x.ruta)}</b><div class="mini">${fFecha(x.fecha)} · inicio ${hhmm(x.ini)} · ${esc(x.cond)} · ${x.pax.length}/${x.cap}</div></div>
-      <div style="display:flex;gap:6px"><button class="xbtn ok" onclick="continuar('${x.id}')">Continuar</button><button class="xbtn red" onclick="cerrarViajeAbierto('${x.id}')">Finalizar</button></div></div>`).join("");
-    return;
-  }
-  const oc = v.pax.length / v.cap;
-  $("vaTitulo").textContent = `${v.placa} · ${v.ruta}`;
-  $("vaDetalle").textContent = `${fFecha(v.fecha)} · Conductor: ${v.cond} · Inicio ${hhmm(v.ini)}`;
-  $("vaCont").textContent = `${v.pax.length} / ${v.cap}`; $("vaPct").textContent = pct(oc);
-  $("vaBarra").style.width = Math.min(100, oc*100) + "%";
-  $("tbAbordo").innerHTML = v.pax.slice().reverse().map((p,i)=>`<tr><td>${v.pax.length-i}</td><td><b>${esc(p.n)}</b><div class="mini">DNI ${esc(p.d)}${p.e?" · "+esc(p.e):""}</div></td><td>${hhmm(p.t)}</td>
-      <td><button class="xbtn" onclick="anularPax('${esc(p.d)}')">Bajar</button></td></tr>`).join("")
-    || `<tr><td colspan="4" class="mini" style="text-align:center;padding:16px">Aún no hay pasajeros a bordo</td></tr>`;
-}
-
-/* ===================== VALIDACIÓN ===================== */
-function buscarPersona(raw){
-  const c = String(raw).trim().toUpperCase().replace(/\s/g,""); if (!c) return null;
-  let p = IDX.fot.get(c) || IDX.dni.get(c) || IDX.dni.get(normDni(c)); if (p) return p;
-  const runs = c.match(/\d+/g) || [];
-  for (const r of runs) if (r.length === 8 && (p = IDX.dni.get(r))) return p;
-  for (const r of runs) if (r.length > 8) for (let i = 0; i + 8 <= r.length; i++) if ((p = IDX.dni.get(r.substr(i,8)))) return p;
-  for (const [k,q] of IDX.fot) if (k.length >= 4 && c.includes(k)) return q;
-  return null;
-}
-let ultimo = {code:"", t:0};
-function procesar(raw, origen){
-  raw = String(raw||"").trim(); if (!raw) return;
-  const ahora = Date.now(); if (raw === ultimo.code && ahora - ultimo.t < 3000) return; ultimo = {code:raw, t:ahora};
-  $("ultimoLeido").textContent = `Último código leído (${origen}): ${raw.slice(0,120)}`;
-  const v = VA(); if (!v) return;
-  const p = buscarPersona(raw);
-  const rechazar = (motivo, nombre) => { v.rech.push({c:raw.slice(0,60), n:nombre||"", t:ahora, m:motivo}); guardar(); alarma(); };
-  if (!p){ rechazar("NO REGISTRADO"); mostrar("no", {titulo:"⛔ NO REGISTRADO", sub:"No figura en el registro de personal", raw}); }
-  else if (!p.hab){ rechazar("NO HABILITADO", p.nombre); mostrar("no", {titulo:"⛔ NO HABILITADO", p, sub:"Está en el registro pero NO habilitado", raw}); }
-  else if (v.pax.some(x=>x.d===p.dni)){ const x = v.pax.find(y=>y.d===p.dni); beep("dup"); mostrar("dup", {titulo:`⚠️ YA SUBIÓ (${hhmm(x.t)})`, p}); }
-  else if (v.pax.length >= v.cap){ rechazar("BUS LLENO", p.nombre); mostrar("no", {titulo:"🚫 BUS LLENO", p, sub:`Capacidad ${v.cap} completa`}); }
-  else {
-    v.pax.push({d:p.dni, n:p.nombre, e:p.empresa, t:ahora}); guardar(); beep("ok");
-    const otro = D.viajes.find(x => x.id !== v.id && x.est === "EN CURSO" && x.pax.some(y=>y.d===p.dni));
-    mostrar("ok", {titulo:"✅ EMBARCADO", p, grande:`N° ${v.pax.length} de ${v.cap}`, sub: otro ? `Ojo: también figura en el bus ${otro.placa}` : ""});
-  }
-  renderEmbarque();
-}
-function mostrar(tipo, o){
-  const r = $("resultado"); r.style.display = "block";
-  r.className = {ok:"r-ok", dup:"r-dup", no:"r-no", info:"r-info"}[tipo];
-  r.innerHTML = `<div class="estado">${o.titulo}</div>` +
-    (o.grande ? `<div class="grande">${esc(o.grande)}</div>` : tipo==="no" ? `<div class="grande">✖</div>` : "") +
-    (o.p ? `<div class="nombre">${esc(o.p.nombre)}</div><div class="det">DNI ${esc(o.p.dni)}${o.p.empresa?" · "+esc(o.p.empresa):""}</div>` : "") +
-    (o.sub ? `<div class="det">${esc(o.sub)}</div>` : "") +
-    (o.raw && !o.p ? `<div class="det">Código leído: ${esc(o.raw.slice(0,60))}</div>` : "") +
-    (tipo==="no" ? `<div class="det" style="margin-top:6px"><b>NO PERMITIR EL EMBARQUE</b></div><button class="btn sec" style="margin-top:10px" onclick="cerrarRes()">Aceptar</button>` : "");
-  if (tipo !== "no") setTimeout(()=>{ if (r.className === "r-ok" || r.className === "r-dup") r.style.display = "none"; }, 5000);
-}
-window.cerrarRes = () => { $("resultado").style.display = "none"; detenerAlarma(); };
-$("btnValidar").onclick = () => { ctx(); ultimo.code = ""; procesar($("inpCodigo").value, "manual"); $("inpCodigo").value = ""; };
-$("inpCodigo").addEventListener("keydown", e => { if (e.key === "Enter"){ e.preventDefault(); $("btnValidar").click(); } });
-
-/* ===================== SONIDO ===================== */
-let actx = null, sirena = null;
-const ctx = () => { if (!actx) actx = new (window.AudioContext||window.webkitAudioContext)(); if (actx.state !== "running") actx.resume().catch(()=>{}); return actx; };
-["pointerdown","touchstart","keydown"].forEach(ev => document.addEventListener(ev, () => { try { ctx(); } catch(e){} }, {passive:true}));
-function tono(f, dur, tipo="sine", vol=.3, delay=0){
-  if (!$("chkSonido").checked) return; const c = ctx(), o = c.createOscillator(), g = c.createGain();
-  o.type = tipo; o.frequency.value = f; g.gain.value = vol; o.connect(g).connect(c.destination); o.start(c.currentTime+delay); o.stop(c.currentTime+delay+dur);
-}
-function beep(t){ if (t==="ok") tono(1200,.12); else { tono(700,.15,"square",.25); tono(700,.15,"square",.25,.25); }
-  if ($("chkVibrar").checked && navigator.vibrate) navigator.vibrate(t==="ok"?80:[150,100,150]); }
-function alarma(){
-  detenerAlarma();
-  if ($("chkVibrar").checked && navigator.vibrate) navigator.vibrate([400,150,400,150,400,150,400]);
-  if (!$("chkSonido").checked) return;
-  const c = ctx(), o = c.createOscillator(), g = c.createGain(), lfo = c.createOscillator(), lg = c.createGain();
-  o.type = "sawtooth"; o.frequency.value = 900; lfo.frequency.value = 3; lg.gain.value = 350;
-  lfo.connect(lg).connect(o.frequency); g.gain.value = .35; o.connect(g).connect(c.destination); o.start(); lfo.start(); sirena = {o, lfo};
-  setTimeout(detenerAlarma, 4000);
-}
-function detenerAlarma(){ if (sirena){ try{ sirena.o.stop(); sirena.lfo.stop(); }catch(e){} sirena = null; } }
-$("btnProbar").onclick = () => alarma();
-
-/* ===================== ESCÁNER (QR + código de barras) ===================== */
-const FORMATOS = ["qr_code","pdf417","code_39","code_128","data_matrix","itf","codabar","code_93","ean_13","aztec"];
-let detector = null, motor = "";
-function cargarScript(src){ return new Promise((ok,ko)=>{ const s=document.createElement("script"); s.src=src; s.onload=ok; s.onerror=ko; document.head.appendChild(s); }); }
-async function obtenerDetector(){
-  if (detector) return detector;
-  if ("BarcodeDetector" in window){
-    try { const sop = await BarcodeDetector.getSupportedFormats(), f = FORMATOS.filter(x=>sop.includes(x));
-      if (f.length){ detector = new BarcodeDetector({formats:f}); motor = "nativo (" + f.join(", ") + ")"; return detector; } } catch(e){}
-  }
-  try { await cargarScript("https://cdn.jsdelivr.net/npm/barcode-detector@2/dist/iife/pure.min.js");
-    detector = new window.BarcodeDetectionAPI.BarcodeDetector({formats:FORMATOS}); motor = "ZXing (descargado)"; return detector;
-  } catch(e){ throw new Error("Este equipo no tiene lector de códigos disponible. Use Chrome actualizado o escriba el DNI."); }
-}
-function recorte(fuente, w, h){ const c = document.createElement("canvas"), cw = Math.round(w*.9), ch = Math.round(h*.5);
-  c.width = cw; c.height = ch; c.getContext("2d").drawImage(fuente, (w-cw)/2, (h-ch)/2, cw, ch, 0, 0, cw, ch); return c; }
-async function detectarEn(fuente, w, h){
-  const d = await obtenerDetector(); let cods = [];
-  try { cods = await d.detect(fuente); } catch(e){}
-  if (!cods.length){ try { cods = await d.detect(recorte(fuente, w, h)); } catch(e){} }
-  return cods;
-}
-let stream = null, timer = null, track = null, linterna = false;
-async function iniciarCam(){
-  ctx(); const av = $("camAviso"); av.classList.add("oculto");
-  try {
-    await obtenerDetector();
-    stream = await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:"environment"}, width:{ideal:1920}, height:{ideal:1080}}, audio:false});
-    track = stream.getVideoTracks()[0];
-    try { const cap = track.getCapabilities ? track.getCapabilities() : {};
-      if (cap.focusMode && cap.focusMode.includes("continuous")) await track.applyConstraints({advanced:[{focusMode:"continuous"}]});
-      $("btnLinterna").classList.toggle("oculto", !cap.torch); } catch(e){}
-    const v = $("video"); v.srcObject = stream; await v.play();
-    $("videoBox").style.display = "block"; $("btnCam").classList.add("oculto"); $("camCtrl").classList.remove("oculto");
-    $("diag").textContent = "Lector: " + motor + " · Cámara: " + v.videoWidth + "x" + v.videoHeight;
-    let ocupado = false;
-    timer = setInterval(async ()=>{ if (ocupado || v.readyState < 2) return; ocupado = true;
-      try { const cods = await detectarEn(v, v.videoWidth, v.videoHeight); if (cods.length) procesar(cods[0].rawValue, "cámara"); } catch(e){}
-      ocupado = false; }, 300);
-  } catch(err){ av.innerHTML = "No se pudo usar la cámara: " + esc(err.message) + "<br>Pruebe con <b>📸 Tomar foto</b> o escriba el DNI."; av.classList.remove("oculto"); }
-}
-function detenerCam(){
-  clearInterval(timer); timer = null; if (stream) stream.getTracks().forEach(t=>t.stop()); stream = null; track = null; linterna = false;
-  $("videoBox").style.display = "none"; $("btnCam").classList.remove("oculto"); $("camCtrl").classList.add("oculto");
-}
-$("btnCam").onclick = iniciarCam; $("btnStop").onclick = detenerCam;
-$("btnLinterna").onclick = async () => { if (!track) return; linterna = !linterna; try { await track.applyConstraints({advanced:[{torch:linterna}]}); } catch(e){} };
-$("btnFoto").onclick = () => { ctx(); detenerCam(); $("inpFoto").click(); };
-$("inpFoto").addEventListener("change", async e => {
-  const f = e.target.files[0]; e.target.value = ""; if (!f) return;
-  const av = $("camAviso"); av.classList.remove("oculto"); av.innerHTML = "Leyendo foto…";
-  try {
-    const img = await createImageBitmap(f); let cods = await detectarEn(img, img.width, img.height);
-    if (!cods.length){ const k = 1600 / Math.max(img.width, img.height);
-      if (k < 1){ const c = document.createElement("canvas"); c.width = img.width*k; c.height = img.height*k; c.getContext("2d").drawImage(img,0,0,c.width,c.height); cods = await detectarEn(c, c.width, c.height); } }
-    if (cods.length){ av.classList.add("oculto"); ultimo.code = ""; procesar(cods[0].rawValue, "foto"); }
-    else av.innerHTML = "❌ No se encontró código en la foto. Acérquese (que el código llene el ancho), evite reflejos. O escriba el DNI.";
-  } catch(err){ av.innerHTML = "❌ " + esc(err.message); }
-});
-
-/* ===================== SINCRONIZACIÓN SHAREPOINT ===================== */
-let tToast = null;
-function toast(msg, tipo="inf", ms=4500){ const t = $("toast"); t.className = tipo; t.textContent = msg; t.style.display = "block";
-  clearTimeout(tToast); tToast = setTimeout(()=>{ t.style.display = "none"; }, ms); }
-const np = v => v.np ?? v.pax.length, nr = v => v.nr ?? v.rech.length;
-const hi = v => v.hi ?? hhmm(v.ini), hf = v => v.hf ?? hhmm(v.fin);
-const dur = v => v.dur ?? Math.round((v.fin - v.ini) / 60000);
-const pendientes = () => D.viajes.filter(v => v.est === "FINALIZADO" && !v.sync);
-function payloadViaje(v){
-  return { id:v.id, equipo:D.cfg.equipo || "", fecha:v.fecha, placa:v.placa, ruta:v.ruta, conductor:v.cond, capacidad:v.cap,
-    inicio:hhmm(v.ini), fin:hhmm(v.fin), duracion:Math.round((v.fin - v.ini) / 60000), pasajeros:v.pax.length,
-    ocupacion:Math.round(v.pax.length / v.cap * 10000) / 10000, rechazos:v.rech.length,
-    detalle:[ ...v.pax.map(p => ({dni:p.d, nombre:p.n, empresa:p.e || "", hora:hhmmss(p.t), resultado:"EMBARCADO"})),
-              ...v.rech.map(r => ({dni:r.c, nombre:r.n || "", empresa:"", hora:hhmmss(r.t), resultado:r.m})) ] };
-}
-async function fetchT(url, opt = {}, ms = 60000){
-  const ac = new AbortController(), t = setTimeout(() => ac.abort(), ms);
-  try { return await fetch(url, {...opt, signal:ac.signal}); } finally { clearTimeout(t); }
-}
-let enviando = false;
-async function enviarPendientes(avisar){
-  const url = D.cfg.urlEnvio, pend = pendientes();
-  if (!url || !pend.length || enviando){ renderSync(); if (avisar && url && !pend.length) toast("☁️ No hay viajes pendientes de enviar", "inf"); return; }
-  if (!navigator.onLine){ renderSync(); if (avisar) toast(`📵 Sin señal: ${pend.length} viaje(s) quedan pendientes y se enviarán solos`, "err", 6000); return; }
-  enviando = true; renderSync(); let ok = 0, err = 0, motivo = "";
-  for (const v of pend){
-    try {
-      const r = await fetchT(url, {method:"POST", headers:{"Content-Type":"text/plain;charset=UTF-8"}, body:JSON.stringify(payloadViaje(v))});
-      if (r.ok){ v.sync = Date.now(); ok++; await persistir(); } else { err++; motivo = "respuesta HTTP " + r.status; }
-    } catch(e){ err++; motivo = e.name === "AbortError" ? "sin respuesta (tiempo agotado)" : "sin conexión o URL/flujo incorrecto"; }
-  }
-  enviando = false; if (ok) D.cfg.ultimoEnvio = Date.now(); guardar(); renderSync();
-  if (avisar){
-    if (!err) toast(`☁️ ${ok} viaje(s) enviados a SharePoint`, "ok");
-    else toast(`⚠️ Enviados ${ok}, pendientes ${err} (${motivo}). Se reintentará.`, "err", 7000);
-  }
-}
-function renderSync(){
-  const n = pendientes().length, c = D.cfg;
-  $("hdrSync").textContent = !c.urlEnvio ? "" : enviando ? "☁️ enviando…" : n ? `☁️ ${n} por enviar` : "☁️ al día";
-  $("btnEnviarPend").textContent = `⬆ Enviar pendientes (${n})`;
-  $("syncEstado").innerHTML = !c.urlEnvio ? "⚪ Sin conexión configurada: los viajes quedan solo en este celular."
-    : `${n ? "🟠 " + n + " viaje(s) pendientes de envío." : "🟢 Todos los viajes finalizados están en SharePoint."}` +
-      (c.ultimoEnvio ? `<br>Último envío: ${new Date(c.ultimoEnvio).toLocaleString("es-PE")}` : "");
-}
-function cargarCfgForm(){ $("cfgEquipo").value = D.cfg.equipo || ""; $("cfgEnvio").value = D.cfg.urlEnvio || ""; $("cfgLectura").value = D.cfg.urlLectura || ""; }
-const urlOk = u => !u || /^https:\/\/\S+$/i.test(u);
-$("btnCfgGuardar").onclick = () => {
-  const e = $("cfgEnvio").value.trim(), l = $("cfgLectura").value.trim();
-  if (!urlOk(e) || !urlOk(l)){ alert("Las URL deben empezar con https:// y no tener espacios."); return; }
-  D.cfg.equipo = $("cfgEquipo").value.trim(); D.cfg.urlEnvio = e; D.cfg.urlLectura = l; persistir(); renderSync();
-  toast("💾 Conexión guardada", "ok"); if (e && pendientes().length) enviarPendientes(true);
-};
-$("btnEnviarPend").onclick = () => enviarPendientes(true);
-$("btnProbarCentral").onclick = async () => { if (!D.cfg.urlLectura){ alert("Primero guarde la URL de lectura."); return; } await leerCentral(true); };
-$("btnCompartirCfg").onclick = async () => {
-  if (!D.cfg.urlEnvio && !D.cfg.urlLectura){ alert("Primero guarde la conexión."); return; }
-  const data = btoa(unescape(encodeURIComponent(JSON.stringify({e:D.cfg.urlEnvio, l:D.cfg.urlLectura}))));
-  const link = location.origin + location.pathname + "#cfg=" + encodeURIComponent(data);
-  try { if (navigator.share){ await navigator.share({title:"Conexión App Embarque", text:"Abra este enlace en Chrome del otro celular:", url:link}); return; } } catch(e){ if (e.name === "AbortError") return; }
-  try { await navigator.clipboard.writeText(link); toast("📋 Enlace copiado. Péguelo en WhatsApp al otro celular.", "ok", 6000); }
-  catch(e){ prompt("Copie este enlace y envíelo al otro celular:", link); }
-};
-function leerCfgDeEnlace(){
-  const m = location.hash.match(/^#cfg=(.+)$/); if (!m) return;
-  try { const j = JSON.parse(decodeURIComponent(escape(atob(decodeURIComponent(m[1])))));
-    if (confirm("¿Configurar este celular con la conexión a SharePoint recibida?")){
-      D.cfg.urlEnvio = j.e || ""; D.cfg.urlLectura = j.l || "";
-      const eq = prompt("Nombre de este celular (ej.: Celular Bus 2):", D.cfg.equipo || ""); if (eq !== null) D.cfg.equipo = eq.trim();
-      persistir(); toast("✅ Conexión configurada", "ok");
-    }
-  } catch(e){ alert("El enlace de configuración no es válido."); }
-  history.replaceState(null, "", location.pathname);
-}
-window.addEventListener("online", () => enviarPendientes(false));
-
-const numv = x => { const n = parseFloat(String(x ?? "").replace(",", ".")); return isFinite(n) ? n : 0; };
-function fechaISO(x){
-  const s = String(x ?? "").trim();
-  if (/^\d+(\.\d+)?$/.test(s)){ const n = +s; if (n > 20000 && n < 80000) return new Date(Date.UTC(1899,11,30) + Math.floor(n) * 864e5).toISOString().slice(0,10); }
-  let m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/); if (m) return `${m[1]}-${pad(m[2])}-${pad(m[3])}`;
-  m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/); if (m) return `${m[3]}-${pad(m[2])}-${pad(m[1])}`;
-  return "";
-}
-function horaTxt(x){
-  const s = String(x ?? "").trim();
-  if (/^\d*\.?\d+$/.test(s) && +s < 1){ const mi = Math.round(+s * 1440); return `${pad(Math.floor(mi/60) % 24)}:${pad(mi % 60)}`; }
-  const m = s.match(/(\d{1,2}):(\d{2})/); return m ? `${pad(m[1])}:${m[2]}` : s;
-}
-async function leerCentral(avisar){
-  const url = D.cfg.urlLectura;
-  if (!url){ toast("Configure la URL de lectura en la pestaña Datos", "err"); return; }
-  $("dEstado").textContent = "⏳ Descargando de SharePoint…";
-  try {
-    const r = await fetchT(url, {method:"GET"}, 60000); if (!r.ok) throw new Error("respuesta HTTP " + r.status);
-    let j = await r.json(); if (!Array.isArray(j)) j = j.value || j.body || j.rows || [];
-    const get = (o, k) => { for (const key of Object.keys(o)) if (norm(key) === k) return o[key]; return ""; };
-    const mapa = new Map();
-    for (const o of j){
-      const v = { id:String(get(o,"ID")).trim(), equipo:String(get(o,"EQUIPO")), fecha:fechaISO(get(o,"FECHA")), placa:String(get(o,"PLACA")).trim(),
-        ruta:String(get(o,"RUTA")).trim(), cond:String(get(o,"CONDUCTOR")).trim(), cap:numv(get(o,"CAPACIDAD")), hi:horaTxt(get(o,"INICIO")),
-        hf:horaTxt(get(o,"FIN")), dur:numv(get(o,"DURACION")), np:numv(get(o,"PASAJEROS")), nr:numv(get(o,"RECHAZOS")), est:"FINALIZADO", pax:[], rech:[] };
-      if (v.id && v.fecha && v.cap > 0) mapa.set(v.id, v);
-    }
-    D.remoto = { fecha:Date.now(), viajes:[...mapa.values()] }; guardar();
-    if (avisar) toast(`✅ Conexión OK: ${D.remoto.viajes.length} viajes en SharePoint`, "ok");
-  } catch(e){
-    toast("❌ No se pudo leer SharePoint: " + (e.name === "AbortError" ? "tiempo agotado" : e.message === "Failed to fetch" ? "sin conexión o URL/flujo incorrecto" : e.message), "err", 7000);
-  }
-  renderDashboard();
-}
-
-/* ===================== DASHBOARD ===================== */
-let dGrupo = "ruta", dFuente = "local";
-document.querySelectorAll("#segGrupo button").forEach(b => b.onclick = () => {
-  dGrupo = b.dataset.g; document.querySelectorAll("#segGrupo button").forEach(x=>x.classList.toggle("act", x===b)); renderDashboard(); });
-document.querySelectorAll("#segFuente button").forEach(b => b.onclick = () => {
-  dFuente = b.dataset.f; document.querySelectorAll("#segFuente button").forEach(x=>x.classList.toggle("act", x===b));
-  if (dFuente === "todos" && D.cfg.urlLectura && navigator.onLine && Date.now() - (D.remoto.fecha || 0) > 120000) leerCentral(false);
-  renderDashboard(); });
-$("btnLeerCentral").onclick = () => leerCentral(true);
-function viajesFuente(){
-  const loc = D.viajes.filter(v => v.est === "FINALIZADO");
-  if (dFuente === "local") return loc;
-  const ids = new Set(D.remoto.viajes.map(v => v.id));
-  return [...D.remoto.viajes, ...loc.filter(v => !ids.has(v.id))];
-}
-function prepararFiltros(lista){
-  const anios = new Set([new Date().getFullYear()]); lista.forEach(v => anios.add(+v.fecha.slice(0,4)));
-  const sa = $("dAnio"), ant = sa.value;
-  sa.innerHTML = [...anios].sort((a,b)=>b-a).map(a=>`<option value="${a}">${a}</option>`).join("");
-  if (ant && anios.has(+ant)) sa.value = ant;
-  const sm = $("dMes");
-  if (!sm.options.length){ sm.innerHTML = `<option value="0">Acumulado del año</option>` + MESES.map((m,i)=>`<option value="${i+1}">${m}</option>`).join(""); sm.value = String(new Date().getMonth()+1); }
-}
-function agrupar(viajes, clave){
-  const m = new Map();
-  for (const v of viajes){ const k = v[clave]; const g = m.get(k) || {k, viajes:0, pax:0, cap:0, rech:0};
-    g.viajes++; g.pax += np(v); g.cap += v.cap; g.rech += nr(v); m.set(k, g); }
-  return [...m.values()].map(g => ({...g, oc: g.cap ? g.pax/g.cap : 0})).sort((a,b)=>b.oc-a.oc);
-}
-function barraHTML(etq, det, oc){
-  return `<div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;gap:8px"><b>${esc(etq)}</b><b style="color:${colorOcup(oc)}">${pct(oc)}</b></div>
-    <div class="barra"><i style="width:${Math.min(100,oc*100)}%;background:${colorOcup(oc)}"></i></div><div class="mini">${det}</div></div>`;
-}
-function renderDashboard(){
-  const base = viajesFuente(); prepararFiltros(base);
-  $("btnLeerCentral").classList.toggle("oculto", dFuente !== "todos");
-  const anio = $("dAnio").value, mes = +$("dMes").value;
-  const fin = base.filter(v => v.fecha.slice(0,4) === anio && (mes === 0 || +v.fecha.slice(5,7) === mes));
-  const pax = fin.reduce((s,v)=>s+np(v),0), cap = fin.reduce((s,v)=>s+v.cap,0), oc = cap ? pax/cap : 0;
-  $("dViajes").textContent = fin.length; $("dPax").textContent = pax; $("dAsi").textContent = cap;
-  $("dOcup").textContent = pct(oc); $("dOcup").style.color = colorOcup(oc);
-  $("dTitGrupo").textContent = "Ocupación por " + (dGrupo === "ruta" ? "ruta" : "bus") + (mes ? ` · ${MESES[mes-1]} ${anio}` : ` · acumulado ${anio}`);
-  $("dGrupos").innerHTML = agrupar(fin, dGrupo).map(g => barraHTML(g.k, `${g.viajes} viaje(s) · ${g.pax} pasajeros / ${g.cap} asientos${g.rech?` · ${g.rech} rechazos`:""}`, g.oc)).join("")
-    || `<p class="mini">No hay viajes finalizados en este periodo.</p>`;
-  $("dCardMes").classList.toggle("oculto", mes !== 0);
-  if (mes === 0){
-    $("dMeses").innerHTML = MESES.map((m,i) => { const vs = fin.filter(v => +v.fecha.slice(5,7) === i+1); if (!vs.length) return "";
-      const p = vs.reduce((s,v)=>s+np(v),0), c = vs.reduce((s,v)=>s+v.cap,0);
-      return barraHTML(m, `${vs.length} viaje(s) · ${p}/${c}`, c ? p/c : 0); }).join("") || `<p class="mini">Sin datos.</p>`;
-  }
-  $("dDetalle").innerHTML = fin.slice().sort((a,b)=>(b.fecha+hi(b)).localeCompare(a.fecha+hi(a))).slice(0,300).map(v => { const o = np(v)/v.cap;
-    return `<tr><td>${fFecha(v.fecha)}${v.equipo?`<div class="mini">${esc(v.equipo)}</div>`:""}</td><td><b>${esc(v.placa)}</b><div class="mini">${esc(v.ruta)} · ${esc(v.cond)}</div></td>
-      <td>${hi(v)}–${hf(v)}<div class="mini">${dur(v)} min</div></td><td><b style="color:${colorOcup(o)}">${pct(o)}</b><div class="mini">${np(v)}/${v.cap}</div></td></tr>`; }).join("")
-    || `<tr><td colspan="4" class="mini" style="text-align:center;padding:16px">Sin viajes</td></tr>`;
-  const abiertos = D.viajes.filter(v=>v.est==="EN CURSO").length;
-  if (dFuente === "todos"){
-    const locNo = D.viajes.filter(v => v.est === "FINALIZADO" && !D.remoto.viajes.some(r => r.id === v.id)).length;
-    $("dEstado").textContent = !D.cfg.urlLectura ? "⚠️ Falta configurar la URL de lectura (pestaña Datos)."
-      : D.remoto.fecha ? `☁️ SharePoint: ${D.remoto.viajes.length} viajes · actualizado ${new Date(D.remoto.fecha).toLocaleString("es-PE")}${locNo?` · + ${locNo} de este celular aún no enviados`:""}`
-      : "Toque «Actualizar desde SharePoint».";
-  } else $("dEstado").textContent = "📱 Solo los viajes de este celular.";
-  $("dNota").textContent = "Ocupación = pasajeros ÷ asientos ofrecidos. Verde ≥ 80 %, ámbar 50–79 %, rojo < 50 %." + (abiertos ? ` Hay ${abiertos} viaje(s) sin finalizar en este celular que no se cuentan.` : "");
-}
-$("dAnio").onchange = renderDashboard; $("dMes").onchange = renderDashboard;
-
-/* ===================== EXPORTAR / RESPALDO ===================== */
-const CRC = (()=>{ const t = new Uint32Array(256); for (let n=0;n<256;n++){ let c=n; for(let k=0;k<8;k++) c = c&1 ? 0xEDB88320^(c>>>1) : c>>>1; t[n]=c>>>0; } return t; })();
-const crc32 = u8 => { let c = 0xFFFFFFFF; for (const b of u8) c = CRC[(c^b)&255]^(c>>>8); return (c^0xFFFFFFFF)>>>0; };
-function zipStore(files){
-  const enc = new TextEncoder(), parts = [], cen = []; let off = 0;
-  for (const [name, txt] of files){
-    const nm = enc.encode(name), data = enc.encode(txt), crc = crc32(data), lh = new DataView(new ArrayBuffer(30));
-    lh.setUint32(0,0x04034b50,true); lh.setUint16(4,20,true); lh.setUint16(6,0x0800,true); lh.setUint32(14,crc,true);
-    lh.setUint32(18,data.length,true); lh.setUint32(22,data.length,true); lh.setUint16(26,nm.length,true); parts.push(new Uint8Array(lh.buffer), nm, data);
-    const ch = new DataView(new ArrayBuffer(46));
-    ch.setUint32(0,0x02014b50,true); ch.setUint16(4,20,true); ch.setUint16(6,20,true); ch.setUint16(8,0x0800,true); ch.setUint32(16,crc,true);
-    ch.setUint32(20,data.length,true); ch.setUint32(24,data.length,true); ch.setUint16(28,nm.length,true); ch.setUint32(42,off,true);
-    cen.push(new Uint8Array(ch.buffer), nm); off += 30 + nm.length + data.length;
-  }
-  const csize = cen.reduce((s,a)=>s+a.length,0), e = new DataView(new ArrayBuffer(22));
-  e.setUint32(0,0x06054b50,true); e.setUint16(8,files.length,true); e.setUint16(10,files.length,true); e.setUint32(12,csize,true); e.setUint32(16,off,true);
-  return new Blob([...parts, ...cen, new Uint8Array(e.buffer)], {type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
-}
-const xe = s => String(s ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
-const letra = i => { let s=""; i++; while(i){ const m=(i-1)%26; s=String.fromCharCode(65+m)+s; i=Math.floor((i-1)/26);} return s; };
-function hojaXml(filas){
-  return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetData>` +
-    filas.map((f,r)=>`<row r="${r+1}">`+f.map((v,c)=> (typeof v === "number" && isFinite(v) && r > 0)
-      ? `<c r="${letra(c)}${r+1}"><v>${v}</v></c>`
-      : `<c r="${letra(c)}${r+1}" t="inlineStr"${r===0?' s="1"':''}><is><t xml:space="preserve">${xe(v)}</t></is></c>`).join("")+`</row>`).join("") + `</sheetData></worksheet>`;
-}
-function descargar(blob, nombre){ const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = nombre; document.body.appendChild(a); a.click(); a.remove(); }
-const sello = () => { const d = new Date(); return `${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}_${pad(d.getHours())}${pad(d.getMinutes())}`; };
-function exportar(){
-  const hojas = [
-    ["Personal", [["DNI","NOMBRE","EMPRESA","CARGO","FOTOCHECK","HABILITADO"], ...D.pers.map(p=>[p.dni,p.nombre,p.empresa,p.cargo,p.fot,p.hab?"SI":"NO"])]],
-    ["Viajes", [["FECHA","PLACA","RUTA","CONDUCTOR","CAPACIDAD","HORA INICIO","HORA FIN","ESTADO","PASAJEROS","OCUPACION %","RECHAZOS","ENVIADO SHAREPOINT"],
-      ...D.viajes.map(v=>[fFecha(v.fecha),v.placa,v.ruta,v.cond,v.cap,hhmm(v.ini),hhmm(v.fin),v.est,v.pax.length,Math.round(v.pax.length/v.cap*100),v.rech.length,v.sync?"SI":"NO"])]],
-    ["Embarques", [["FECHA","PLACA","RUTA","CONDUCTOR","HORA","DNI","NOMBRE","EMPRESA"],
-      ...D.viajes.flatMap(v=>v.pax.map(p=>[fFecha(v.fecha),v.placa,v.ruta,v.cond,hhmmss(p.t),p.d,p.n,p.e||""]))]],
-    ["Rechazos", [["FECHA","PLACA","RUTA","HORA","CODIGO LEIDO","NOMBRE","MOTIVO"],
-      ...D.viajes.flatMap(v=>v.rech.map(r=>[fFecha(v.fecha),v.placa,v.ruta,hhmmss(r.t),r.c,r.n,r.m]))]]
-  ];
-  const ns = 'xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"';
-  const ids = [...Array(hojas.length).keys()].map(i=>i+1);
-  const files = [
-    ["[Content_Types].xml",`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>${ids.map(i=>`<Override PartName="/xl/worksheets/sheet${i}.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>`).join("")}</Types>`],
-    ["_rels/.rels",`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>`],
-    ["xl/workbook.xml",`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook ${ns}><sheets>${hojas.map((h,i)=>`<sheet name="${h[0]}" sheetId="${i+1}" r:id="rId${i+1}"/>`).join("")}</sheets></workbook>`],
-    ["xl/_rels/workbook.xml.rels",`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">${ids.map(i=>`<Relationship Id="rId${i}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet${i}.xml"/>`).join("")}<Relationship Id="rId99" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>`],
-    ["xl/styles.xml",`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><fonts count="2"><font><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><name val="Calibri"/></font></fonts><fills count="2"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill></fills><borders count="1"><border/></borders><cellStyleXfs count="1"><xf/></cellStyleXfs><cellXfs count="2"><xf/><xf fontId="1" applyFont="1"/></cellXfs></styleSheet>`],
-    ...hojas.map((h,i)=>[`xl/worksheets/sheet${i+1}.xml`, hojaXml(h[1])])
-  ];
-  descargar(zipStore(files), `Embarque_${sello()}.xlsx`);
-}
-$("btnExport").onclick = exportar;
-$("btnBackup").onclick = () => descargar(new Blob([JSON.stringify({app:"embarque", ver:7, fecha:Date.now(), D})], {type:"application/json"}), `Respaldo_Embarque_${sello()}.json`);
-$("btnRestore").onclick = () => $("inpRestore").click();
-$("inpRestore").addEventListener("change", async e => {
-  const f = e.target.files[0]; e.target.value = ""; if (!f) return;
-  try { const j = JSON.parse(await f.text()); if (!j || j.app !== "embarque" || !j.D) throw new Error("Archivo de respaldo no válido.");
-    if (!confirm(`¿Reemplazar los datos de este equipo con el respaldo del ${new Date(j.fecha).toLocaleString("es-PE")}?\n${j.D.pers.length} personas · ${j.D.viajes.length} viajes`)) return;
-    D = Object.assign({ pers:[], rutas:[], buses:[], cond:[], viajes:[], activo:null, padron:{}, cfg:{urlEnvio:"",urlLectura:"",equipo:""}, remoto:{viajes:[],fecha:0} }, j.D);
-    reindex(); await persistir(); cargarCfgForm(); renderTodo(); alert("✅ Respaldo restaurado.");
-  } catch(err){ alert("❌ " + err.message); }
-});
-$("btnBorrarViajes").onclick = () => {
-  if (!D.viajes.length) return;
-  if (!confirm(`¿Borrar ${D.viajes.length} viajes? Exporte antes.`) || !confirm("¿Seguro? No se puede deshacer.")) return;
-  D.viajes = []; D.activo = null; persistir(); renderTodo();
-};
-
-/* ===================== NAVEGACIÓN ===================== */
-const TABS = ["embarque","personal","rutas","dashboard","datos"];
-window.irA = tab => document.querySelector(`nav button[data-tab="${tab}"]`).click();
-document.querySelectorAll("nav button").forEach(b => b.onclick = () => {
-  document.querySelectorAll("nav button").forEach(x=>x.classList.toggle("act", x===b));
-  TABS.forEach(t => $("tab-"+t).classList.toggle("oculto", t !== b.dataset.tab));
-  if (b.dataset.tab !== "embarque") detenerCam();
-  if (b.dataset.tab === "dashboard") renderDashboard();
-  if (b.dataset.tab === "personal") renderPersonal();
-});
-function renderTodo(){ renderCatalogos(); renderEmbarque(); renderPersonal(); renderSync(); if (!$("tab-dashboard").classList.contains("oculto")) renderDashboard(); }
-setInterval(()=>{ $("hdrHora").textContent = hhmm(Date.now()); }, 1000); $("hdrHora").textContent = hhmm(Date.now());
-
-(async () => {
-  await cargarEstado(); leerCfgDeEnlace(); reindex(); cargarCfgForm(); renderTodo();
-  if (!D.pers.length) irA("personal");
-  if (D.cfg.urlEnvio) setTimeout(() => enviarPendientes(false), 1500);
-  if ("serviceWorker" in navigator && location.protocol === "https:") navigator.serviceWorker.register("sw.js");
-})();
-window.__t = { get D(){ return D; }, buscarPersona, persistir, payloadViaje };
+document.addEventListener('DOMContentLoaded',init);
 </script>
 </body>
 </html>
